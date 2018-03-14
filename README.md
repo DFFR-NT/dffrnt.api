@@ -86,7 +86,7 @@ Parent_Folder/ (Name NOT important)
       ```
 1. Lastly, still in the **project root**, run `gulp` and watch the `logs` as the `server` starts up.
    * If there are no glaring `errors`, you're done!
-   * Otherwise, **text** or **Skype** me... :(
+   * Otherwise... Shit... :(
    
 ## License
 
