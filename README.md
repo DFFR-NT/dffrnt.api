@@ -66,12 +66,14 @@ Parent_Folder/ (Name NOT important)
      ```
 1. In the **project root**: 
    * Create the `hidden` file `.bowerrc`:
+   
       ```json
       {
           "directory" : "public/comps"
       }
       ```
    * Also create the `hidden` file `.babelrc`:
+   
       ```json
       {
           "presets": ["es2015"],
