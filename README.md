@@ -8,6 +8,7 @@ A project for easy-ish API configuration.
   * Install this in the same **parent folder** as **this project** under "**REDIS/**"
   
 ### Structure
+
 ```
 Parent_Folder/ (Name NOT important)
    ├── dffrnt.api/ (Name also NOT important)
@@ -19,6 +20,7 @@ Parent_Folder/ (Name NOT important)
 ## Installation
 1. Ensure **folder structure** is setup and **prequisites** are installed.
 1. Configure the `redis.conf` file in the `REDIS/` folder:
+
    ```bash
    ################################## SECURITY ###################################
 
@@ -34,6 +36,7 @@ Parent_Folder/ (Name NOT important)
    * Run `sudo ./npm_global.sh` to install some important global packages (_these can be use across all projects_)
 1. Run `npm install` and allow `npm` to install all the packages needed for this project.
 1. In the `config/` folder, configure the `settings.js` file:
+
    ```javascript
    module.exports = function Settings() { return {
         Debug:  true, // For logging
@@ -49,6 +52,7 @@ Parent_Folder/ (Name NOT important)
    ```
 1. Create a `user@%` for yourself in the [eVectr](evectr.com) `MySQL` database
    * Back in the `config/` folder, configure the `database.js` file:
+   
      ```javascript
      module.exports = {
          Config: {
