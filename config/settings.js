@@ -14,7 +14,7 @@ module.exports = function Settings() { return {
 		REDIS: 	{
 			Host: 		'localhost',
 			Port: 		6379,
-			Password: 	'Pion33r247',
+			Password: 	'p@ssw0rd',
 		},
 		Auth: {
 			Flush: 	false,
