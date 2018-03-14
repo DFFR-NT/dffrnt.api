@@ -1,4 +1,5 @@
 #!/bin/bash
+# DON'T FORGET TO INSTALL REDIS-SERVER!!!!!!!!!!!!!!!!!!!!
 npm install -g \
 	babel-cli \
 	bower \
@@ -15,3 +16,4 @@ npm install -g \
 	nodemon \
 	nodetime &&
 npm install;
+# gulp -f gulpfile.babel.js
