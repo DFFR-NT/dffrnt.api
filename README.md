@@ -31,9 +31,9 @@ Parent_Folder/ (Name NOT important)
    requirepass p@ssw0rd_h3r3!
    ```
 1. [Download](https://github.com/LeShaunJ/dffrnt.api/archive/master.zip) or [`git`](https://github.com/LeShaunJ/dffrnt.api.git) this project into the appropriate folder.
-1. On the **command line**, `cd` into the **project folder** location
-   * Run `chmod +x npm_global.sh` to make it **excutable**
-   * Run `sudo ./npm_global.sh` to install some important global packages (_these can be use across all projects_)
+1. On the **command line**, `cd` into the **project folder** location:
+   * Run `chmod +x npm_global.sh` to make it **excutable**.
+   * Run `sudo ./npm_global.sh` to install some important global packages (_these can be use across all projects_).
 1. Run `npm install` and allow `npm` to install all the packages needed for this project.
 1. In the `config/` folder, configure the `settings.js` file:
 
@@ -50,14 +50,15 @@ Parent_Folder/ (Name NOT important)
         }
    };  };
    ```
-1. Create a `user@%` for yourself in the [eVectr](evectr.com) `MySQL` database
+1. Create a `user@%` for yourself in the `MySQL` database.
+   * Be sure to give yourself appropriate permissions.
    * Back in the `config/` folder, configure the `database.js` file:
    
      ```javascript
      module.exports = {
          Config: {
              user:               'user', // The one you created in MySQL
-             database:           'evectr', // Don't change
+             database:           'database', // The DB
              // ...
          },
          Pool: {
