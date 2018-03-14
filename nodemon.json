@@ -1,0 +1,18 @@
+{
+	"verbose": true,
+	"script": "index.js",
+	"ext": "js json",
+	"watch": [
+		"gulpfile.js",
+		"main/server.js",
+		"modules/",
+		"config/"
+	],
+	"restartable": "rs",
+	"env": {
+		"NODE_ENV": "development"
+	},
+	"events": {
+		"restart": "osascript -e 'display notification \"API Restarted\" with title \"NodeMon\"'"
+	}
+}
