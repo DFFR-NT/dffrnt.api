@@ -13,6 +13,5 @@ npm install -g \
 	n \
 	node-gyp \
 	nodemon \
-	nodetime \
-	npm &&
+	nodetime &&
 npm install;
