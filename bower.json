@@ -1,5 +1,5 @@
 {
-	"name": "oneview-api",
+	"name": "dffrnt.api",
 	"dependencies": {
 		"modernizr": "*",
 		"less": "*",
