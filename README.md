@@ -1,6 +1,13 @@
 # dffrnt.api
 A project for easy-ish API configuration.
 
+## Contents
+
+1. [Prequisites](#prequisites)
+   1. [Structure](#structure)
+1. [Installation](#installation)
+1. [License](#license)
+
 ## Prequisites
 * [NodeJS](https://nodejs.org/en/) (_Latest_)
 * [NPM](https://nodejs.org/en/) (_Installed with NodeJS_)
