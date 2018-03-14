@@ -4,7 +4,7 @@ A project for easy-ish API configuration.
 ## Prequisites
 * [NodeJS](https://nodejs.org/en/) (_Latest_)
 * [NPM](https://nodejs.org/en/) (_Installed with NodeJS_)
-* [REDIS](https://redis.io/download) (_See **[Structure](/#Structure)** below_)
+* [REDIS](https://redis.io/download) (_See **[Structure](#structure)** below_)
   * Install this in the same **parent folder** as **this project** under "**REDIS/**"
   
 ### Structure
