@@ -1,5 +1,5 @@
 # dffrnt.api
-A project for easy-ish API configuration
+A project for easy-ish API configuration.
 
 ## Prequisites
 * [NodeJS](https://nodejs.org/en/) (_Latest_)
