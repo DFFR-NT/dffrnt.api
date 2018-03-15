@@ -65,7 +65,7 @@ Parent_Folder/ (Name NOT important)
       | [express](https://www.npmjs.com/package/express) |  `Required`  | A fast, unopinionated, minimalist web framework for `NodeJS`. |
       | [gulp](https://www.npmjs.com/package/gulp) |  `Required`  | A toolkit that helps automate development workflow tasks. |
       | [less](https://www.npmjs.com/package/less) |  `Required`  | The dynamic stylesheet language. |
-      | [less-plugin-clean-css](https://www.npmjs.com/package/less-plugin-clean-css) |  `Required`  | Compresses the `CSS` output from `LESS` using `clean-css` and `gulp`. |
+      | [less-plugin-clean-css](https://www.npmjs.com/package/less-plugin-clean-css) |  `Required`  | A `gulp` plugin for `LESS -> CSS` using `clean-css`. |
       | [node-gyp](https://www.npmjs.com/package/node-gyp) |  `Required`  | Compiles native addon `modules` for `Node.js`. |
       | [nodemon](https://www.npmjs.com/package/nodemon) |  `Required`  | Will watch for files changes and `restart` your application. |
 
