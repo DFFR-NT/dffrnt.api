@@ -67,25 +67,22 @@ Parent_Folder/ (Name NOT important)
    * Be sure to give yourself appropriate permissions.
    * Back in the `config/` folder, configure the `database.js` file:
    
-```javascript
+     ```javascript
      module.exports = {
          Config: {
-             // The one you created in MySQL
-             user:     'user', 
-             // The DB
-             database: 'database', 
+             user:'user',// The one you created in MySQL
+             database:'database',// The DB
              // ...
          },
          Pool: {
              HeadEx1: {
-                 // The eVectr IP
-                 host:     'XXX.XXX.XXX.XXX', 
+                 host:'XXX.XXX.XXX.XXX',// The eVectr IP
                  // The one you created in MySQL 
-                 password: 'p@ssw0rd_h3r3!' 
+                 password:'p@ssw0rd_h3r3!' 
              },
          }
      };
-```
+     ```
 1. In the **project root**: 
    * Create the `hidden` file `.bowerrc`:
    
