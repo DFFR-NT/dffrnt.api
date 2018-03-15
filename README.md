@@ -47,13 +47,18 @@ Parent_Folder/ (Name NOT important)
 
    ```javascript
    module.exports = function Settings() { return {
-        Debug:  true, // For logging
-        Port:   3001, // Choose a port of your liking
+        // For logging
+        Debug:  true, 
+        // Choose a port of your liking
+        Port:   3001, 
         Session: {
-            Secret: "", // Use a Base64 hash 
+            // Use a Base64 hash 
+            Secret: "", 
             REDIS:  {
-                Port:     6379, // This shouldn't change, but if you want
-                Password: 'p@ssw0rd_h3r3!', // Use the passowrd configured in redis.conf
+                // This shouldn't change, but if you want
+                Port:     6379, 
+                // Use the passowrd configured in redis.conf
+                Password: 'p@ssw0rd_h3r3!', 
             }
         }
    };  };
@@ -65,14 +70,18 @@ Parent_Folder/ (Name NOT important)
      ```javascript
      module.exports = {
          Config: {
-             user:               'user', // The one you created in MySQL
-             database:           'database', // The DB
+             // The one you created in MySQL
+             user:     'user', 
+             // The DB
+             database: 'database', 
              // ...
          },
          Pool: {
              HeadEx1: {
-                 host: 'XXX.XXX.XXX.XXX', // The eVectr IP
-                 password: 'p@ssw0rd_h3r3!' // The one you created in MySQL 
+                 // The eVectr IP
+                 host:     'XXX.XXX.XXX.XXX', 
+                 // The one you created in MySQL 
+                 password: 'p@ssw0rd_h3r3!' 
              },
          }
      };
