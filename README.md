@@ -3,17 +3,18 @@ A project for easy-ish API configuration.
 
 ## Contents
 
-1. [Prequisites](#prequisites)
-   1. [Structure](#structure)
-1. [Installation](#installation)
-1. [License](#license)
+> 1. [Prequisites](#prequisites)
+>    > 1. [Structure](#structure)
+> 1. [Installation](#installation)
+> 1. [License](#license)
 
 ## Prequisites
 * [NodeJS](https://nodejs.org/en/) (_Latest_)
 * [NPM](https://nodejs.org/en/) (_Installed with `NodeJS`_)
 * [REDIS](https://redis.io/download) (_See **[Structure](#structure)** below_)
-  * Install this in the same **parent folder** as **this project** under `REDIS/`
+  * _Install this in the same **parent folder** as **this project** under `REDIS/`_
 * [MySQL](https://dev.mysql.com/downloads/mysql/) (_v5.6+_)
+  * _A user account is required for later configuration_
   
 ### Structure
 
@@ -82,14 +83,14 @@ Parent_Folder/ (Name NOT important)
      };
      ```
 1. In the **project root**: 
-   * Create the `hidden` file `.bowerrc`:
+   * Create the `hidden` file, `.bowerrc`:
    
       ```json
       {
           "directory" : "public/comps"
       }
       ```
-   * Also create the `hidden` file `.babelrc`:
+   * Also create the `hidden` file, `.babelrc`:
    
       ```json
       {
