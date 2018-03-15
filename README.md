@@ -131,7 +131,7 @@ Parent_Folder/ (Name NOT important)
 1. Lastly, still in the **project root**, run `gulp` and watch the `logs` as the `server` starts up.
    * If there are no glaring `errors`, you're done!
    * Otherwise... Shit... :(
-1. In your `browser`, navigate to [localhost:3001/api-explorer](localhost:3001/api-explorer) (_or whatever `port` you chose_) and you'll see the **API Exploration UI**. Use this to test your `endpoints` and/or `signle sign-on` functionality.
+1. In your `browser`, navigate to [localhost:3001/api-explorer](http://localhost:3001/api-explorer) (_or whatever `port` you chose_) and you'll see the **API Exploration UI**. Use this to test your `endpoints` and/or `signle sign-on` functionality.
 1. Hit <kbd>CTRL</kbd>+<kbd>C</kbd> to `stop` the server.
    
 ## License
