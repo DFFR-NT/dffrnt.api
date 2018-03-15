@@ -13,6 +13,7 @@ A project for easy-ish API configuration.
 * [NPM](https://nodejs.org/en/) (_Installed with NodeJS_)
 * [REDIS](https://redis.io/download) (_See **[Structure](#structure)** below_)
   * Install this in the same **parent folder** as **this project** under "**REDIS/**"
+* [MySQL](https://dev.mysql.com/downloads/mysql/) (_v5.6+_)
   
 ### Structure
 
