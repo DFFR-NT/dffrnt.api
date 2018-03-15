@@ -103,4 +103,4 @@ Parent_Folder/ (Name NOT important)
    
 ## License
 
-GNU
+MIT
