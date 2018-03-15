@@ -5,7 +5,11 @@ A project for easy-ish API configuration.
 
 > 1. [Prequisites](#prequisites)
 >    > 1. [Structure](#structure)
-> 1. [Installation](#installation)
+> 1. [Setup](#setup)
+>    > 1. [Pre-Configuration](#pre-configuration)
+>    > 1. [Installation](#installation)
+>    > 1. [Post-Configuration](#post-configuration)
+>    > 1. [Launching](#launching)
 > 1. [License](#license)
 
 ## Prequisites
@@ -14,7 +18,7 @@ A project for easy-ish API configuration.
 * [REDIS](https://redis.io/download) (_See **[Structure](#structure)** below_)
   * _Install this in the same **parent folder** as **this project** under `REDIS/`_
 * [MySQL](https://dev.mysql.com/downloads/mysql/) (_v5.6+_)
-  * _A user account is required for later configuration_
+  * _A `user@%` account is **required** for later configuration_
   
 ### Structure
 
@@ -26,8 +30,14 @@ Parent_Folder/ (Name NOT important)
    └── REDIS/ (Name important! Don't change this name!!)
 ```
 
-## Installation
-1. Ensure **folder structure** is setup and **prequisites** are installed.
+## Setup
+
+### Pre-Configuration
+1. Ensure the **[folder structure](#structure)** is setup.
+1. Ensure the **[prequisites](#prequisites)** are installed.
+   * If the `install method` you chose for `REDIS` installs the files in a default location, be sure to `symlink` that location to the `Parent_Folder/REDIS/` directory.
+1. In the `MySQL` database, create a `user@%` for yourself.
+   * Be sure to give yourself appropriate permissions.
 1. Configure the `redis.conf` file in the `REDIS/` folder:
 
    ```bash
@@ -38,11 +48,16 @@ Parent_Folder/ (Name NOT important)
    #
    requirepass p@ssw0rd_h3r3!
    ```
-1. [Download](https://github.com/LeShaunJ/dffrnt.api/archive/master.zip) or [`git`](https://github.com/LeShaunJ/dffrnt.api.git) this project into the appropriate folder.
-1. On the **command line**, `cd` into the **project folder** location:
+
+### Installation
+1. [Download](https://github.com/LeShaunJ/dffrnt.api/archive/master.zip) or [`git`](https://github.com/LeShaunJ/dffrnt.api.git) this project into the **parent folder**.
+1. In your **command line**, `cd` into the **project folder** location:
    * Run `chmod +x npm_global.sh` to make it **excutable**.
    * Run `sudo ./npm_global.sh` to install some important global packages (_these can be use across all projects_).
-1. Run `npm install` and allow `npm` to install all the packages needed for this project.
+1. Run `npm install` and allow `npm` to install all the `packages` needed for this `server-side`.
+1. Run `bower install` and allow `bower` to install all the `components` needed for this `client-side`.
+
+### Post-Configuration
 1. In the `config/` folder, configure the `settings.js` file:
 
    ```javascript
@@ -62,9 +77,7 @@ Parent_Folder/ (Name NOT important)
        };  
    };
    ```
-1. Create a `user@%` for yourself in the `MySQL` database.
-   * Be sure to give yourself appropriate permissions.
-   * Back in the `config/` folder, configure the `database.js` file:
+1. Still in the `config/` folder, configure the `database.js` file:
    
      ```javascript
      module.exports = {
@@ -82,7 +95,7 @@ Parent_Folder/ (Name NOT important)
          }
      };
      ```
-1. In the **project root**: 
+1. BaIn the **project root**: 
    * Create the `hidden` file, `.bowerrc`:
    
       ```json
@@ -98,9 +111,13 @@ Parent_Folder/ (Name NOT important)
           "ignore": "node_modules",
       }
       ```
+
+### Launching
 1. Lastly, still in the **project root**, run `gulp` and watch the `logs` as the `server` starts up.
    * If there are no glaring `errors`, you're done!
    * Otherwise... Shit... :(
+1. In your `browser`, navigate to [localhost:3001/api-explorer] (_or whatever `port` you chose_) and you'll see the **API Exploration UI**. Use this to test your `endpoints` and/or `signle sign-on` functionality.
+1. Hit <kbd>CTRL</kbd>+<kbd>C</kbd> to `stop` the server.
    
 ## License
 
