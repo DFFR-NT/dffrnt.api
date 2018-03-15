@@ -58,7 +58,7 @@ Parent_Folder/ (Name NOT important)
 
       | Package | Importance | Description |
       | --- | :---: | --- |
-      | [babel-cli](https://www.npmjs.com/package/babel-cli) |  `Required`  | An next-gen (ES6) JavaScript compiler. |
+      | [babel-cli](https://www.npmjs.com/package/babel-cli) |  `Required`  | A next-gen (`ES6`) JavaScript compiler. |
       | [bower](https://www.npmjs.com/package/bower) |  `Required`  | A package-manager for Browser plugins. |
       | [cors](https://www.npmjs.com/package/cors) |  `Required`  | A `middleware` for `Cross-Origin Resource Sharing`. |
       | [depcheck](https://www.npmjs.com/package/depcheck) |  `Optional`  | A tool for analyzing the dependencies in a project |
