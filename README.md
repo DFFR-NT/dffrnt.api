@@ -1,5 +1,5 @@
 # dffrnt.api
-A project for easy-ish **API** creation and configuration.
+A project for easy-_ish_ **API** creation and configuration.
 
 ## Contents
 
