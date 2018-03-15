@@ -47,20 +47,17 @@ Parent_Folder/ (Name NOT important)
 
    ```javascript
    module.exports = function Settings() { return {
-        // For logging
-        Debug:  true, 
-        // Choose a port of your liking
-        Port:   3001, 
-        Session: {
-            // Use a Base64 hash 
-            Secret: "", 
-            REDIS:  {
-                // This shouldn't change, but if you want
-                Port:     6379, 
-                // Use the passowrd configured in redis.conf
-                Password: 'p@ssw0rd_h3r3!', 
-            }
-        }
+   		// For logging
+		Debug:  true, 
+   		// Choose a port of your liking
+   		Port:   3001, 
+    	Session: {
+			Secret: "",// Use a Base64 hash 
+			REDIS:  {
+				Port: 6379,// This shouldn't change, but if you want
+				Password: 'p@ssw0rd_h3r3!',// Use the passowrd configured in redis.conf
+			}
+   		}
    };  };
    ```
 1. Create a `user@%` for yourself in the `MySQL` database.
