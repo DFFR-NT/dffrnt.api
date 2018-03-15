@@ -55,21 +55,23 @@ Parent_Folder/ (Name NOT important)
    1. Run `chmod +x npm_global.sh` to make it **excutable**.
    1. Run `sudo ./npm_global.sh` to install some important global packages.
    1. These can be use across all projects:
-      | Package | Importance |
-      | ------- |:----------:|
-      | [babel-cli](https://www.npmjs.com/package/babel-cli) | `Required` |
-      | [bower](https://www.npmjs.com/package/bower) | `Required` |
-      | [component](https://www.npmjs.com/package/component) | `Required` |
-      | [cors](https://www.npmjs.com/package/cors) | `Required` |
-      | [depcheck](https://www.npmjs.com/package/depcheck) | `Optional` |
-      | [express](https://www.npmjs.com/package/express) | `Required` |
-      | [grunt-cli](https://www.npmjs.com/package/grunt-cli) | `Required` |
-      | [gulp](https://www.npmjs.com/package/gulp) | `Required` |
-      | [less](https://www.npmjs.com/package/less) | `Required` |
-      | [less-plugin-clean-css](https://www.npmjs.com/package/less-plugin-clean-css) | `Required` |
-      | [node-gyp](https://www.npmjs.com/package/node-gyp) | `Required` |
-      | [nodemon](https://www.npmjs.com/package/nodemon) | `Required` |
-      | [nodetime](https://www.npmjs.com/package/nodetime) | `Required` |
+
+      | Package | Importance | Description |
+      | --- | :---: | --- |
+      | [babel-cli](https://www.npmjs.com/package/babel-cli) |  `Required`  | Description |
+      | [bower](https://www.npmjs.com/package/bower) |  `Required`  | Description |
+      | [component](https://www.npmjs.com/package/component) |  `Required`  | Description |
+      | [cors](https://www.npmjs.com/package/cors) |  `Required`  | Description |
+      | [depcheck](https://www.npmjs.com/package/depcheck) |  `Optional`  | Description |
+      | [express](https://www.npmjs.com/package/express) |  `Required`  | Description |
+      | [grunt-cli](https://www.npmjs.com/package/grunt-cli) |  `Required`  | Description |
+      | [gulp](https://www.npmjs.com/package/gulp) |  `Required`  | Description |
+      | [less](https://www.npmjs.com/package/less) |  `Required`  | Description |
+      | [less-plugin-clean-css](https://www.npmjs.com/package/less-plugin-clean-css) |  `Required`  | Description |
+      | [node-gyp](https://www.npmjs.com/package/node-gyp) |  `Required`  | Description |
+      | [nodemon](https://www.npmjs.com/package/nodemon) |  `Required`  | Description |
+      | [nodetime](https://www.npmjs.com/package/nodetime) |  `Required`  | Description |
+
 1. Run `npm install` and allow `npm` to install all the `packages` needed for this `server-side`.
 1. Run `bower install` and allow `bower` to install all the `components` needed for this `client-side`.
 
