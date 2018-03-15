@@ -29,7 +29,7 @@ Parent_Folder/ (Name NOT important)
 1. Ensure **folder structure** is setup and **prequisites** are installed.
 1. Configure the `redis.conf` file in the `REDIS/` folder:
 
-   ```
+   ```bash
    ################################## SECURITY ###################################
    # Require clients to issue AUTH <PASSWORD> before processing any other
    # ...
@@ -44,7 +44,7 @@ Parent_Folder/ (Name NOT important)
 1. Run `npm install` and allow `npm` to install all the packages needed for this project.
 1. In the `config/` folder, configure the `settings.js` file:
 
-   ```
+   ```javascript
    module.exports = function Settings() {
        return {
            Debug: true, // For logging
@@ -65,7 +65,7 @@ Parent_Folder/ (Name NOT important)
    * Be sure to give yourself appropriate permissions.
    * Back in the `config/` folder, configure the `database.js` file:
    
-     ```
+     ```javascript
      module.exports = {
          Config: {
              user:'user',// The one you created in MySQL
