@@ -31,7 +31,6 @@ Parent_Folder/ (Name NOT important)
 
    ```
    ################################## SECURITY ###################################
-
    # Require clients to issue AUTH <PASSWORD> before processing any other
    # ...
    # use a very strong password otherwise it will be very easy to break.
