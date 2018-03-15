@@ -24,7 +24,7 @@ A project for easy-ish API configuration.
 
 ```
 Parent_Folder/ (Name NOT important)
-   ├── dffrnt.api/ (Name also NOT important)
+   ├── dffrnt.api/ (Project-Root; Name also NOT important)
    │   ├── config/ (Reference only; no need to create these!)
    │   └── ...
    └── REDIS/ (Name important! Don't change this name!!)
