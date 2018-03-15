@@ -53,7 +53,7 @@ Parent_Folder/ (Name NOT important)
 1. [Download](https://github.com/LeShaunJ/dffrnt.api/archive/master.zip) or [`git`](https://github.com/LeShaunJ/dffrnt.api.git) this project into the **parent folder**.
 1. In your **command line**, `cd` into the **project folder** location:
    1. Run `chmod +x npm_global.sh` to make it **excutable**.
-   1. Run `sudo ./npm_global.sh` to install some important global packages.
+   1. Run `sudo ./npm_global.sh` to install some important, **global* packages.
    1. These can be use across all projects:
 
       | Package | Importance | Description |
