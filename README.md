@@ -52,7 +52,7 @@ Parent_Folder/ (Name NOT important)
            Port: 3001, // Choose a port of your liking
            Session: {
                Secret: "", // Use a Base64 hash 
-               REDIS:  {
+               REDIS: {
                    // This shouldn't change, but if you want
                    Port: 6379, 
                    // Use the passowrd configured in redis.conf
