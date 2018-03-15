@@ -14,3 +14,5 @@ npm install -g \
 	node-gyp \
 	nodemon \
 	nodetime;
+
+exit $?;
