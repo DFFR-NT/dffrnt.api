@@ -1,7 +1,7 @@
 {
   "name": "dffrnt.api",
   "version": "1.0.0",
-  "description": "A project for easy-ish *API* creation and configuration.",
+  "description": "A project for easy-ish API creation and configuration.",
   "main": "index.js",
   "author": "Arian Johnson <arian.johnson@icloud.com>",
   "license": "MIT",
