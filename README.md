@@ -58,19 +58,16 @@ Parent_Folder/ (Name NOT important)
 
       | Package | Importance | Description |
       | --- | :---: | --- |
-      | [babel-cli](https://www.npmjs.com/package/babel-cli) |  `Required`  | Description |
-      | [bower](https://www.npmjs.com/package/bower) |  `Required`  | Description |
-      | [component](https://www.npmjs.com/package/component) |  `Required`  | Description |
-      | [cors](https://www.npmjs.com/package/cors) |  `Required`  | Description |
-      | [depcheck](https://www.npmjs.com/package/depcheck) |  `Optional`  | Description |
-      | [express](https://www.npmjs.com/package/express) |  `Required`  | Description |
-      | [grunt-cli](https://www.npmjs.com/package/grunt-cli) |  `Required`  | Description |
-      | [gulp](https://www.npmjs.com/package/gulp) |  `Required`  | Description |
-      | [less](https://www.npmjs.com/package/less) |  `Required`  | Description |
-      | [less-plugin-clean-css](https://www.npmjs.com/package/less-plugin-clean-css) |  `Required`  | Description |
-      | [node-gyp](https://www.npmjs.com/package/node-gyp) |  `Required`  | Description |
-      | [nodemon](https://www.npmjs.com/package/nodemon) |  `Required`  | Description |
-      | [nodetime](https://www.npmjs.com/package/nodetime) |  `Required`  | Description |
+      | [babel-cli](https://www.npmjs.com/package/babel-cli) |  `Required`  | An next-gen (ES6) JavaScript compiler. |
+      | [bower](https://www.npmjs.com/package/bower) |  `Required`  | A package-manager for Browser plugins. |
+      | [cors](https://www.npmjs.com/package/cors) |  `Required`  | An `express middleware` for `Cross-origin Resource Sharing (CORS)`. |
+      | [depcheck](https://www.npmjs.com/package/depcheck) |  `Optional`  | A tool for analyzing the dependencies in a project |
+      | [express](https://www.npmjs.com/package/express) |  `Required`  | A fast, unopinionated, minimalist web framework for `NodeJS`. |
+      | [gulp](https://www.npmjs.com/package/gulp) |  `Required`  | A toolkit that helps automate development workflow tasks. |
+      | [less](https://www.npmjs.com/package/less) |  `Required`  | The dynamic stylesheet language. |
+      | [less-plugin-clean-css](https://www.npmjs.com/package/less-plugin-clean-css) |  `Required`  | Compresses the `CSS` output from `LESS` using `clean-css` and `gulp`. |
+      | [node-gyp](https://www.npmjs.com/package/node-gyp) |  `Required`  | Compiles native addon `modules` for `Node.js`. |
+      | [nodemon](https://www.npmjs.com/package/nodemon) |  `Required`  | Will watch for files changes and `restart` your application. |
 
 1. Run `npm install` and allow `npm` to install all the `packages` needed for this `server-side`.
 1. Run `bower install` and allow `bower` to install all the `components` needed for this `client-side`.
