@@ -67,7 +67,7 @@ Parent_Folder/ (Name NOT important)
    * Be sure to give yourself appropriate permissions.
    * Back in the `config/` folder, configure the `database.js` file:
    
-     ```javascript
+```javascript
      module.exports = {
          Config: {
              // The one you created in MySQL
@@ -85,7 +85,7 @@ Parent_Folder/ (Name NOT important)
              },
          }
      };
-     ```
+```
 1. In the **project root**: 
    * Create the `hidden` file `.bowerrc`:
    
