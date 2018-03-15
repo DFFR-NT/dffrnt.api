@@ -45,8 +45,8 @@ Parent_Folder/ (Name NOT important)
 1. Run `npm install` and allow `npm` to install all the packages needed for this project.
 1. In the `config/` folder, configure the `settings.js` file:
 
-   ```javascript
-   module.exports = function Settings(){
+   ```
+   module.exports = function Settings() {
        return {
            Debug: true, // For logging
            Port: 3001, // Choose a port of your liking
