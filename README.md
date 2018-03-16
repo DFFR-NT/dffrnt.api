@@ -10,6 +10,10 @@ A project for easy-_ish_ **API** creation and configuration.
 >    > 1. [Installation](#installation)
 >    > 1. [Post-Configuration](#post-configuration)
 >    > 1. [Launching](#launching)
+> 1. [Modules](#modules)
+>    > 1. [dffrnt.utils](#dffrnt.utils)
+>    > 1. [dffrnt.model](#dffrnt.model)
+>    > 1. [dffrnt.route](#dffrnt.route)
 > 1. [License](#license)
 
 ## Prequisites
@@ -133,7 +137,20 @@ Parent_Folder/ (Name NOT important)
    * Otherwise... Shit... :(
 1. In your `browser`, navigate to [localhost:3001/api-explorer](http://localhost:3001/api-explorer) (_or whatever `port` you chose_) and you'll see the **API Exploration UI**. Use this to test your `endpoints` and/or `signle sign-on` functionality.
 1. Hit <kbd>CTRL</kbd>+<kbd>C</kbd> to `stop` the server.
-   
+
+---
+## Modules
+
+### dffrnt.utils
+> Explination Coming Soon...
+
+### dffrnt.model
+> Explination Coming Soon...
+
+### dffrnt.route
+> Explination Coming Soon...
+
+---
 ## License
 
 MIT
