@@ -1,7 +1,6 @@
 # dffrnt.api
 A project for easy-_ish_ **API** creation and configuration.
 
----
 ## Contents
 
 > 1. [Prequisites](#prequisites)
