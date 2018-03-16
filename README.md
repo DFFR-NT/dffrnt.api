@@ -1,6 +1,7 @@
 # dffrnt.api
 A project for easy-_ish_ **API** creation and configuration.
 
+---
 ## Contents
 
 > 1. [Prequisites](#prequisites)
@@ -16,6 +17,7 @@ A project for easy-_ish_ **API** creation and configuration.
 >    > 1. [dffrnt.route](#dffrnt.route)
 > 1. [License](#license)
 
+---
 ## Prequisites
 * [NodeJS](https://nodejs.org/en/) (_Latest_)
 * [NPM](https://nodejs.org/en/) (_Installed with `NodeJS`_)
@@ -34,6 +36,7 @@ Parent_Folder/ (Name NOT important)
    └── REDIS/ (Name important! Don't change this name!!)
 ```
 
+---
 ## Setup
 
 ### Pre-Configuration
