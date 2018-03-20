@@ -4,6 +4,7 @@
   "description": "A project for easy-ish API creation and configuration.",
   "main": "index.js",
   "author": "Arian Johnson <arian.johnson@icloud.com>",
+  "repository" : "DFFR-NT/dffrnt.model",
   "license": "MIT",
   "dependencies": {
     "babel-core": "^6.7.4",
