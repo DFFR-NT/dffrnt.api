@@ -143,13 +143,13 @@ Parent_Folder/ (Name NOT important)
 ---
 ## Modules
 
-### [dffrnt.utils](https://github.com/LeShaunJ/dffrnt.utils)
+### [dffrnt.utils](https://github.com/DFFR-NT/dffrnt.utils)
 > Explination Coming Soon...
 
-### [dffrnt.model](https://github.com/LeShaunJ/dffrnt.model)
+### [dffrnt.model](https://github.com/DFFR-NT/dffrnt.model)
 > Explination Coming Soon...
 
-### [dffrnt.route](https://github.com/LeShaunJ/dffrnt.route)
+### [dffrnt.route](https://github.com/DFFR-NT/dffrnt.route)
 > Explination Coming Soon...
 
 ---
