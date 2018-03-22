@@ -9,7 +9,7 @@ module.exports = function Settings() { return {
 		Headers: null,
 	},
 	Session: {
-		Secret: "jy24xsFDWU5jYnZ2MNFmtCvJOhcDoxlL",
+		Secret: "orsecretmyshouldkeyrandombeweirdsomething",
 		Age: 	((3600*1000)*4),
 		REDIS: 	{
 			Host: 		'localhost',
