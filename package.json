@@ -1,10 +1,16 @@
 {
   "name": "dffrnt.api",
-  "version": "1.0.0",
+  "version": "1.5.0",
   "description": "A project for easy-ish API creation and configuration.",
   "main": "index.js",
-  "author": "Arian Johnson <arian.johnson@icloud.com>",
+  "author": {
+    "name": "Arian Johnson",
+    "email": "arian.johnson@icloud.com"
+  },
   "repository" : "DFFR-NT/dffrnt.api",
+  "bugs": {
+    "url": "https://github.com/LeShaunJ/dffrnt.api/issues"
+  },
   "license": "MIT",
   "dependencies": {
     "babel-core": "^6.7.4",
