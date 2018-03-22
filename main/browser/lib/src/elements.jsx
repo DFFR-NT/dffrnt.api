@@ -920,6 +920,7 @@ module.exports = function (global) {
 					locate  = window.location, targ = '/login';
 				return (<header id='header' className={CSS.Flex({Align:'C',Space:'B',Wrap:0})}>
 					<div id="banner" className={CSS.Flex({Align:'C'},'noSelect')}>
+						<div id='logo'>&nbsp;</div>
 						<div id='title'><span>{this.title}</span></div>
 					</div>
 					<div id='settings' className={CSS.Flex({Wrap:0,Space:'B'},'noSelect')}>
@@ -974,19 +975,19 @@ module.exports = function (global) {
 			mixins: [ DFFRNT.Mixins.Static ],
 			render: function () {
 				var props 	= this.props,
-					name 	= props.Name,
-					Photo 	= props.Photo,
-					Biz 	= props.Business,
-					BizMap 	= Imm.Map({
-						Department: Biz.Department,
-						Company: 	Biz.Company,
-						Manager: 	Biz.Manager,
-					}),
-					Contact = props.Contact,
-					Email 	= Contact.Email,
-					Distro 	= Map(Email.Distribution),
-					Phone 	= Contact.Phone,
-					Locate 	= Contact.Location,
+					// name 	= props.Name,
+					// Photo 	= props.Photo,
+					// Biz 	= props.Business,
+					// BizMap 	= Imm.Map({
+					// 	Department: Biz.Department,
+					// 	Company: 	Biz.Company,
+					// 	Manager: 	Biz.Manager,
+					// }),
+					// Contact = props.Contact,
+					// Email 	= Contact.Email,
+					// Distro 	= Map(Email.Distribution),
+					// Phone 	= Contact.Phone,
+					// Locate 	= Contact.Location,
 					cssFlex = CSS.Flex(),
 					cssProf = CSS.Flex({Dir:'Col',Align:'S',Wrap:0}),
 					cssUser = CSS.Flex({Align:'C',Space:'B',Wrap:0}),

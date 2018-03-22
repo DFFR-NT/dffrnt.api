@@ -157,7 +157,7 @@ module.exports = function (Reflux, Actions, Spaces) {
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// STORE.NAV     ////////////////////////////////////////////////////////////////////////////////////////
-			Stores.Nav = 	 Reflux.createStore({
+			Stores.Nav 	   = Reflux.createStore({
 				listenables: 	[Actions.Nav],
 				onSelect: 		 function (page) {
 					// --------------------------------------------------------
@@ -241,7 +241,7 @@ module.exports = function (Reflux, Actions, Spaces) {
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// STORE.DATA    ////////////////////////////////////////////////////////////////////////////////////////
-			Stores.Data = 	 Reflux.createStore({
+			Stores.Data    = Reflux.createStore({
 				listenables: 	 [Actions.Data],
 				defaults: 		 { store: { status: 200, payload: {} } },
 				prefix: 		 ["payload","result"],

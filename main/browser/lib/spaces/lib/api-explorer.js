@@ -3,7 +3,7 @@
 
 
 module.exports = {
-	Data:  function () { return rest.Help; },
+	Data:  function () { return this.Help; },
 	Build: function (Actions, Stores) {
 		return function (res) {
 			var THS = this, content = Imm.Map(res), page = 0,

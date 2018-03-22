@@ -1,3 +1,4 @@
+
 'use strict';
 
 // ----------------------------------------------------------------------------------------------
@@ -5,19 +6,23 @@
 
 	// System Requires
 		// --------------------------------------------
-		require('dffrnt.utils')();
+		import {
+			colors, Assign, Imm, StrTime, ROOTD, LJ, path, os, fs,
+			ARGS, TYPE, EXTEND, HIDDEN, DEFINE, UoN, FUNCTION, IS,
+			ISS, OF, FOLDER, DCT, RGX, FRMT, CLM, CLMNS, ELOGR,
+			Dbg, LG, TLS, JSN
+		} from 'dffrnt.utils';
 
 	// Route/Session Requires
-		var express 	= require('express'),
-			router 		= require('dffrnt.route'),
-			routes 		= router.Routes,
-			sessions 	= router.Session,
-			settings 	= require('../config/settings.js')();
+		import { default as express  } from 'express';
+		import { Routes, Session 	 } from 'dffrnt.route';
+		import { default as settings } from '../config/settings.js';
 
 	// Setup Requires
-		var api 	= express(),
-			server 	= require('http').createServer(api),
-			sess 	= sessions(server, api),
+		import { createServer } from 'http';
+		let api 	= express(),
+			server 	= createServer(api),
+			sess 	= Session(server, api),
 			port 	= settings.Port;
 
 // ----------------------------------------------------------------------------------------------
@@ -25,15 +30,15 @@
 
 	// Start the DB Connection; Configure Routes
 		// -----------------------------------------
-		routes.Init( api, express, sess, settings );
+		Routes.Init( api, express, sess, settings );
 
 	// The http server listens on port 3000
 		process.on('uncaughtException', function (err) {
 			if (!!err) {
-				console.trace(err)
+				console.log(err)
 				LG.Error(err.code || '????', 'ERROR', err.syscall || err.toString());
 			} else {
-				LG.Error(err.code || '????', 'ERROR', "Throws Error; Give no Information.");
+				LG.Error(err.code || '????', 'ERROR', "Throws Error; Gives you nothing to work with.");
 			}
 		});
 		server.timeout = 0;
