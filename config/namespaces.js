@@ -1,15 +1,15 @@
 
-module.exports = {
-	API_AUTH: {
-		name: 		 '/api-accessor',
-		title: 		 'eVectr API Authoriser',
-		description: 'Granting eVectr Access',
-		accessor: 	 true,
-	},
-	API_Explorer: {
-		name: 		 '/api-explorer',
-		title: 		 'eVectr API Explorer',
-		description: 'Querying eVectr Data',
-		accessor: 	 false,
-	},
+export default {
+    API_AUTH: {
+        name:        '/api-accessor',
+        title:       'API Authoriser',
+        description: 'Granting Access',
+        accessor:    true,
+    },
+    API_Explorer: {
+        name:        '/api-explorer',
+        title:       'API Explorer',
+        description: 'Querying Data',
+        accessor:    false,
+    },
 };
