@@ -129,7 +129,7 @@ Parent_Folder/ (Name NOT important)
       ```json
       {
           "presets": ["babel-preset-env"],
-          "ignore": "/(node_modules\/)(?!dffrnt\\.)[^\/]+(\/[^\/]+)*/",
+          "ignore": "/(node_modules\\/)(?!dffrnt\\.)[^\\/]+(\\/[^\\/]+)*/",
       }
       ```
 
