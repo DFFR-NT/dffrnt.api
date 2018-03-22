@@ -1,44 +1,44 @@
 {
-  "name": "dffrnt.api",
-  "version": "1.5.0",
-  "description": "A project for easy-ish API creation and configuration.",
-  "main": "index.js",
-  "author": {
-    "name": "Arian Johnson",
-    "email": "arian.johnson@icloud.com"
-  },
-  "repository" : "DFFR-NT/dffrnt.api",
-  "bugs": {
-    "url": "https://github.com/LeShaunJ/dffrnt.api/issues"
-  },
-  "license": "MIT",
-  "dependencies": {
-    "babel-core": "^6.7.4",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-es2015": "^6.6.0",
-    "babel-preset-react": "^6.5.0",
-    "browserify": "^13.0.0",
-    "classnames": "^2.2.3",
-    "dffrnt.model": "DFFR-NT/dffrnt.model",
-    "dffrnt.route": "DFFR-NT/dffrnt.route",
-    "dffrnt.utils": "DFFR-NT/dffrnt.utils",
-    "gulp": "^4.0.0",
-    "gulp-babel": "^6.1.2",
-    "gulp-cssmin": "^0.1.7",
-    "gulp-less": "^3.0.5",
-    "gulp-nodemon": "^2.0.3",
-    "gulp-rename": "^1.2.2",
-    "keymirror": "*",
-    "md5": "^2.2.1",
-    "minifyify": "^7.3.2",
-    "passport-local": "^1.0.0",
-    "password-generator": "^2.0.2",
-    "react": "^15.0.2",
-    "react-addons-perf": "^15.0.2",
-    "react-dom": "^15.0.2",
-    "reflux": "^0.4.0",
-    "utf-8-validate": "^1.2.1",
-    "vinyl-source-stream": "^2.0.0",
-    "watchify": "^3.7.0"
-  }
+	"name": "dffrnt.api",
+	"version": "1.5.0",
+	"description": "A project for easy-ish API creation and configuration.",
+	"main": "index.js",
+	"author": {
+		"name": "Arian Johnson",
+		"email": "arian.johnson@icloud.com"
+	},
+	"repository" : "DFFR-NT/dffrnt.api",
+	"bugs": {
+		"url": "https://github.com/LeShaunJ/dffrnt.api/issues"
+	},
+	"license": "MIT",
+	"dependencies": {
+		"babel-core": "^6.7.4",
+		"babel-preset-env": "^1.6.1",
+		"babel-preset-es2015": "^6.6.0",
+		"babel-preset-react": "^6.5.0",
+		"browserify": "^13.0.0",
+		"classnames": "^2.2.3",
+		"dffrnt.model": "DFFR-NT/dffrnt.model",
+		"dffrnt.route": "DFFR-NT/dffrnt.route",
+		"dffrnt.utils": "DFFR-NT/dffrnt.utils",
+		"gulp": "^4.0.0",
+		"gulp-babel": "^6.1.2",
+		"gulp-cssmin": "^0.1.7",
+		"gulp-less": "^3.0.5",
+		"gulp-nodemon": "^2.0.3",
+		"gulp-rename": "^1.2.2",
+		"keymirror": "*",
+		"md5": "^2.2.1",
+		"minifyify": "^7.3.2",
+		"passport-local": "^1.0.0",
+		"password-generator": "^2.0.2",
+		"react": "^15.0.2",
+		"react-addons-perf": "^15.0.2",
+		"react-dom": "^15.0.2",
+		"reflux": "^0.4.0",
+		"utf-8-validate": "^1.2.1",
+		"vinyl-source-stream": "^2.0.0",
+		"watchify": "^3.7.0"
+	}
 }
