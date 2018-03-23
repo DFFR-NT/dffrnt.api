@@ -2,7 +2,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////
 // THINGS TO KNOW:
 	//
-	// SQL  - <Object> - See help for dffrnt.sql
+	// SQL  - <Object> - See help for dffrnt.model
 	// AMP  - <String> - AND character (+), for HTTP queries
 	// ORS  - <String> -  OR character (;), for HTTP queries
 	// PIP  - <String> -  OR character (|), for  SQL queries
@@ -11,11 +11,16 @@
 	// MSG  - <Array>  - See help for Errors.js in dffrnt.router
 	// PRM  - <Array>  - See help for Errors.js in dffrnt.router
 	//
-	// Docs - <Object> - See help for Help.js in dffrnt.router
+	// Docs - <Object> - See help for dffrnt.router
+	//
+	// LG   - <Object> - See help for dffrnt.utils
+	// TLS  - <Object> - See help for dffrnt.utils
+	// JSN  - <Object> - See help for dffrnt.utils
+	//
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // EXPORT
-	module.exports = function () { return { // DO NOT CHANGE/REMOVE!!!
+	export default function () { return { // DO NOT CHANGE/REMOVE!!!
 		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		Users: 		{
 			Actions: 	{
@@ -56,7 +61,7 @@
 					Params: {
 						Account: {
 							Default: '',
-							Format:	function (cls) {
+							Format 	(cls) {
 								return SQL.BRKT(SQL.LIST([cls.account],
 									[{ split: ORS, match: /^[A-Za-z0-9]+$/, equals: true, join: '","' }]),
 								['("','")'], PIP);
@@ -71,7 +76,7 @@
 							}
 						},
 						Visible: {
-							Format: function (cls) { return cls.visible; },
+							Format  (cls) { return cls.visible; },
 							Default: true, Desc: {
 								to: 'query', type: 'boolean',
 								description: 'Toggle {{Visibility}} layer',
@@ -79,7 +84,7 @@
 							}
 						},
 						Single: {
-							Format: function (cls) { return cls.single; },
+							Format  (cls) { return cls.single; },
 							Default: false, Desc: {
 								to: 'query', type: 'boolean',
 								description: 'Return a {{single}} {{User}} only',
@@ -89,7 +94,7 @@
 						Page: true, Limit: true, ID: true
 					},
 					Links: 	[],
-					Parse: 	function (res) {
+					Parse  	(res) {
 						var RQ  = this.RQ; if (!!this.QY.single) return res[0];
 						return JSN.Objectify(res, RQ.Key, RQ.Columns, this.QY);
 					},
@@ -141,7 +146,7 @@
 					Params: {
 						Terms: {
 							Default: '',
-							Format:	function (cls) {
+							Format 	(cls) {
 								var opr = cls.terms.has('"') ? 'REGEXP BINARY' : 'REGEXP';
 								return SQL.CLAUSE('S.search', opr,
 									SQL.BRKT(SQL.LIST(
@@ -161,12 +166,12 @@
 											{ none: '', add: '', insert: ".*<%%(%s)%%>$" 				},
 											{ none: '', add: '', insert: ".*<(%s)>.*" 					}
 										], [  null, null,
-											function (mtch) { return ''; },
-											function (mtch) {
+											mtch => { return ''; },
+											mtch => {
 												var rslt = 	mtch.replace(/("[^"]+"|[^"]+)/g, "$1\n")
 																.replace(/"{2,}/g, "").split('\n');
 												// ---
-												return 	rslt.map(function (chnk, c) {
+												return 	rslt.map((chnk, c) => {
 													chnk = 	chnk.replace(/^(\w+)[_-](\w+)$/, "$1__HYPH__$2")
 																.replace(/([()])/g, "\\$1");
 													return 	(!!chnk.match(/^"(.*)"$/) ?
@@ -177,7 +182,7 @@
 												.replace(/^([^"].*[^"]*)$/, "[^<>%]*$1[^<>%]*")
 												.replace(/^(.*\.\*.*)$/, "($1)");
 											},
-											function (mtch) { return TLS.IP2Lng(mtch); },
+											mtch => { return TLS.IP2Lng(mtch); },
 											null
 									]), ["'","'"], PIP), "WHERE"
 								);
@@ -199,7 +204,7 @@
 						},
 						By: {
 							Default: 'CID',
-							Format: function (cls) { return 'S.'+cls.by.toLowerCase(); },
+							Format  (cls) { return 'S.'+cls.by.toLowerCase(); },
 							Desc: 	{ to: 'query',
 								type: 'text', description: 'The key to group the results by', required: false,
 								matches: {
@@ -214,12 +219,12 @@
 						Page: true, Limit: true, ID: true
 					},
 					Links: 	[ ['hotels', 'S.cid'], ],
-					Parse: 	function (res) {
+					Parse  	(res) {
 						var RQ  = this.RQ, Path = this.Path, ret = {}, key, lnk, ids,
 							lqy = '?as=list&to=["payload","result","', lpm = ':cids:',
 							rgx = { 'cid': '\\\\d+', 'tid': '\\\\w+', 'hid': '\\\\w+',
 									'nid': '[A-Z]\\\\d+', 'name': '\\\\w+' };
-						res.map(function (ls, l) {
+						res.map((ls, l) => {
 							if (!!!key) { key = Object.keys(ls)[0]; }
 							var lid = ls[key]; delete ls[key]; ret[lid] = ls.info;
 						}); console.log('KEY:', key)
@@ -277,7 +282,7 @@
 					Params: {
 						Serial: {
 							Default: '',
-							Format:	function (cls) {
+							Format 	(cls) {
 								return SQL.BRKT(SQL.LIST([cls.serial],
 									[{ split: ORS, match: /^[A-Za-z0-9]+$/, equals: true, join: '","' }]),
 								['("','")'], PIP);
@@ -329,7 +334,7 @@
 					Params: {
 						CIDs: {
 							Default: '',
-							Format:	function (cls) {
+							Format 	(cls) {
 								return SQL.CLAUSE("ct.client_id", "IN", SQL.BRKT(
 									SQL.LIST([cls.cids], [{ split: ORS, match: /^\d+$/, equals: true, join: ',' }]),
 									["(",")"], PIP),
@@ -417,7 +422,7 @@
 					Params: {
 						CIDs: {
 							Default: '',
-							Format:	function (cls) {
+							Format 	(cls) {
 								return SQL.CLAUSE("AND client_id", "IN", SQL.BRKT(SQL.LIST([cls.cids],
 									[{ split: ORS, match: /^\d+$/, equals: true, join: ',' }], null), ["(",")"])
 								);
@@ -430,10 +435,10 @@
 						},
 						Types: {
 							Default: '',
-							Format:	function (cls) {
+							Format 	(cls) {
 								var val = 	(cls.types||'').replace(/\s/g,''),
 									wch = 	(val.distinct(AMP,ORS)||ORS).split(''),
-									qry = 	function (txt, dlm, idx) {
+									qry = 	(txt, dlm, idx) => {
 										var opr, div, rgx, sub, lst, ptn, whr, ret = '',
 											prm = [txt.toUpperCase()], brk = [ ".*(<", ">).*" ];
 										if (!!txt) {
@@ -451,7 +456,7 @@
 											ret = SQL.CLAUSE("L.types", 'REGEXP', whr, !!!idx ? "AND" : "OR");
 										}; return ret;
 									};
-								return wch.map(function (v,i) { return qry(val, v, i); }).join(' ');
+								return wch.map((v,i) => { return qry(val, v, i); }).join(' ');
 								/////////////////////////////////////////////////////////////////////////////////////////////////////
 								// ALTERNATE
 									// var val = (cls.types||'').replace(/[^A-Z;+]/g,''),
@@ -465,7 +470,7 @@
 									// 				], [
 									// 					{ none: '', add: '', insert: ".*<(%s)>.*" },
 									// 					{ none: '', add: '', insert: ".*<%s>.*" },
-									// 				], [  null, function (mch) { return mch .replace(/([+])/g, '>.*<'); }
+									// 				], [  null, mch => { return mch .replace(/([+])/g, '>.*<'); }
 									// 			]), ["'","'"], PIP), "WHERE"
 									// 		) + */
 									// 		SQL.CLAUSE(
@@ -493,7 +498,7 @@
 						},
 						Show: {
 							Default: '',
-							Format: function (cls) {
+							Format  (cls) {
 								return SQL.CLAUSE("WHERE pd.name", "IN", SQL.BRKT(SQL.LIST([(cls.show||'').toUpperCase()],
 									[{ split: ORS, match: /^[A-Z]+$/, equals: true, join: "','" }], null), ["('","')"])
 								);
@@ -552,7 +557,7 @@
 					Params: {
 						MIDs: {
 							Default: '',
-							Format:	function (cls) {
+							Format 	(cls) {
 								return SQL.CLAUSE("WHERE t.device_type_id", "IN", SQL.BRKT(SQL.LIST([cls.mids],
 									[{ split: ORS, match: /^\d+$/, equals: true, join: ',' }], null), ["(",")"], PIP)
 								);
@@ -595,7 +600,7 @@
 					Params: {
 						DIDs: {
 							Default: '',
-							Format:	function (cls) {
+							Format 	(cls) {
 								return SQL.CLAUSE("WHERE e.device_id", "IN", SQL.BRKT(SQL.LIST([cls.dids],
 									[{ split: ORS, match: /^\d+$/, equals: true, join: ',' }], null), ["(",")"], PIP)
 								);
@@ -639,7 +644,7 @@
 					Params: {
 						DIDs: {
 							Default: '',
-							Format:	function (cls) {
+							Format 	(cls) {
 								return SQL.CLAUSE("WHERE m.device_id", "IN", SQL.BRKT(SQL.LIST([cls.dids],
 									[{ split: ORS, match: /^\d+$/, equals: true, join: ',' }], null), ["(",")"], PIP)
 								);
@@ -651,31 +656,31 @@
 							}
 						}, Page: false, Limit: false,
 					},
-					Parse: 	function (res) {
+					Parse  	(res) {
 						var Path = this.Path.bind(this), RQ = this.RQ,
 							ret = {}, devices = [], models = [],
 							NEW = {
-								Device: 	function (ret, did) {
+								Device  	(ret, did) {
 									if (!ret.hasOwnProperty(did)) ret[did] = {};
 								},
-								Link: 		function (ret, did, pid) {
+								Link  		(ret, did, pid) {
 									if (!ret[did].hasOwnProperty(pid)) ret[did][pid] = {};
 								}
 							},
 							SET = {
-								Count: 		function (ret, cid, cat, did, mid) {
+								Count  		(ret, cid, cat, did, mid) {
 									var res = ret[cid]; res.total++; res[cat].count++;
 									models.indexOf(mid) < 0 && models.push(mid);
 									devices.push(did);
 								},
-								Mapping: 	function (ret, rs) {
+								Mapping  	(ret, rs) {
 									var did = rs.did, pid = rs.pid;
 									NEW.Device(ret, did);
 									NEW.Link(ret, did, pid);
 									ret[did][pid] = rs.link;
 								}
 							};
-						res.map(function (rs, r) { SET.Mapping(ret, rs) });
+						res.map((rs, r) => { SET.Mapping(ret, rs) });
 						return ret;
 					},
 					Routes: ['device'],
@@ -709,7 +714,7 @@
 					Params: {
 						DIDs: {
 							Default: '',
-							Format:	function (cls) {
+							Format 	(cls) {
 								return SQL.CLAUSE("WHERE e.device_id", "IN", SQL.BRKT(SQL.LIST([cls.dids],
 									[{ split: ORS, match: /^\d+$/, equals: true, join: ',' }], null), ["(",")"], PIP)
 								);
@@ -761,7 +766,7 @@
 					Params: {
 						CID: {
 							Default: '',
-							Format:	function (cls) { return SQL.CLAUSE("l.client_id", "=", cls.cid, "WHERE"); },
+							Format 	(cls) { return SQL.CLAUSE("l.client_id", "=", cls.cid, "WHERE"); },
 							Desc: 	{
 								type: "Number", to: 'param', description: 'A valid {{Client ID}}',
 								required: true, matches: { 'Client ID': 'Matches the {{CID}} Item (([0-9]+))' },
@@ -769,7 +774,7 @@
 						},
 						Types: {
 							Default: '',
-							Format:	function (cls) {
+							Format 	(cls) {
 								var prm = [cls.types], rgx = [{ split: ORS, match: /^[\w\s]+$/i, equals: true, join: "', '" }],
 									lst = SQL.BRKT(SQL.LIST(prm, rgx, null), ["('","')"], PIP);
 								return SQL.CLAUSE("c.category_name", "IN", lst, "WHERE");
@@ -781,7 +786,7 @@
 							}
 						}, 	Page: true, Limit: true, ID: true
 					},
-					Parse: 	function (res) {
+					Parse  	(res) {
 						// var Path = this.Path.bind(this), RQ = this.RQ, QY = this.QY,
 							// ret = {}, devices = [], models = [],
 							// NEW = {
@@ -809,7 +814,7 @@
 							// 		dev[cid].devices[cat][did] = rs.device;
 							// 	}
 							// };
-							// res.map(function (rs, r) { SET.Device(ret, rs) });
+							// res.map((rs, r) => { SET.Device(ret, rs) });
 							// // try {
 							// // 	RQ.links.models	 = Path(	 'model',  models.join(ORS));
 							// // 	RQ.links.devices = Path(	'device', devices.join(ORS));
@@ -826,13 +831,13 @@
 							ret  =  res .map(function mapRows (v,k) { return Assign({}, v); })
 							// console.log(ret)
 							ret  = 	Imm	.fromJS(ret).toMap()
-										.groupBy(function (v,k) { return v.get('cid'); })
-										.map(function (v,k) {
-										    var grp = v.groupBy(function (v,k) { return v.get('name'); }), r = Imm.Map({});
-										    grp.map(function (v,k) {
+										.groupBy((v,k) => { return v.get('cid'); })
+										.map((v,k) => {
+										    var grp = v.groupBy((v,k) => { return v.get('name'); }), r = Imm.Map({});
+										    grp.map((v,k) => {
 										        // console.log('\t', k)
 										        r = r.set(k, Imm.Map({}))
-										        v.map(function (vv,kk) {
+										        v.map((vv,kk) => {
 										            // console.log('\t\t', kk, [k,vv.get('did')])
 										            r = r.setIn([k,vv.get('did')], vv.get('device'));
 										        })
@@ -916,7 +921,7 @@
 					Params: {
 						Types: {
 							Default: '',
-							Format:	function Format (cls) {
+							Format 	(cls) {
 								console.log(cls)
 								var prm = [cls.types], rgx = [{ split: ORS, match: /^[\w\s]+$/i, equals: true, join: "', '" }],
 									lst = SQL.BRKT(SQL.LIST(prm, rgx, null), ["('","')"], PIP);
@@ -930,7 +935,7 @@
 						},
 						CIDs: {
 							Default: '',
-							Format:	function Format (cls) {
+							Format 	(cls) {
 								var prm = [cls.cids], rgx = [{ split: ORS, match: /^\d+$/, equals: true, join: ',' }],
 									lst = SQL.BRKT(SQL.LIST(prm, rgx, null), ["(",")"], ",");
 								return SQL.CLAUSE("l.client_id", "IN", lst, "WHERE");
@@ -942,7 +947,7 @@
 							}
 						}, 	Page: true, Limit: true, ID: true
 					},
-					Parse: 	function Parse (res) {
+					Parse  	(res) {
 						// var Path = this.Path.bind(this), RQ = this.RQ, QY = this.QY,
 							// ret = {}, devices = [], models = [],
 							// NEW = {
@@ -970,7 +975,7 @@
 							// 		dev[cid].network[cat][did] = rs.device;
 							// 	}
 							// };
-							// res.map(function (rs, r) { SET.Device(ret, rs) });
+							// res.map((rs, r) => { SET.Device(ret, rs) });
 							// try {
 							// 	RQ.links.models	 = Path(	 'model',  models.join(ORS));
 							// 	RQ.links.devices = Path(	'device', devices.join(ORS));

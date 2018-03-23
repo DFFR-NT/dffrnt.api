@@ -2,7 +2,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////
 // THINGS TO KNOW:
 	//
-	// SQL  - <Object> - See help for dffrnt.sql
+	// SQL  - <Object> - See help for dffrnt.model
 	// AMP  - <String> - AND character (+), for HTTP queries
 	// ORS  - <String> -  OR character (;), for HTTP queries
 	// PIP  - <String> -  OR character (|), for  SQL queries
@@ -11,11 +11,16 @@
 	// MSG  - <Array>  - See help for Errors.js in dffrnt.router
 	// PRM  - <Array>  - See help for Errors.js in dffrnt.router
 	//
-	// Docs - <Object> - See help for Help.js in dffrnt.router
+	// Docs - <Object> - See help for dffrnt.router
+	//
+	// LG   - <Object> - See help for dffrnt.utils
+	// TLS  - <Object> - See help for dffrnt.utils
+	// JSN  - <Object> - See help for dffrnt.utils
+	//
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // EXPORT
-	module.exports = function () { return { // DO NOT CHANGE/REMOVE!!!
+	export default function () { return { // DO NOT CHANGE/REMOVE!!!
 		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		Auth: 		{
 			Actions: 	{
@@ -35,16 +40,16 @@
 					Proc: 	{
 						Decrypt: 	true,
 						Error: 		'ERROR',
-						NoData: 	function NoData(req, res, next) {
+						NoData  	(req, res, next) {
 							var THS = this, sess = req.session,
 								sid = req.sessionID, acct = req.body.username;
-							THS.Passer.authenticate('local-login',  function (err, user, info) {
+							THS.Passer.authenticate('local-login',  (err, user, info) => {
 								var error = err || info;
 								switch (true) {
 									case !!error: THS.ER(res, MSG.ERROR, error, null); break;;
 									case !!!user: THS.ER(res, MSG.EXISTS,   {}, acct); break;;
 									default: acct = user.email_address;
-										THS.Profile(acct, true, res, function (user) {
+										THS.Profile(acct, true, res, user => {
 											req.session.user  = { acct:  user.Account, token: user.Token };
 											req.session.touch(); req.session.save();
 											THS.OK(res, MSG.LOADED.temp, user, null, req.query);
@@ -53,13 +58,13 @@
 								};
 							})(req, res, next);
 						},
-						Main: 		function Main(req, res, next) {
+						Main  		(req, res, next) {
 							var THS  = this,
 								sess = req.session,
 								sid  = req.sessionID,
 								acct = sess.user.acct;
 							if (acct == req.body.username) {
-								THS.Profile(acct, true, res, function (profile) {
+								THS.Profile(acct, true, res, profile => {
 									THS.Renew(req);
 									THS.OK(res, MSG.RESTORED.temp, profile, null, req.query);
 									LG.Server(sid, 'Restored', acct, 'green');
@@ -85,7 +90,7 @@
 					Proc: 		{
 						Error: 		'NO_DELETE',
 						NoData: 	'INVALID',
-						Main: 		function Main(req, res, next) {
+						Main  		(req, res, next) {
 							var THS  = this,
 								sess = req.session,
 								sid  = req.sessionID,
@@ -115,7 +120,7 @@
 					Proc: 		{
 						Error: 		'ERROR',
 						NoData: 	'INVALID',
-						Main: 		function Main(req, res, next) {
+						Main  		(req, res, next) {
 							var THS  = this,
 								sess = req.session,
 								sid  = req.sessionID,
@@ -131,7 +136,7 @@
 									ERR = MSG.EXISTS; break;;
 								default:
 									THS.sid = req.sessionID;
-									THS.Profile(acct, true, res, function (usr) {
+									THS.Profile(acct, true, res, usr => {
 										THS.Renew(req); head.token = usr.Token;
 										MES = MSG.PROFILE.temp;
 										OUT = { path: '/auth/login' };
@@ -156,7 +161,7 @@
 					Proc: 		{
 						Error: 		'ERROR',
 						NoData: 	'LOGIN',
-						Main: 		function Main(req, res, next) {
+						Main  		(req, res, next) {
 							var THS  = this, sess = req.session,
 								sid  = req.sessionID, acct = sess.user.acct;
 							// Remove Session Data
