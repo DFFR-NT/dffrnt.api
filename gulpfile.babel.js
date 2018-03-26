@@ -17,10 +17,11 @@
 		import source 		from 'vinyl-source-stream';
 		import browserify 	from 'browserify';
 		import watchify 	from 'watchify';
-		import { exec } 	from 'child_process';
+		import { exec 	  } from 'child_process';
 
 	// Configs
 
+		const 	LOG 	= console.log;
 		const 	pubFld 	= './public';
 		const 	brwFld 	= './main/browser';
 		const 	libFld 	= `${brwFld}/lib`;
@@ -29,22 +30,30 @@
 					entries: [ `${brwFld}/main.js` ],
 					source: 'bundle.js', location: `${pubFld}/js`
 				};
-		const 	jsx 	= { source: `${libFld}/src/*.jsx`, location: libFld };
+		const 	jsx 	= {
+					source: `${libFld}/src/*.jsx`,
+					location: libFld,
+					presets: ['react','env']
+				};
 		const 	css 	= {
 					showLog: true, compatibility: 'ie8',
 					keepSpecialComments: 0, roundingPrecision: -1
 				};
-		const 	recwd 	= 'cd ../REDIS &&';
+		const 	redfl 	= {
+					cwd: '../REDIS',
+					cmd: 'redis-server',
+					cfg: 'redis.conf'
+				};
 		const 	redis 	= {
 					nix: {
-						proc: 'redis-server',
-						conf: 'redis.conf',
-						kill: '{ RID=$(ps -ef|grep [r]edis|awk \'{print $2}\'); [[ -n "${RID}" ]] && kill -9 ${RID} };',
+						proc: redfl.cmd,
+						conf: redfl.cfg,
+						kill: `ps -ef|grep ${redfl.cmd.replace(/^r/,'[r]')}|awk '{print $2}'|xargs kill -9`,
 					},
 					win: {
-						proc: path.join('win','redis-server.exe'),
-						conf: path.join('redis.conf'),
-						kill: '',
+						proc: path.join('win',`${redfl.cmd}.exe`),
+						conf: path.join(redfl.cfg),
+						kill: `for /f "tokens=2" %i in ('tasklist ^| find "${redfl.cmd}.exe"') do (taskkill /PID %i /F)`,
 					}
 				}[opsys];
 
@@ -55,29 +64,39 @@
 // ----------------------------------------------------------------------------------------------
 // Handle Functions -----------------------------------------------------------------------------
 
-		function runServer () {
-			var nmon = nodemon({ execMap: {
-				js: "node --harmony"
-			}})
-			.on('crash', () => {
-				try {
-					console.log('Crashed ~ !!');
-					if ((new Date() - crashes) > 5000) {
-						nmon.reset(); runServer();
-					}
-				} catch (e) { console.log(e); }
-			})
-			.on('restart', () => {
-				console.log('Restarted ~ !!');
-			});
-			crashes = new Date(); return nmon;
+		function runServer (done) {
+			console.log('DONE:', done)
+			let nmon = nodemon({ execMap: {
+							js: 'node --harmony',
+							tasks: ['demon','main'],
+						}})
+						.on('crash', () => {
+							try { LOG('Crashed ~ !!');
+								if ((new Date() - crashes) > 5000) {
+									nmon.emit('restart', 1); //runServer(done);
+								}
+							} catch (e) {
+								LOG('CRASHED AS FUCK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+								LOG(e);
+							}
+						})
+						.on('restart', () => { LOG('Restarted ~ !!'); });
+			crashes = new Date(); nmon; done();
 		};
 
 // ----------------------------------------------------------------------------------------------
 // Handle Bundle Gulp ---------------------------------------------------------------------------
 
 	// Browserify Concatenation
-		gulp.task( 'brow', () => {
+		gulp.task( 'brow', (done) => {
+			function doBundle(watcher) {
+				watcher .bundle()
+						.pipe(source(brow.source))
+						// .pipe( babel({ presets: ['env'], compact: false }))
+						.pipe(gulp.dest(brow.location));
+				return 	watcher;
+			}
+
 			var bundler = new browserify({
 					entries: brow.entries,
 					debug: true,
@@ -104,76 +123,75 @@
 				}),
 				watcher = watchify(bundler);
 
-			return watcher.on( 'update', () => {
-					var start = new Date(), src = brow.source,
-						frm1 = '[%s] Updating...', fin,
-						frm2 = '[%s] Updated: %ss';
-					console.log(frm1, src);
-					watcher .bundle()
-							.pipe(source(src))
-							.pipe(gulp.dest(brow.location));
-					fin = ((new Date()-start)/1000);
-					console.log(frm2, src, fin.toFixed(3));
-					return watcher;
-				}).bundle()
-				  .pipe(source(brow.source))
-				  .pipe(gulp.dest(brow.location));
+			doBundle(watcher.on( 'update', () => {
+				var start = new Date(), src = brow.source,
+					frm1 = '[%s] Updating...', fin,
+					frm2 = '[%s] Updated: %ss';
+				LOG(frm1, src);
+				watcher = doBundle(watcher);
+				fin = ((new Date()-start)/1000);
+				LOG(frm2, src, fin.toFixed(3));
+				return watcher;
+			})); done();
 		});
 
 	//  JSX to  JS Conversion/Watch
-		gulp.task( 'jsx-make', () => {
-			return 	gulp.src(jsx.source)
-						.pipe( babel({ presets: ['react','es2015'], compact: false }))
-						.on( 'error', (e) => { console.log('>>> ERROR', e); this.emit('end'); })
-						.pipe(gulp.dest(jsx.location));
+		gulp.task( 'jsx-make', (done) => {
+			gulp.src(jsx.source)
+				.pipe( babel({ presets: jsx.presets, compact: false }))
+				.on( 'error', (e) => { LOG('>>> ERROR', e); this.emit('end'); })
+				.pipe(gulp.dest(jsx.location));
+			done();
 		});
-		gulp.task( 'jsx-watch', () => {
-			return gulp.watch(jsx.source, gulp.parallel('jsx-make'))
-				.on(  'change', (e) => { console.log('JSX Change: ', e.path); })
-				.on(   'error', (e) => { console.log('JSX Error:  ', e.path); })
-				.on( 'nomatch', (e) => { console.log('JSX NoMatch:', e.path); });
-				// .pipe(gulp.dest(jsx.location));
+		gulp.task( 'jsx-watch', (done) => {
+			gulp.watch(jsx.source, gulp.parallel('jsx-make'))
+				.on(  'change', (e) => { LOG('JSX Change: ', e); })
+				.on(   'error', (e) => { LOG('JSX Error:  ', e); })
+				.on( 'nomatch', (e) => { LOG('JSX NoMatch:', e); });
+			done();
 		});
 		gulp.task( 'jsx', gulp.parallel('jsx-make', 'jsx-watch'));
 
 	// LESS to CSS Conversion/Watch
-		// gulp.task( 'css-make', () => {
-		// 	return gulp.src('./public/less/*.less')
-		// 			   .pipe(less())
-		// 		       .pipe(gulp.dest('./public/css'));
+		// gulp.task( 'css-make', (done) => {
+			// gulp.src('./public/less/*.less')
+			// 	.pipe(less())
+			// 	.pipe(gulp.dest('./public/css'));
+			// done();
 		// });
-		// gulp.task('css-minify', () => {
-		// 	return gulp.src('./public/css/*.css')
-		// 			   // .pipe(sourcemaps.init({ debug: true }))
-		// 			   .pipe(cssmin(css))
-		// 			   .pipe(rename({ suffix: '.min' }))
-		// 			   // .pipe(sourcemaps.write({ debug: true }))
-		// 			   .pipe(gulp.dest('./public/css'));
+		// gulp.task('css-minify', (done) => {
+			// gulp.src('./public/css/*.css')
+			// 	// .pipe(sourcemaps.init({ debug: true }))
+			// 	.pipe(cssmin(css))
+			// 	.pipe(rename({ suffix: '.min' }))
+			// 	// .pipe(sourcemaps.write({ debug: true }))
+			// 	.pipe(gulp.dest('./public/css'));
+			// done();
 		// });
 		// gulp.task( 'css-convert', ['css-make', 'css-minify']);
-		// gulp.task( 'css-watch', () => {
-		// 	gulp.watch('./public/less/*.less', ['css-convert'])
-		// 		.on( 'change', (event) => {
-		// 			console.log('LESS Change:', event.path);
-		// 		})
-		// 		.on( 'error', (event) => {
-		// 			console.log('LESS Error:', 	event.path);
-		// 		})
-		// 		.on( 'nomatch', (event) => {
-		// 			console.log('LESS UnMatched:', event.path);
-		// 		});
+		// gulp.task( 'css-watch', (done) => {
+			// gulp.watch('./public/less/*.less', ['css-convert'])
+			// 	.on( 'change', (event) => {
+			// 		LOG('LESS Change:', event.path);
+			// 	})
+			// 	.on( 'error', (event) => {
+			// 		LOG('LESS Error:', 	event.path);
+			// 	})
+			// 	.on( 'nomatch', (event) => {
+			// 		LOG('LESS UnMatched:', event.path);
+			// 	}); done();
 		// });
 		// gulp.task( 'css', ['css-convert', 'css-watch']);
 
 	// REDIS Server Init
-		gulp.task('redis', () => {
-			return exec([recwd,redis.proc,redis.conf].join(' '), {
-				cwd: path.normalize('../REDIS')
+		gulp.task('redis', (done) => {
+			exec([`cd ${redfl.cwd} &&`,redis.proc,redis.conf].join(' '), {
+				cwd: path.normalize(redfl.cwd)
 			}, (err, stdout, stderr) => {
 				var res = JSON.stringify({ OUT: stdout, ERR: stderr }, null, '    ');
-				if (!!err) console.log("REDIS.ERR: %s", err);
-				else console.log("REDIS.STD: ", res);
-			});
+				if (!!err) LOG("REDIS.ERR: %s", err);
+				else LOG("REDIS.STD: ", res);
+			}); done();
 		});
 		gulp.task( 'demon', runServer);
 
