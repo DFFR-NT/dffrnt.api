@@ -4,6 +4,7 @@ module.exports = function (Reflux) {
 
 	return {
 		App: 		Reflux.createActions([
+			"connect",
 			"pause",
 			"progress",
 			"identify",

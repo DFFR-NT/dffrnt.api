@@ -1,6 +1,6 @@
 
 
-module.exports = function (Reflux, Actions, Spaces) {
+module.exports = function (Reflux, Actions, Spaces, IOs) {
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// FUNCTIONS ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -35,6 +35,8 @@ module.exports = function (Reflux, Actions, Spaces) {
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// VARIABLES ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+		const	Access 	 = IOs.Access;
+		const	Socket 	 = IOs.Socket;
 		const 	RError 	 = '/error';
 		const 	RLogin 	 = '/auth/login';
 		const 	RLogout  = '/auth/logout';
@@ -75,6 +77,7 @@ module.exports = function (Reflux, Actions, Spaces) {
 							Pause = !!Store.paused;
 						return (Chekd && Built && !(!Ident && Pause));
 					},
+					status: 	4, // 1 = Welcome, 2 = Login, 3 = Expired, 4 = Disconnected
 					paused: 	false,
 					progress: 	0,
 					page: 		{ num: 0, pth: [] },
@@ -96,9 +99,7 @@ module.exports = function (Reflux, Actions, Spaces) {
 							Token: 	 null
 						},
 					},
-					content: 	{
-						built: false, nav: {}, buttons: {}, forms: {}
-					},
+					content: 	{ built: false, nav: {}, buttons: {}, forms: {} },
 					credits: 	{
 						author:  'Arian Johnson',
 						company: 'eVectr Inc.',
@@ -106,8 +107,10 @@ module.exports = function (Reflux, Actions, Spaces) {
 						contact: 'arian.johnson@evectr.com'
 					},
 				})],
-				onPause: 		 function (pause)  { this.updateStore({ paused: !!pause }); },
-				onProgress: 	 function (prog, extra)   {
+				isIdentified: 	 function () { return this.store.getIn(['header','identified']); },
+				onConnect: 		 function () { this.updateStore({ status: 2 }); },
+				onPause: 		 function (pause) { this.updateStore({ paused: !!pause }); },
+				onProgress: 	 function (prog, extra) {
 					var config = {}; extra = (extra||{});
 					switch (true) {
 						case !!!prog: 	config = { progress: 0 }; break;;
@@ -119,25 +122,33 @@ module.exports = function (Reflux, Actions, Spaces) {
 					this.updateStore(Assign(config, extra));
 				},
 				onIdentify: 	 function (res) {
-					switch (res.payload.options.query.path) {
+					var pay = res.payload;
+					switch (pay.options.query.path) {
 						case RLogin: 	Access.emit('reload');
-										this.updateStore({ paused: false, header: {
+										this.updateStore({
+											status: 1, paused: false, header: {
 											identified: true, checked: true,
-											user: (res.payload.result.user||{})
+											user: (pay.result.user||{})
 										} 	}); break;;
 						case RLogout: 	Access.emit('reload');
-										this.onDisconnect();
+										this.onDisconnect(pay);
 										break;;
 						case RRegen: 	Access.emit('regenerate');
 										this.onDisconnect();
 										break;;
 					}
 				},
-				onDisconnect: 	 function () {
-					var store = { paused: false, header: {
-							identified: false, checked: true,
-							user: this.temps.getIn(['header','user']).toJS()
-						} 	};
+				onDisconnect: 	 function (pay) {
+					var code 	= pay.result.code,
+						status 	= !isNaN(code),
+						idented = this.isIdentified(),
+						store 	= {
+							paused: false, header: {
+								identified: false, checked: true,
+								user: this.temps.getIn(['header','user']).toJS()
+							}, status: 2
+						};
+					if (status && (code!=3||idented)) store.status = code;
 					this.updateStore(store);
 				},
 				getPage: 		 function (path) {

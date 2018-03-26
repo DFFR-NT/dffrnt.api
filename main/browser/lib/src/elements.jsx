@@ -7,6 +7,7 @@ module.exports = function (global) {
 
 		require('./utils.js')(global);
 		global.RPerf 	= require('react-addons-perf');
+		const 	LOG 	= console.log;
 
 		// Requires
 		const	React 	= require('react');
@@ -14,9 +15,14 @@ module.exports = function (global) {
 		const 	CRC 	= require('create-react-class');
 		const	Reflux 	= require('reflux');
 		const	IO 		= require('socket.io-client');
+
+		const	Access 	= IO('/api-accessor');
+		const	Socket 	= IO(NMESPC);
+		const	IOs 	= { Access: Access, Socket: Socket };
+
 		const	Actions = require('./actions.js')(Reflux);
 		const	Spaces	= require('./spaces');
-		const	Stores  = require('./stores.js')(Reflux, Actions, Spaces);
+		const	Stores  = require('./stores.js')(Reflux, Actions, Spaces, IOs);
 		const	DFFRNT  = { "/": function () { return; } };
 
 		// Configs
@@ -787,13 +793,12 @@ module.exports = function (global) {
 			mixins: [Reflux.connect(Stores.App,'config')],
 			getInitialState: 			onInitial,
 			componentLog: 				onLog,
-			componentDidUpdate: 		function () {
-				this.componentLog("[] Updated");
-			},
+			componentDidUpdate: 		function () { this.componentLog("[] Updated"); },
 			render: function () {
 				var props 	= this.state.config,
 					header 	= props.header,
 					navi 	= {page:props.page},
+					stat 	= {status:props.status},
 					content = props.content,
 					loader 	= {progress:props.progress},
 					footer 	= props.credits,
@@ -810,14 +815,15 @@ module.exports = function (global) {
 					document.getElementById('navigation').innerHTML = props.styles;
 					this.styled = true;
 				}
-				return <main id="content" className={classes}>
-					<Head {...header}  />
-					<Load {...loader}  />
-					<Navi {...navi}    />
-					<Body {...content} />
-					<Foot {...footer}  />
+				return (<main id="content" className={classes}>
+					<Head {...header}	/>
+					<Load {...loader}	/>
+					<Navi {...navi}		/>
+					<Stat {...stat}		/>
+					<Body {...content}	/>
+					<Foot {...footer}	/>
 					<Load.Wait ready={props.ready()} />
-				</main>;
+				</main>);
 			}
 		});
 
@@ -844,13 +850,16 @@ module.exports = function (global) {
 
 		Load.Lock			= CRC({
 			name: 		 'LOAD.LOCK',
-			mixins: 	[ DFFRNT.Mixins.General ],
+			mixins: 	[DFFRNT.Mixins.General],
 			render: 	  function () {
 				var flexes 	 = {Dir:'Col',Align:'C',Space:'C',Wrap:0},
 					classes  = CSS.Flex(flexes,'lock','noSelect');
 				return (
 					<aside className={classes}>
-						<div>Please Login</div>
+						<div>Welcome!</div>
+						<div>Login to get started!</div>
+						<div>Your session expired. Gotta login again... :/</div>
+						<div>The connection was Lost! :s</div>
 					</aside>
 				);
 			}
@@ -887,6 +896,15 @@ module.exports = function (global) {
 										data-1={pth[0]||''}
 										data-2={pth[1]||''}
 										data-3={pth[2]||''} />);
+			}
+		});
+
+		const Stat 			= CRC({
+			name: 'STAT',
+			mixins: [DFFRNT.Mixins.Dynamic],
+			render: function () {
+				var status = this.state.status;
+				return (<var id='stat' 	data-value={status} />);
 			}
 		});
 
@@ -946,7 +964,7 @@ module.exports = function (global) {
 						) : ([
 							<iframe src="/public/html/login.htm" id="temp" name="temp" style={{display:'none'}} />,
 							<form target='temp' id='auth'  key='auth' method='POST' onSubmit={this.handleLogin}
-								  className={CSS.Flex({Wrap:0,Space:'B'})} action='/auth/login' ref='login'>
+								  className={CSS.Flex({Wrap:0,Space:'B'})} action='/public/html/login.htm' ref='login'>
 								<label htmlFor='email_address' id='unameLbl' className='icon'>
 									<i className='fa fa-user' aria-hidden='true' />
 								</label>
@@ -1996,16 +2014,29 @@ module.exports = function (global) {
 	////////////////////////////////////////////////////////////////////////
 	// SOCKET HANDLES //////////////////////////////////////////////////////
 
-		global.Access = IO('/api-accessor');
-		Access.on('room', 	function (res) {
-			console.log("ROOM | %s", res)
-		});
-		Access.on('receive', 	Actions.Data.receive);
-		Access.on('disconnect', Actions.App.disconnect);
+		function SockAuthRoom  (res) { LOG("ROOM | %s", res); 				 }
+		function SockConnErr (error) { LOG('CONNECTION ERROR!!', 	 error); }
+		function SockConnTO(timeout) { LOG('CONNECTION TIMEOUT!!', timeout); }
+		function SockError	 (error) { LOG('SOCKET ERROR!!', 		 error); }
+		function SockRConnErr(error) { Actions.App.disconnect({result:{code:4}}); }
 
-		global.Socket = IO(NMESPC);
-		Socket.on('connect', 	Actions.Content.setup);
-		Socket.on('setup', 	 	Actions.Content.build);
-		Socket.on('receive', 	Actions.Data.receive);
+
+		// global.Access = IO('/api-accessor');
+		// Access.on('connect', 		Actions.App.connect);
+		Access.on('room', 			SockAuthRoom);
+		Access.on('receive', 		Actions.Data.receive);
+		Access.on('disconnect', 	Actions.App.disconnect);
+			// Access.on('connet_error', 	SockConnErr);
+			// Access.on('connect_timeout',SockConnErr);
+			// Access.on('error', 			SockConnErr);
+		Access.on('reconnect_error',SockRConnErr);
+
+		// global.Socket = IO(NMESPC);
+		Socket.on('connect', 		Actions.Content.setup);
+		Socket.on('setup', 	 		Actions.Content.build);
+		Socket.on('receive', 		Actions.Data.receive);
+			// Socket.on('connet_error', 	SockConnErr);
+			// Socket.on('connect_timeout',SockConnErr);
+			// Socket.on('error', 			SockConnErr);
 
 };
