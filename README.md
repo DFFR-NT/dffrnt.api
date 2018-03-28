@@ -97,7 +97,7 @@ Parent_Folder/ (Name NOT important)
 	        Secret:"orsecretmyshouldkeyrandombeweirdsomething",
 	        Age:    (((3600*1000)*4)*1),
 	        REDIS:  {
-	            Host:       'localhost',
+	            Host:    &#2400;  'localhost',
 	            Port:       6379,
 	            Password:   'p@ssw0rd',
 	        },
