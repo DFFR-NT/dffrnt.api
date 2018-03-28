@@ -1,7 +1,6 @@
 # dffrnt.api
 A project for easy-_ish_ **API** creation and configuration.
 
-[![Build Status](https://github.com/DFFR-NT/dffrnt.api.svg?branch=master)](https://github.com/DFFR-NT)
 
 ## Contents
 
@@ -83,7 +82,7 @@ Parent_Folder/ (Name NOT important)
 ### Post-Configuration
 1. In the `config/` folder, configure the `settings.js` file:
 
-	```javascript
+	```javascript;wrap=false
 	// ./config/settings.js
 	export default {
 		Debug: 	true,
