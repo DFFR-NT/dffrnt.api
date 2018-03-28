@@ -107,7 +107,8 @@ Parent_Folder/ (Name NOT important)
                    `SELECT email_address, 
                            user_pass 
                     FROM   users 
-                    WHERE  email_address=?`,
+                    WHERE  email_address=?`
+                    ,
 	                Profile: 
                    `SELECT * 
                     FROM   users 
