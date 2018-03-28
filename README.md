@@ -84,46 +84,29 @@ Parent_Folder/ (Name NOT important)
 	```javascript ; wrap=false
 	// ./config/settings.js 
 	export default {
-	    Debug:  true,
-	    Port:   3001,
+      // Debug-Mode will display verbose Logs
+	    Debug:  true, 
+       // This is the Server's listening Port
+	    Port:   3001, 
 	    Public: {
-	        Folder:  'public',
-	        Age:     365*86400,
-	        Matcher: /\?(?:\w+=.+)$/,
-	        Headers: null,
+	        // ...
+	        Age:     365*86400, // Cache-Age for Browser files
+	        // ...
 	    },
 	    Session: {
-	        Secret: '!53cr37k3y',
+           /* This should be something hard
+            * to guess, like a phrase */
+	        Secret: '¿mYd0GiS!nmYeyE&shEs4yS@uE?',
+           // TTL for User Sessions
 	        Age:    (((3600*1000)*4)*1),
 	        REDIS:  {
 	            Host:       'localhost',
-	            Port:       6379,
-	            Password:   'p@ssw0rd',
+	            Port:       6379, // Listening Port
+               // The password you configured earlier
+	            Password:   'p@ssw0rd_h3r3!',
 	        },
 	        Auth: {
-	            Flush:  false,
-	            SQL:    {
-	                Login:   
-                   `SELECT email_address, 
-                           user_pass 
-                    FROM   users 
-                    WHERE  email_address=?`
-                    ,
-	                Profile: 
-                   `SELECT * 
-                    FROM   users 
-                    WHERE  email_address=?`
-	            },
-	            Format: {
-	                Account: 'email_address',
-	                Profile: "*",
-	                Scopes: [
-	                    'user_id',
-	                    'display_name',
-	                    'email_address',
-	                    'user_pass',
-	                ]
-	            }
+	            // ...
 	        }
 	    }
 	};
