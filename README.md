@@ -94,8 +94,8 @@ Parent_Folder/ (Name NOT important)
 	        // ...
 	    },
 	    Session: {
-            /* This should be something hard
-             * to guess, like a phrase */
+           /* This should be something hard
+            * to guess, like a phrase */
 	        Secret: '¿mYd0GiS!nmYeyE&shEs4yS@uE?',
             // TTL for User Sessions
 	        Age:    (((3600*1000)*4)*1),
@@ -103,8 +103,8 @@ Parent_Folder/ (Name NOT important)
 	            Host:     'localhost',
                 // Listening Port
 	            Port:     6379, 
-                /* The password you 
-                 * configured earlier */
+               /* The password you 
+                * configured earlier */
 	            Password: 'p@ssw0rd!',
 	        },
 	        Auth: {/* ... */}
