@@ -52,7 +52,7 @@ Parent_Folder/ (Name NOT important)
 	# ...
 	# use a very strong password otherwise it will be very easy to break.
 	#
-	requirepass p@ssw0rd!
+	requirepass p@ssw0rd_h3r3!
 	```
 
 ### Installation
@@ -83,34 +83,27 @@ Parent_Folder/ (Name NOT important)
 
 	```javascript ; wrap=false
 	// ./config/settings.js 
-	export default {
-       /* Debug-Mode will display 
-        * verbose Logs */
-	    Debug: true, 
-       /* This is the Server's 
-        * listening Port */
-	    Port: 3001, 
-	    Public: {
-	        // Cache-Age for Browser files
-	        Age: 365*86400, 
-	        // ...
-	    },
-	    Session: {
-           /* This should be something hard
-            * to guess, like a phrase */
-	        \<nobr\>Secret: '¿mYd0GiS!nmYeyE&shEs4yS@uE?',\</nobr\>
-            // TTL for User Sessions
-	        Age:    (((3600*1000)*4)*1),
-	        REDIS:  {
-	            Host: 'localhost',
-                // Listening Port
-	            Port: 6379, 
-               /* The password you 
-                * configured earlier */
-	            Password: 'p@ssw0rd!',
-	        },
-	        Auth: {/* ... */}
-	    }
+	//#######################################################################################################
+	export default {
+	    Debug: true, // Debug-Mode will display verbose Logs
+	    Port: 3001, // This is the Server's listening Port
+	    Public: {
+	        // Cache-Age for Browser files
+	        Age: 365*86400, 
+	        // ...
+	    },
+	    Session: {
+	        // This should be something hard to guess, like a phrase
+	        Secret: '¿mYd0GiS!nmYeyE&shEs4yS@uE?',
+	        Age:    (((3600*1000)*4)*1),  // TTL for User Sessions
+	        REDIS:  {
+	            Host: 'localhost', // Or whereever you keep it
+	            Port: 6379, // Listening Port
+	            // The password you configured earlier
+	            Password: 'p@ssw0rd!',
+	        },
+	        Auth: { /* ... */ }
+	    }
 	};
 	```
 1. Still in the `config/` folder, configure the `database.js` file:
@@ -175,7 +168,7 @@ Parent_Folder/ (Name NOT important)
 
 **MIT License**
 
-_Copyright &#169; 2018 DFFRNT Innovations_
+_Copyright (c) 2018 DFFRNT Innovations_
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
