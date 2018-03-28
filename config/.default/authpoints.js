@@ -20,7 +20,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // EXPORT
-	export default function () { return { // DO NOT CHANGE/REMOVE!!!
+	export default function () { return { // CONFIGURE, BUT DO NOT REMOVE!!!
 		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		Auth: 		{
 			Actions: 	{
