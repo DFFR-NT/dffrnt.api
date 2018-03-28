@@ -79,7 +79,7 @@ Parent_Folder/ (Name NOT important)
 1. Run `bower install` and allow `bower` to install all the `components` needed for this `client-side`.
 
 ### Post-Configuration
-1. In the `config/` folder, configure the `settings.js` file:
+1. In the `config/` folder, configure the `settings.js` file &#2400;:
 
 	```javascript ; wrap=false
 	// ./config/settings.js 
@@ -97,7 +97,7 @@ Parent_Folder/ (Name NOT important)
 	        Secret:"orsecretmyshouldkeyrandombeweirdsomething",
 	        Age:    (((3600*1000)*4)*1),
 	        REDIS:  {
-	            Host:    &#2400;  'localhost',
+	            Host:       'localhost',
 	            Port:       6379,
 	            Password:   'p@ssw0rd',
 	        },
