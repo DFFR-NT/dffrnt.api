@@ -90,7 +90,7 @@ Parent_Folder/ (Name NOT important)
 	    Port:   3001, 
 	    Public: {
 	        // Cache-Age for Browser files
-	        Age:     365*86400, 
+	        Age: 365*86400, 
 	        // ...
 	    },
 	    Session: {
@@ -100,12 +100,12 @@ Parent_Folder/ (Name NOT important)
            // TTL for User Sessions
 	        Age:    (((3600*1000)*4)*1),
 	        REDIS:  {
-	            Host:       'localhost',
+	            Host:     'localhost',
                // Listening Port
-	            Port:       6379, 
+	            Port:     6379, 
                /* The password you 
                 * configured earlier */
-	            Password:   'p@ssw0rd!',
+	            Password: 'p@ssw0rd!',
 	        },
 	        Auth: {/* ... */}
 	    }
