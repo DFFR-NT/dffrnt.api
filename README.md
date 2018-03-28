@@ -87,7 +87,7 @@ Parent_Folder/ (Name NOT important)
 	    Debug: true, // Debug‑Mode will display verbose Logs
 	    Port: 3001, // This is the Server's listening Port
 	    Public: {
-	        // Cache-Age for Browser files
+	        // Cache‑Age for Browser files
 	        Age: 365*86400, 
 	        // ...
 	    },
