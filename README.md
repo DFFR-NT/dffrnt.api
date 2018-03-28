@@ -1,7 +1,6 @@
 # dffrnt.api
 A project for easy-_ish_ **API** creation and configuration.
 
-
 ## Contents
 
 > 1. [Prequisites](#prequisites)
@@ -25,15 +24,15 @@ A project for easy-_ish_ **API** creation and configuration.
 	* _Install this in the same **parent folder** as **this project** under `REDIS/`_
 * [MySQL](https://dev.mysql.com/downloads/mysql/) (_v5.6+_)
 	* _A `user@%` account is **required** for later configuration_
-  
+
 ### Structure
 
 ```
 Parent_Folder/ (Name NOT important)
-	├── dffrnt.api/ (Project-Root; Name also NOT important)
-	│   ├── config/ (Reference only; no need to create these!)
-	│   └── ...
-	└── REDIS/ (Name important! Don't change this name!!)
+   ├── dffrnt.api/ (Project-Root; Name also NOT important)
+   │   ├── config/ (Reference only; no need to create these!)
+   │   └── ...
+   └── REDIS/ (Name important! Don't change this name!!)
 ```
 
 ---
@@ -82,43 +81,43 @@ Parent_Folder/ (Name NOT important)
 ### Post-Configuration
 1. In the `config/` folder, configure the `settings.js` file:
 
-	```javascript ; wrap=false
+	```javascript
 	// ./config/settings.js
 	export default {
-		Debug: 	true,
-		Port: 	3001,
-		Public: {
-			Folder:  'public',
-			Age: 	 365*86400,
-			Matcher: /\?(?:\w+=.+)$/,
-			Headers: null,
-		},
-		Session: {
-			Secret: "orsecretmyshouldkeyrandombeweirdsomething",
-			Age: 	(((3600*1000)*4)*1),
-			REDIS: 	{
-				Host: 		'localhost',
-				Port: 		6379,
-				Password: 	'p@ssw0rd',
-			},
-			Auth: {
-				Flush: 	false,
-				SQL: 	{
-					Login: 	 "SELECT email_address, user_pass FROM users WHERE email_address = ?",
-					Profile: "SELECT * FROM users WHERE email_address = ?"
-				},
-				Format: {
-					Account: 'email_address',
-					Profile: "*",
-					Scopes: [
-						'user_id',
-						'display_name',
-						'email_address',
-						'user_pass',
-					]
-				}
-			}
-		}
+	    Debug:  true,
+	    Port:   3001,
+	    Public: {
+	        Folder:  'public',
+	        Age:     365*86400,
+	        Matcher: /\?(?:\w+=.+)$/,
+	        Headers: null,
+	    },
+	    Session: {
+	        Secret: "orsecretmyshouldkeyrandombeweirdsomething",
+	        Age:    (((3600*1000)*4)*1),
+	        REDIS:  {
+	            Host:       'localhost',
+	            Port:       6379,
+	            Password:   'p@ssw0rd',
+	        },
+	        Auth: {
+	            Flush:  false,
+	            SQL:    {
+	                Login:   "SELECT email_address, user_pass FROM users WHERE email_address = ?",
+	                Profile: "SELECT * FROM users WHERE email_address = ?"
+	            },
+	            Format: {
+	                Account: 'email_address',
+	                Profile: "*",
+	                Scopes: [
+	                    'user_id',
+	                    'display_name',
+	                    'email_address',
+	                    'user_pass',
+	                ]
+	            }
+	        }
+	    }
 	};
 	```
 1. Still in the `config/` folder, configure the `database.js` file:
@@ -126,27 +125,27 @@ Parent_Folder/ (Name NOT important)
 	```javascript
 	// ./config/database.js
 	export default {
-		Config: {
-			 user:'user',// The one you created in MySQL
-			 database:'database',// The DB
-			 // ...
-		},
-		Pool: {
-			 HeadEx1: {
-				  host:'XXX.XXX.XXX.XXX',// The eVectr IP
-				  // The one you created in MySQL 
-				  password:'p@ssw0rd_h3r3!' 
-			 },
-		}
+	    Config: {
+	        user:'user',// The one you created in MySQL
+	        database:'database',// The DB
+	        // ...
+	    },
+	    Pool: {
+	        HeadEx1: {
+	            host:'XXX.XXX.XXX.XXX',// The eVectr IP
+	            // The one you created in MySQL 
+	            password:'p@ssw0rd_h3r3!' 
+	        },
+	    }
 	};
-	  ```
+	```
 1. Back in the `Project_Root/`: 
 	* Create the `hidden` file, `.bowerrc`:
 	
 		```json
 		// ./.bowerrc
 		{
-			 "directory" : "public/comps"
+		    "directory" : "public/comps"
 		}
 		```
 	* Also create the `hidden` file, `.babelrc`:
@@ -154,8 +153,8 @@ Parent_Folder/ (Name NOT important)
 		```json
 		// ./.babelrc
 		{
-			 "presets": ["babel-preset-env"],
-			 "ignore": "/(node_modules\\/)(?!dffrnt\\.)[^\\/]+(\\/[^\\/]+)*/",
+		    "presets": ["babel-preset-env"],
+		    "ignore": "/(node_modules\\/)(?!dffrnt\\.)[^\\/]+(\\/[^\\/]+)*/",
 		}
 		```
 
