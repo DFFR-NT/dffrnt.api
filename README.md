@@ -82,7 +82,7 @@ Parent_Folder/ (Name NOT important)
 ### Post-Configuration
 1. In the `config/` folder, configure the `settings.js` file:
 
-	```javascript;wrap=false
+	```javascript ; wrap=false
 	// ./config/settings.js
 	export default {
 		Debug: 	true,
