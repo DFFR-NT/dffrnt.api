@@ -79,7 +79,7 @@ Parent_Folder/ (Name NOT important)
 1. Run `bower install` and allow `bower` to install all the `components` needed for this `client-side`.
 
 ### Post-Configuration
-1. In the `config/` folder, configure the `settings.js` file &#2400;:
+1. In the `config/` folder, configure the `settings.js` file:
 
 	```javascript ; wrap=false
 	// ./config/settings.js 
@@ -94,7 +94,7 @@ Parent_Folder/ (Name NOT important)
 	        Headers: null,
 	    },
 	    Session: {
-	        Secret:"orsecretmyshouldkeyrandombeweirdsomething",
+	        Secret: 'orsecretmyshouldkeyrandombeweirdsomething',
 	        Age:    (((3600*1000)*4)*1),
 	        REDIS:  {
 	            Host:       'localhost',
@@ -104,8 +104,8 @@ Parent_Folder/ (Name NOT important)
 	        Auth: {
 	            Flush:  false,
 	            SQL:    {
-	                Login:"SELECT email_address, user_pass FROM users WHERE email_address = ?",
-	                Profile:"SELECT * FROM users WHERE email_address = ?"
+	                Login:   'SELECT email_address, user_pass FROM users WHERE email_address = ?',
+	                Profile: 'SELECT * FROM users WHERE email_address = ?'
 	            },
 	            Format: {
 	                Account: 'email_address',
