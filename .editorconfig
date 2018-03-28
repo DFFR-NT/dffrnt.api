@@ -30,5 +30,5 @@ indent_style = tab
 indent_size = 3
 end_of_line = lf
 charset = utf-8
-max_line_length=200
+max_line_length = 200
 trim_trailing_whitespace = false
