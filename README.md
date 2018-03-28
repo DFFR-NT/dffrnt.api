@@ -84,7 +84,7 @@ Parent_Folder/ (Name NOT important)
 	```javascript
 	// ./config/settings.js 
 	export default {
-	    Debug: true, // Debug-Mode will display verbose Logs
+	    Debug: true, // Debug‑Mode will display verbose Logs
 	    Port: 3001, // This is the Server's listening Port
 	    Public: {
 	        // Cache-Age for Browser files
