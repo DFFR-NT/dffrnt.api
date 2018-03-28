@@ -82,7 +82,7 @@ Parent_Folder/ (Name NOT important)
 1. In the `config/` folder, configure the `settings.js` file:
 
 	```javascript
-	// ./config/settings.js
+	// ./config/settings.js 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 	export default {
 	    Debug:  true,
 	    Port:   3001,
