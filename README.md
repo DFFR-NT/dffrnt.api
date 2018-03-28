@@ -85,9 +85,9 @@ Parent_Folder/ (Name NOT important)
 	// ./config/settings.js 
 	export default {
       // Debug-Mode will display verbose Logs
-	    Debug:  true, 
+	    Debug: true, 
        // This is the Server's listening Port
-	    Port:   3001, 
+	    Port: 3001, 
 	    Public: {
 	        // Cache-Age for Browser files
 	        Age: 365*86400, 
@@ -100,9 +100,9 @@ Parent_Folder/ (Name NOT important)
             // TTL for User Sessions
 	        Age:    (((3600*1000)*4)*1),
 	        REDIS:  {
-	            Host:     'localhost',
+	            Host: 'localhost',
                 // Listening Port
-	            Port:     6379, 
+	            Port: 6379, 
                /* The password you 
                 * configured earlier */
 	            Password: 'p@ssw0rd!',
