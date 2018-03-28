@@ -128,18 +128,18 @@ Parent_Folder/ (Name NOT important)
 	* Create the `hidden` file, `.bowerrc`:
 	
 		```json
-		// ./.bowerrc
+		// ./.bowerrc
 		{
-		    "directory" : "public/comps"
+		  "directory" : "public/comps"
 		}
 		```
 	* Also create the `hidden` file, `.babelrc`:
 	
 		```json
-		// ./.babelrc
+		// ./.babelrc
 		{
-		    "presets": ["babel-preset-env"],
-		    "ignore": "/(node_modules\\/)(?!dffrnt\\.)[^\\/]+(\\/[^\\/]+)*/",
+		  "presets": ["babel‑preset‑env"],
+		  "ignore": "/(node_modules\\/)(?!dffrnt\\.)[^\\/]+(\\/[^\\/]+)*/",
 		}
 		```
 
