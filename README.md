@@ -52,7 +52,7 @@ Parent_Folder/ (Name NOT important)
 	# ...
 	# use a very strong password otherwise it will be very easy to break.
 	#
-	requirepass p@ssw0rd_h3r3!
+	requirepass p@ssw0rd!
 	```
 
 ### Installation
@@ -89,8 +89,8 @@ Parent_Folder/ (Name NOT important)
        // This is the Server's listening Port
 	    Port:   3001, 
 	    Public: {
-	        // ...
-	        Age:     365*86400, // Cache-Age for Browser files
+	        // Cache-Age for Browser files
+	        Age:     365*86400, 
 	        // ...
 	    },
 	    Session: {
@@ -101,13 +101,13 @@ Parent_Folder/ (Name NOT important)
 	        Age:    (((3600*1000)*4)*1),
 	        REDIS:  {
 	            Host:       'localhost',
-	            Port:       6379, // Listening Port
-               // The password you configured earlier
-	            Password:   'p@ssw0rd_h3r3!',
+               // Listening Port
+	            Port:       6379, 
+               /* The password you 
+                * configured earlier */
+	            Password:   'p@ssw0rd!',
 	        },
-	        Auth: {
-	            // ...
-	        }
+	        Auth: {/* ... */}
 	    }
 	};
 	```
