@@ -9,8 +9,8 @@ export default {
 		Headers: null,
 	},
 	Session: {
-		Secret: "orsecretmyshouldkeyrandombeweirdsomething",
-		Age: 	((3600*1000)*4),
+		Secret: "Or53cr3tmYshQuldk-eyr@nd@MbeWE!_rds0me7h!Ng",
+		Age: 	(((3600*1000)*24)*30),
 		REDIS: 	{
 			Host: 		'localhost',
 			Port: 		6379,
