@@ -47,12 +47,12 @@ Parent_Folder/ (Name NOT important)
 1. Configure the `redis.conf` file in the `REDIS/` folder:
 
 	```bash
-	################################## SECURITY ###################################
-	# Require clients to issue AUTH <PASSWORD> before processing any other
-	# ...
-	# use a very strong password otherwise it will be very easy to break.
+	################################## SECURITY ###################################
+	# Require clients to issue AUTH <PASSWORD> before processing any other
+	# ...
+	# use a very strong password otherwise it will be very easy to break.
 	#
-	requirepass p@ssw0rd_h3r3!
+	requirepass p@ssw0rd_h3r3!
 	```
 
 ### Installation
@@ -81,8 +81,8 @@ Parent_Folder/ (Name NOT important)
 ### Post-Configuration
 1. In the `config/` folder, configure the `settings.js` file:
 
-	```javascript
-	// ./config/settings.js 
+	```javascript ; wrap=false
+	// ./config/settings.js 
 	export default {
 	    Debug: true, // Debug‑Mode will display verbose Logs
 	    Port: 3001, // This is the Server's listening Port
@@ -108,38 +108,38 @@ Parent_Folder/ (Name NOT important)
 1. Still in the `config/` folder, configure the `database.js` file:
 	
 	```javascript
-	// ./config/database.js
-	export default {
-	    Config: {
-	        user:'user',// The one you created in MySQL
-	        database:'database',// The DB
-	        // ...
-	    },
-	    Pool: {
-	        HeadEx1: {
-	            host:'XXX.XXX.XXX.XXX',// The eVectr IP
-	            // The one you created in MySQL 
-	            password:'p@ssw0rd_h3r3!' 
-	        },
-	    }
+	// ./config/database.js
+	export default {
+	    Config: {
+	        user:'user',// The one you created in MySQL
+	        database:'database',// The DB
+	        // ...
+	    },
+	    Pool: {
+	        HeadEx1: {
+	            host:'XXX.XXX.XXX.XXX',// The eVectr IP
+	            // The one you created in MySQL 
+	            password:'p@ssw0rd_h3r3!' 
+	        },
+	    }
 	};
 	```
 1. Back in the `Project_Root/`: 
 	* Create the `hidden` file, `.bowerrc`:
 	
 		```json
-		// ./.bowerrc
+		// ./.bowerrc
 		{
-		    "directory" : "public/comps"
+		    "directory" : "public/comps"
 		}
 		```
 	* Also create the `hidden` file, `.babelrc`:
 	
 		```json
-		// ./.babelrc
+		// ./.babelrc
 		{
-		    "presets": ["babel-preset-env"],
-		    "ignore": "/(node_modules\\/)(?!dffrnt\\.)[^\\/]+(\\/[^\\/]+)*/",
+		    "presets": ["babel-preset-env"],
+		    "ignore": "/(node_modules\\/)(?!dffrnt\\.)[^\\/]+(\\/[^\\/]+)*/",
 		}
 		```
 
