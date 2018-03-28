@@ -83,7 +83,6 @@ Parent_Folder/ (Name NOT important)
 
 	```javascript ; wrap=false
 	// ./config/settings.js 
-	//#######################################################################################################
 	export default {
 	    Debug:  true,
 	    Port:   3001,
@@ -104,13 +103,15 @@ Parent_Folder/ (Name NOT important)
 	        Auth: {
 	            Flush:  false,
 	            SQL:    {
-	                Login:   `SELECT email_address, 
-                                    user_pass 
-                             FROM   users 
-                             WHERE  email_address = ?`,
-	                Profile: `SELECT * 
-                             FROM   users 
-                             WHERE  email_address = ?`
+	                Login:   
+                   `SELECT email_address, 
+                           user_pass 
+                    FROM   users 
+                    WHERE  email_address = ?`,
+	                Profile: 
+                   `SELECT * 
+                    FROM   users 
+                    WHERE  email_address = ?`
 	            },
 	            Format: {
 	                Account: 'email_address',
