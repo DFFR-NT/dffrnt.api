@@ -3,18 +3,18 @@ A project for easy-_ish_ **API** creation and configuration.
 
 ## Contents
 
-> 1.  [Prequisites](#prequisites)
-> 	> 1. [Structure](#structure)
-> 1.  [Setup](#setup)
-> 	> 1. [Pre-Configuration](#pre-configuration)
-> 	> 1. [Installation](#installation)
-> 	> 1. [Post-Configuration](#post-configuration)
-> 	> 1. [Launching](#launching)
-> 1.  [Modules](#modules)
-> 	> 1. [dffrnt.utils](#dffrntutils)
-> 	> 1. [dffrnt.model](#dffrntmodel)
-> 	> 1. [dffrnt.route](#dffrntroute)
-> 1.  [License](#license)
+> 1. [Prequisites](#prequisites)
+>    > 1. [Structure](#structure)
+> 1. [Setup](#setup)
+>    > 1. [Pre-Configuration](#pre-configuration)
+>    > 1. [Installation](#installation)
+>    > 1. [Post-Configuration](#post-configuration)
+>    > 1. [Launching](#launching)
+> 1. [Modules](#modules)
+>    > 1. [dffrnt.utils](#dffrntutils)
+>    > 1. [dffrnt.model](#dffrntmodel)
+>    > 1. [dffrnt.route](#dffrntroute)
+> 1. [License](#license)
 
 ---
 ## Prequisites
