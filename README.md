@@ -175,7 +175,7 @@ Parent_Folder/ (Name NOT important)
 
 **MIT License**
 
-_Copyright (c) 2018 DFFRNT Innovations_
+_Copyright &#169; 2018 DFFRNT Innovations_
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
