@@ -1,6 +1,8 @@
 # dffrnt.api
 A project for easy-_ish_ **API** creation and configuration.
 
+[![Build Status](https://github.com/DFFR-NT/dffrnt.api.svg?branch=master)](https://github.com/DFFR-NT)
+
 ## Contents
 
 > 1. [Prequisites](#prequisites)
