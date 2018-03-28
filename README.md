@@ -1,3 +1,4 @@
+<style>pre { white-space: pre !important; }</style>
 # dffrnt.api
 A project for easy-_ish_ **API** creation and configuration.
 
