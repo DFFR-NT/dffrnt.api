@@ -130,7 +130,7 @@ Parent_Folder/ (Name NOT important)
 		```json
 		// ./.bowerrc
 		{
-		  "directory" : "public/comps"
+		  "directory" : "public/comps"
 		}
 		```
 	* Also create the `hidden` file, `.babelrc`:
