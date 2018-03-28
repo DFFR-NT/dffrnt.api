@@ -111,8 +111,8 @@ Parent_Folder/ (Name NOT important)
 	// ./config/database.js
 	export default {
 	    Config: {
-	        user:     'user', // The one you created in MySQL 
-	        database: 'mydatabase', // The DB 
+	        user:     'user', // The one you created in MySQL
+	        database: 'mydatabase', // The DB
 	        // ...
 	    },
 	    Pool: {
