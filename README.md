@@ -98,7 +98,7 @@ Parent_Folder/ (Name NOT important)
 	    Session: {
            /* This should be something hard
             * to guess, like a phrase */
-	        Secret: '¿mYd0GiS!nmYeyE&shEs4yS@uE?',
+	        <nobr>Secret: '¿mYd0GiS!nmYeyE&shEs4yS@uE?',</nobr>
             // TTL for User Sessions
 	        Age:    (((3600*1000)*4)*1),
 	        REDIS:  {
