@@ -65,7 +65,6 @@
 // Handle Functions -----------------------------------------------------------------------------
 
 		function runServer (done) {
-			console.log('DONE:', done)
 			let nmon = nodemon({ execMap: {
 							js: 'node --harmony',
 							tasks: ['demon','main'],
