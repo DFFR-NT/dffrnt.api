@@ -111,15 +111,15 @@ Parent_Folder/ (Name NOT important)
 	// ./config/database.js
 	export default {
 	    Config: {
-	        user:'user',// The one you created in MySQL
-	        database:'database',// The DB
+	        user:     'user', // The one you created in MySQL
+	        database: 'mydatabase', // The DB
 	        // ...
 	    },
 	    Pool: {
 	        HeadEx1: {
-	            host:'XXX.XXX.XXX.XXX',// The eVectr IP
+	            host: 'XXX.XXX.XXX.XXX', // The eVectr IP
 	            // The one you created in MySQL 
-	            password:'p@ssw0rd_h3r3!' 
+	            password: 'p@ssw0rd_h3r3!' 
 	        },
 	    }
 	};
