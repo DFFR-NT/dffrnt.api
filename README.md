@@ -1,5 +1,4 @@
-<style>pre { white-space: pre !important; }</style>
-<div id="mydiv">
+<div id="mydiv" style="white-space:pre !important;">
    <dl>
      <dt>Definition list</dt>
      <dd>Is something people use sometimes.</dd>
