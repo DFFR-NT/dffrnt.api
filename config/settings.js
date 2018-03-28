@@ -1,5 +1,5 @@
 
-module.exports = function Settings() { return {
+export default {
 	Debug: 	true,
 	Port: 	3001,
 	Public: {
@@ -34,4 +34,4 @@ module.exports = function Settings() { return {
 			}
 		}
 	}
-};	};
+};
