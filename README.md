@@ -1,4 +1,11 @@
 <style>pre { white-space: pre !important; }</style>
+<dl>
+  <dt>Definition list</dt>
+  <dd>Is something people use sometimes.</dd>
+
+  <dt>Markdown in HTML</dt>
+  <dd>Does *not* work **very** well. Use HTML <em>tags</em>.</dd>
+</dl>
 # dffrnt.api
 A project for easy-_ish_ **API** creation and configuration.
 
