@@ -84,10 +84,7 @@
 								if ((new Date() - crashes) > 5000) {
 									nmon.emit('restart', 1);
 								}
-							} catch (e) {
-								LOG('CRASHED AS FUCK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-								LOG(e);
-							}
+							} catch (e) { LOG(e); }
 						})
 						.on('restart', () => { LOG('Restarted ~ !!'); });
 			crashes = new Date(); nmon; done();
