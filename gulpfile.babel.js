@@ -7,6 +7,7 @@
 	// Requires
 
 		import os 			from 'os';
+		import fs 			from 'fs';
 		import path 		from 'path';
 		import gulp 		from 'gulp';
 		import nodemon 		from 'gulp-nodemon';
@@ -18,14 +19,21 @@
 		import browserify 	from 'browserify';
 		import watchify 	from 'watchify';
 		import { exec 	  } from 'child_process';
+		import map 			from 'map-stream';
 
 	// Configs
 
 		const 	LOG 	= console.log;
+		const 	cfgfld	= './config';
 		const 	pubFld 	= './public';
 		const 	brwFld 	= './main/browser';
 		const 	libFld 	= `${brwFld}/lib`;
 		const 	opsys 	= { linux: 'nix', darwin: 'nix', win32: 'win' }[os.platform()];
+		const 	conf 	= {
+					files: [ `./*.js` ],
+					options: { cwd: `${cfgfld}/.default` },
+					location: cfgfld
+				};
 		const 	brow 	= {
 					entries: [ `${brwFld}/main.js` ],
 					source: 'bundle.js', location: `${pubFld}/js`
@@ -72,7 +80,7 @@
 						.on('crash', () => {
 							try { LOG('Crashed ~ !!');
 								if ((new Date() - crashes) > 5000) {
-									nmon.emit('restart', 1); //runServer(done);
+									nmon.emit('restart', 1);
 								}
 							} catch (e) {
 								LOG('CRASHED AS FUCK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
@@ -82,6 +90,29 @@
 						.on('restart', () => { LOG('Restarted ~ !!'); });
 			crashes = new Date(); nmon; done();
 		};
+
+// ----------------------------------------------------------------------------------------------
+// Handle Bundle Gulp ---------------------------------------------------------------------------
+
+	// ...
+		gulp.task( 'install', (done) => {
+			let max = 0;
+			gulp.src(conf.files, conf.options)
+				.pipe(map((file, done) => {
+					let len = file.basename.length;
+					max = (len>max?len:max);
+					done(null, file);
+				}))
+				.pipe(map((file, done) => {
+					let bse = file.base, nme = file.basename, fld = conf.location;
+					if (!fs.existsSync(`${bse}/../${nme}`)) {
+						LOG(`Copied default, [${nme.padStart(max)}], to ${fld} ...`);
+						gulp.src(file.path).pipe(gulp.dest(fld));
+					};
+					done(null, file);
+				}));
+			done();
+		});
 
 // ----------------------------------------------------------------------------------------------
 // Handle Bundle Gulp ---------------------------------------------------------------------------
