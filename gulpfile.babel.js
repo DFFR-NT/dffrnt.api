@@ -20,9 +20,11 @@
 		import watchify 	from 'watchify';
 		import { exec 	  } from 'child_process';
 		import map 			from 'map-stream';
+		import redis 		from 'redis';
 
 	// Configs
 
+		const 	JSNS 	= (obj) => (JSON.stringify(obj, null, '    '));
 		const 	LOG 	= console.log;
 		const 	cfgfld	= './config';
 		const 	pubFld 	= './public';
@@ -52,7 +54,7 @@
 					cmd: 'redis-server',
 					cfg: 'redis.conf'
 				};
-		const 	redis 	= {
+		const 	rds 	= {
 					nix: {
 						proc: redfl.cmd,
 						conf: redfl.cfg,
@@ -94,7 +96,7 @@
 // ----------------------------------------------------------------------------------------------
 // Handle Bundle Gulp ---------------------------------------------------------------------------
 
-	// ...
+	// Initialize Configs; if necessary
 		gulp.task( 'config', (done) => {
 			let max = 0;
 			gulp.src(conf.files, conf.options)
@@ -113,9 +115,6 @@
 				}));
 			done();
 		});
-
-// ----------------------------------------------------------------------------------------------
-// Handle Bundle Gulp ---------------------------------------------------------------------------
 
 	// Browserify Concatenation
 		gulp.task( 'brow', (done) => {
@@ -215,13 +214,24 @@
 
 	// REDIS Server Init
 		gulp.task('redis', (done) => {
-			exec([`cd ${redfl.cwd} &&`,redis.proc,redis.conf].join(' '), {
-				cwd: path.normalize(redfl.cwd)
-			}, (err, stdout, stderr) => {
-				var res = JSON.stringify({ OUT: stdout, ERR: stderr }, null, '    ');
-				if (!!err) LOG("REDIS.ERR: %s", err);
-				else LOG("REDIS.STD: ", res);
-			}); done();
+			let RED = redis.createClient();
+			RED.on('error', (err) => {
+				switch (err.code) {
+					// If it failed due to REDIS not running
+					case 'ECONNREFUSED':
+						exec([`cd ${redfl.cwd} &&`,rds.proc,rds.conf].join(' '), {
+							cwd: path.normalize(redfl.cwd)
+						}, (err, stdo, stde) => {
+							if (!!err) LOG(`REDIS.ERR: ${JSNS(err)}`);
+							else LOG(`REDIS.STD: ${JSNS({OUT:stdo,ERR:stde})}`);
+						});
+					// Not an issue, just need to know if it's UP
+					case 'NOAUTH': done(); break;
+					// Otherwise, log output; halt execution
+					default: LOG(JSNS(err));
+				}
+			});
+			RED.on('ready', () => { LOG('REDIS is running'); done(); });
 		});
 		gulp.task( 'demon', runServer);
 		gulp.task( 'system', gulp.series('redis', 'demon'));
