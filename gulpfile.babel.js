@@ -95,7 +95,7 @@
 // Handle Bundle Gulp ---------------------------------------------------------------------------
 
 	// ...
-		gulp.task( 'install', (done) => {
+		gulp.task( 'config', (done) => {
 			let max = 0;
 			gulp.src(conf.files, conf.options)
 				.pipe(map((file, done) => {
@@ -180,7 +180,7 @@
 				.on( 'nomatch', (e) => { LOG('JSX NoMatch:', e); });
 			done();
 		});
-		gulp.task( 'jsx', gulp.parallel('jsx-make', 'jsx-watch'));
+		gulp.task( 'jsx', gulp.parallel('jsx-make','jsx-watch'));
 
 	// LESS to CSS Conversion/Watch
 		// gulp.task( 'css-make', (done) => {
@@ -198,7 +198,7 @@
 			// 	.pipe(gulp.dest('./public/css'));
 			// done();
 		// });
-		// gulp.task( 'css-convert', ['css-make', 'css-minify']);
+		// gulp.task( 'css-convert', gulp.parallel('css-make','css-minify'));
 		// gulp.task( 'css-watch', (done) => {
 			// gulp.watch('./public/less/*.less', ['css-convert'])
 			// 	.on( 'change', (event) => {
@@ -211,7 +211,7 @@
 			// 		LOG('LESS UnMatched:', event.path);
 			// 	}); done();
 		// });
-		// gulp.task( 'css', ['css-convert', 'css-watch']);
+		// gulp.task( 'css', gulp.parallel('css-convert','css-watch'));
 
 	// REDIS Server Init
 		gulp.task('redis', (done) => {
@@ -224,9 +224,10 @@
 			}); done();
 		});
 		gulp.task( 'demon', runServer);
+		gulp.task( 'system', gulp.series('redis', 'demon'));
 
 	// Nodemon StartUp
-		gulp.task( 'main',   gulp.parallel('jsx'/*, 'css'*/, 'brow'));
-		gulp.task('default', gulp.parallel('redis', 'demon', 'main'));
+		gulp.task( 'main',   gulp.series('jsx'/*, 'css'*/, 'brow'));
+		gulp.task('default', gulp.series('config','system','main'));
 
 // ----------------------------------------------------------------------------------------------
