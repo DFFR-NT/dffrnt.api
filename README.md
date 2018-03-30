@@ -7,7 +7,7 @@ A project for easy-_ish_ **API** creation and configuration.
 >    > 1. [Structure](#structure)
 > 1. [Setup](#setup)
 >    > 1. [Pre-Configuration](#pre-configuration)
->    > 1. [Installation](#installation)
+>    > 1. [Installing](#installation)
 >    > 1. [Post-Configuration](#post-configuration)
 >    > 1. [Launching](#launching)
 > 1. [Modules](#modules)
@@ -55,9 +55,10 @@ Parent_Folder/ (Name NOT important)
 	requirepass p@ssw0rd_h3r3!
 	```
 
-### Installation
+### Installing
 1. [Download](https://github.com/LeShaunJ/dffrnt.api/archive/master.zip) or [`git`](https://github.com/LeShaunJ/dffrnt.api.git) this project into the **parent folder**.
-1. **`[OPTIONAL]`** In your **command line**, `cd` into the **project folder** location:
+1. In your **command line**, `cd` into the **project root** location.
+1. **`[OPTIONAL]`** Install some packages at the `global` level:
 	1. Run `chmod +x npm_global.sh` to make it **excutable**.
 	1. Run `sudo ./npm_global.sh` to install some important, **global* packages.
 		> These can be utilized across ANY or your projects:
@@ -75,7 +76,7 @@ Parent_Folder/ (Name NOT important)
 		| [nodemon](https://www.npmjs.com/package/nodemon) | Will watch for files changes and `restart` your application. |
 
 1. Run `npm install` and allow `npm` to install all the `packages` needed for this `server-side`.
-1. Run `bower install` and allow `bower` to install all the `components` needed for this `client-side`.
+1. Run `gulp config` to get the initial configs setup.
 
 ### Post-Configuration
 1. In the `config/` folder, configure the `settings.js` file:
