@@ -62,18 +62,17 @@ Parent_Folder/ (Name NOT important)
 	1. Run `sudo ./npm_global.sh` to install some important, **global* packages.
 	1. These can be use across all projects:
 
-		| Package | Importance | Description |
-		| --- | :---: | --- |
-		| [babel-cli](https://www.npmjs.com/package/babel-cli) |  `Required`  | A next-gen (`ES6`) JavaScript compiler. |
-		| [bower](https://www.npmjs.com/package/bower) |  `Required`  | A package-manager for Browser plugins. |
-		| [cors](https://www.npmjs.com/package/cors) |  `Required`  | A `middleware` for `Cross-Origin Resource Sharing`. |
-		| [depcheck](https://www.npmjs.com/package/depcheck) |  `Optional`  | A tool for analyzing the dependencies in a project |
-		| [express](https://www.npmjs.com/package/express) |  `Required`  | A fast, unopinionated, minimalist web framework for `NodeJS`. |
-		| [gulp](https://www.npmjs.com/package/gulp) |  `Required`  | A toolkit that helps automate development workflow tasks. |
-		| [less](https://www.npmjs.com/package/less) |  `Required`  | The dynamic stylesheet language. |
-		| [less-plugin-clean-css](https://www.npmjs.com/package/less-plugin-clean-css) |  `Required`  | A `gulp` plugin for `LESS -> CSS` using `clean-css`. |
-		| [node-gyp](https://www.npmjs.com/package/node-gyp) |  `Required`  | Compiles native addon `modules` for `Node.js`. |
-		| [nodemon](https://www.npmjs.com/package/nodemon) |  `Required`  | Will watch for files changes and `restart` your application. |
+		| Package | Description |
+		| --- | --- |
+		| [babel-cli](https://www.npmjs.com/package/babel-cli) | A next-gen (`ES6`) JavaScript compiler. |
+		| [bower](https://www.npmjs.com/package/bower) | A package-manager for Browser plugins. |
+		| [cors](https://www.npmjs.com/package/cors) | A `middleware` for `Cross-Origin Resource Sharing`. |
+		| [depcheck](https://www.npmjs.com/package/depcheck) | A tool for analyzing the dependencies in a project |
+		| [express](https://www.npmjs.com/package/express) | A fast, unopinionated, minimalist web framework for `NodeJS`. |
+		| [gulp](https://www.npmjs.com/package/gulp) | A toolkit that helps automate development workflow tasks. |
+		| [less](https://www.npmjs.com/package/less) | The dynamic stylesheet language. |
+		| [less-plugin-clean-css](https://www.npmjs.com/package/less-plugin-clean-css) | A `gulp` plugin for `LESS -> CSS` using `clean-css`. |
+		| [nodemon](https://www.npmjs.com/package/nodemon) | Will watch for files changes and `restart` your application. |
 
 1. Run `npm install` and allow `npm` to install all the `packages` needed for this `server-side`.
 1. Run `bower install` and allow `bower` to install all the `components` needed for this `client-side`.
@@ -146,13 +145,13 @@ Parent_Folder/ (Name NOT important)
 ### Launching
 1. Lastly, still in the **project root**, type `gulp` and hit <kbd>ENTER</kbd> to run, and watch the `logs` as the `server` starts up:
 
-   > ![Initial Gulp-Tasks being completed](https://github.com/DFFR-NT/dffrnt.api/blob/master/docs/images/2.4.1_gulp-tasks.png?raw=true)
+   > ![Initial Gulp-Tasks being completed](.docs/images/2.4.1_gulp-tasks.png?raw=true)
    > _Initial `gulp` tasks being completed._
    
-   > ![Nodemon Monitoring Startup](https://github.com/DFFR-NT/dffrnt.api/blob/master/docs/images/2.4.2_nmon-start.png?raw=true)
+   > ![Nodemon Monitoring Startup](.docs/images/2.4.2_nmon-start.png?raw=true)
    > _File monitoring, courtesy of `nodemon`._
    
-   > ![Node Server Startup](https://github.com/DFFR-NT/dffrnt.api/blob/master/docs/images/2.4.3_node-start.png?raw=true)
+   > ![Node Server Startup](.docs/images/2.4.3_node-start.png?raw=true)
    > _The `node` server starting up._
    
 	* If there are no _glaring_ `errors`, you're done!
