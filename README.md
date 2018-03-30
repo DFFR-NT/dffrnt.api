@@ -7,7 +7,7 @@ A project for easy-_ish_ **API** creation and configuration.
 >    > 1. [Structure](#structure)
 > 1. [Setup](#setup)
 >    > 1. [Pre-Configuration](#pre-configuration)
->    > 1. [Installing](#installation)
+>    > 1. [Installing](#installing)
 >    > 1. [Post-Configuration](#post-configuration)
 >    > 1. [Launching](#launching)
 > 1. [Modules](#modules)
@@ -35,6 +35,8 @@ Parent_Folder/ (Name NOT important)
    └── REDIS/ (Name important! Don't change this name!!)
 ```
 
+> In this document, **`./`**, refers to the **project root**; while, **`../`**, refers to the **parent folder**
+
 ---
 ## Setup
 
@@ -44,9 +46,11 @@ Parent_Folder/ (Name NOT important)
 	* If the `install method` you chose for `REDIS` installs the files in a default location, be sure to `symlink` that location to the `Parent_Folder/REDIS/` directory.
 1. In the `MySQL` database, create a `user@%` for yourself.
 	* Be sure to give yourself appropriate permissions.
-1. Configure the `redis.conf` file in the `REDIS/` folder:
+1. Configure the `redis.conf` file in the `../REDIS/` folder:
 
-	```bash
+	```apacheconf
+	# ../REDIS/redis.conf
+
 	################################## SECURITY ###################################
 	# Require clients to issue AUTH <PASSWORD> before processing any other
 	# ...
@@ -75,11 +79,11 @@ Parent_Folder/ (Name NOT important)
 		| [less-plugin-clean-css](https://www.npmjs.com/package/less-plugin-clean-css) | A `gulp` plugin for `LESS -> CSS` using `clean-css`. |
 		| [nodemon](https://www.npmjs.com/package/nodemon) | Will watch for files changes and `restart` your application. |
 
-1. Run `npm install` and allow `npm` to install all the `packages` needed for this `server-side`.
-1. Run `gulp config` to get the initial configs setup.
+1. Run `npm install` and allow `npm` to install all the required `packages`.
+1. Run `gulp config` to initialize the `config files`.
 
 ### Post-Configuration
-1. In the `config/` folder, configure the `settings.js` file:
+1. In the `./config/` folder, configure the `settings.js` file:
 
 	```javascript
 	// ./config/settings.js 
@@ -105,7 +109,7 @@ Parent_Folder/ (Name NOT important)
 	    }
 	};
 	```
-1. Still in the `config/` folder, configure the `database.js` file:
+1. Still in the `./config/` folder, configure the `database.js` file:
 	
 	```javascript
 	// ./config/database.js
