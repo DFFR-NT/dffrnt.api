@@ -145,7 +145,7 @@ Parent_Folder/ (Name NOT important)
 
 ### Launching
 1. Lastly, still in the **project root**, type `gulp` and hit <kbd>ENTER</kbd> to run, and watch the `logs` as the `server` starts up:
-   ![Initial Gulp-Tasks being completed](https://github.com/DFFR-NT/dffrnt.api/blob/master/docs/images/2.4.1_gulp_tasks.png?raw=true)
+   ![Initial Gulp-Tasks being completed](https://github.com/DFFR-NT/dffrnt.api/blob/master/docs/images/2.4.1_gulp-tasks.png?raw=true)
 	* If there are no glaring `errors`, you're done!
 	* Otherwise... Shit... :(
 1. In your `browser`, navigate to [localhost:3001/api-explorer](http://localhost:3001/api-explorer) (_or whatever `port` you chose_) and you'll see the **API Exploration UI**. Use this to test your `endpoints` and/or `signle sign-on` functionality.
