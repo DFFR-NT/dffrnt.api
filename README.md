@@ -60,8 +60,8 @@ Parent_Folder/ (Name NOT important)
 1. In your **command line**, `cd` into the **project folder** location:
 	1. Run `chmod +x npm_global.sh` to make it **excutable**.
 	1. **[OPTIONAL]** Run `sudo ./npm_global.sh` to install some important, **global* packages.
-	   * These can be use across all projects:
-
+		> These can be utilized across ANY or your projects:
+       
 		| Package | Description |
 		| --- | --- |
 		| [babel-cli](https://www.npmjs.com/package/babel-cli) | A next-gen (`ES6`) JavaScript compiler. |
