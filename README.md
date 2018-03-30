@@ -147,13 +147,13 @@ Parent_Folder/ (Name NOT important)
 1. Lastly, still in the **project root**, type `gulp` and hit <kbd>ENTER</kbd> to run, and watch the `logs` as the `server` starts up:
 
    > ![Initial Gulp-Tasks being completed](https://github.com/DFFR-NT/dffrnt.api/blob/master/docs/images/2.4.1_gulp-tasks.png?raw=true)
-   > Initial `gulp` tasks being completed.
+   > _Initial `gulp` tasks being completed._
    
    > ![Nodemon Monitoring Startup](https://github.com/DFFR-NT/dffrnt.api/blob/master/docs/images/2.4.2_nmon-start.png?raw=true)
-   > File monitoring, courtesy of `nodemon`.
+   > _File monitoring, courtesy of `nodemon`._
    
    > ![Node Server Startup](https://github.com/DFFR-NT/dffrnt.api/blob/master/docs/images/2.4.3_node-start.png?raw=true)
-   > The `node` server starting up.
+   > _The `node` server starting up._
    
 	* If there are no glaring `errors`, you're done!
 	* Otherwise... Shit... :(
@@ -164,13 +164,13 @@ Parent_Folder/ (Name NOT important)
 ## Modules
 
 ### [dffrnt.utils](https://github.com/DFFR-NT/dffrnt.utils)
-> Explination Coming Soon...
+> _Explination Coming Soon..._
 
 ### [dffrnt.model](https://github.com/DFFR-NT/dffrnt.model)
-> Explination Coming Soon...
+> _Explination Coming Soon..._
 
 ### [dffrnt.route](https://github.com/DFFR-NT/dffrnt.route)
-> Explination Coming Soon...
+> _Explination Coming Soon..._
 
 ---
 ## License
