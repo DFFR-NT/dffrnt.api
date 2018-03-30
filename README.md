@@ -123,24 +123,6 @@ Parent_Folder/ (Name NOT important)
 	    }
 	};
 	```
-1. Back in the `Project_Root/`: 
-	* Create the `hidden` file, `.bowerrc`:
-	
-		```json
-		// ./.bowerrc
-		{
-		  "directory" : "public/comps"
-		}
-		```
-	* Also create the `hidden` file, `.babelrc`:
-	
-		```json
-		// ./.babelrc
-		{
-		  "presets": ["babel‑preset‑env"],
-		  "ignore": "/(node_modules\\/)(?!dffrnt\\.)[^\\/]+(\\/[^\\/]+)*/",
-		}
-		```
 
 ### Launching
 1. Lastly, still in the **project root**, type `gulp` and hit <kbd>ENTER</kbd> to run, and watch the `logs` as the `server` starts up:
