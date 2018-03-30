@@ -146,11 +146,14 @@ Parent_Folder/ (Name NOT important)
 ### Launching
 1. Lastly, still in the **project root**, type `gulp` and hit <kbd>ENTER</kbd> to run, and watch the `logs` as the `server` starts up:
 
-   ![Initial Gulp-Tasks being completed](https://github.com/DFFR-NT/dffrnt.api/blob/master/docs/images/2.4.1_gulp-tasks.png?raw=true)
+   > ![Initial Gulp-Tasks being completed](https://github.com/DFFR-NT/dffrnt.api/blob/master/docs/images/2.4.1_gulp-tasks.png?raw=true)
+   > Initial `gulp` tasks being completed.
    
-   ![Nodemon Monitoring Startup](https://github.com/DFFR-NT/dffrnt.api/blob/master/docs/images/2.4.2_nmon-start.png?raw=true)
+   > ![Nodemon Monitoring Startup](https://github.com/DFFR-NT/dffrnt.api/blob/master/docs/images/2.4.2_nmon-start.png?raw=true)
+   > File monitoring, courtesy of `nodemon`.
    
-   ![Node Server Startup](https://github.com/DFFR-NT/dffrnt.api/blob/master/docs/images/2.4.3_node-start.png?raw=true)
+   > ![Node Server Startup](https://github.com/DFFR-NT/dffrnt.api/blob/master/docs/images/2.4.3_node-start.png?raw=true)
+   > The `node` server starting up.
    
 	* If there are no glaring `errors`, you're done!
 	* Otherwise... Shit... :(
