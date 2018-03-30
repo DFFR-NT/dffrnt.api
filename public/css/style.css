@@ -931,7 +931,7 @@
 		}
 		#logo {
 			max-width: 25vmin;
-			min-width: 25vmin;
+			min-width: 15vmin;
 			background-image: url('/public/images/Logo.png');
 			background-position: left center;
 			background-repeat: no-repeat;
@@ -1232,6 +1232,7 @@
 		#content.ready.loggedOut #main > *:not(.lock)  { opacity: .75 !important; }
 		#content.ready.loggedOut .jsonp > * { opacity:   0 !important; }
 		#content #nav { display: none; }
+		#content #stat { display: none; }
 
 
 	/******************************************************************/
@@ -1245,43 +1246,72 @@
 			opacity: 0;
 			top: 0;
 			left: 0;
+			font-weight: 300;
+			font-size: 4rem;
+			color: cornFlowerBlue;
+			text-align: center;
 			overflow: hidden;
 			pointer-events: none;
 			background: rgba(0,0,0,0.25);
+			-webkit-transition: opacity .125s ease-out 1s;
+			   -moz-transition: opacity .125s ease-out 1s;
+				-ms-transition: opacity .125s ease-out 1s;
+				 -o-transition: opacity .125s ease-out 1s;
+					transition: opacity .125s ease-out 1s;
+			position: absolute;
+		}
+		.lock > div {
+			display: none;
+			position: relative;
+			border-top: 	1px solid;
+			border-bottom: 	1px solid;
+			width: 		100%;
+			background-color: white;
+			max-height: 0 !important;
+			padding: 	0 !important;
+			-webkit-transition: opacity 	.125s ease-out .5s,
+								max-height 	.125s ease-out .5s,
+								padding 	.125s ease-out .5s;
+			   -moz-transition: opacity 	.125s ease-out .5s,
+								max-height 	.125s ease-out .5s,
+								padding 	.125s ease-out .5s;
+				-ms-transition: opacity 	.125s ease-out .5s,
+								max-height 	.125s ease-out .5s,
+								padding 	.125s ease-out .5s;
+				 -o-transition: opacity 	.125s ease-out .5s,
+								max-height 	.125s ease-out .5s,
+								padding 	.125s ease-out .5s;
+					transition: opacity 	.125s ease-out .5s,
+								max-height 	.125s ease-out .5s,
+								padding 	.125s ease-out .5s;
+		}
+		.lock, .lock > div { opacity: 0; }
+
+
+		.loggedOut .lock {
+			pointer-events: auto !important;
 			-webkit-transition: opacity .125s ease-out;
 			   -moz-transition: opacity .125s ease-out;
 				-ms-transition: opacity .125s ease-out;
 				 -o-transition: opacity .125s ease-out;
 					transition: opacity .125s ease-out;
-			position: absolute;
-		}
-		.lock > div {
-			display: table;
-			position: relative;
-			border-top: 	1px solid;
-			border-bottom: 	1px solid;
-			color: cornFlowerBlue;
-			font-size: 4rem;
-			text-align: center;
-			width: 		100%;
-			background-color: white;
-			max-height: 0 !important;
-			padding: 	0 !important;
-			-webkit-transition: max-height .125s ease-out, padding .125s ease-out;
-			   -moz-transition: max-height .125s ease-out, padding .125s ease-out;
-				-ms-transition: max-height .125s ease-out, padding .125s ease-out;
-				 -o-transition: max-height .125s ease-out, padding .125s ease-out;
-					transition: max-height .125s ease-out, padding .125s ease-out;
-		}
-
-		.loggedOut .lock {
-			opacity: 1 !important;
-			pointer-events: auto !important;
 		}
 		.loggedOut .lock > div {
 			max-height: 2rem !important;
 			padding: 1rem 0 !important;
 		}
+		.loggedOut .lock,
+		.loggedOut .lock > div { opacity: 1 !important; }
+
+		.lock>div:nth-child(1) { color: rgb( 55, 181,  71); }
+		.lock>div:nth-child(2) { color: rgb(100, 149, 237); }
+		.lock>div:nth-child(3) { color: rgb(193, 137,   4); }
+		.lock>div:nth-child(4) { color: rgb(237,  42,  95); }
+
+		#stat[data-value="1"]~#main>.lock>div:nth-child(1) { display: table; }
+		#stat[data-value="2"]~#main>.lock>div:nth-child(2) { display: table; }
+		#stat[data-value="3"]~#main>.lock>div:nth-child(3) { display: table; }
+		#stat[data-value="4"]~#main>.lock>div:nth-child(4) { display: table; }
 
 
 	/******************************************************************/
