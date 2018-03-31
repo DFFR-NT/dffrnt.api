@@ -9,7 +9,6 @@ npm install -g \
 	gulp \
 	less \
 	less-plugin-clean-css \
-	node-gyp \
 	nodemon;
 
 exit $?;
