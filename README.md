@@ -43,7 +43,7 @@ Parent_Folder/ (Name NOT important)
 ### Pre-Configuration
 1. Ensure the **[folder structure](#structure)** is setup.
 1. Ensure the **[prequisites](#prequisites)** are installed.
-	* If the `install method` you chose for `REDIS` installs the files in a default location, be sure to `symlink` that location to the `Parent_Folder/REDIS/` directory.
+	* If the `install method` you chose for `REDIS` installs the files in a default location, be sure to `symlink` that location to the `../REDIS/` directory.
 1. In the `MySQL` database, create a `user@%` for yourself.
 	* Be sure to give yourself appropriate permissions.
 1. Configure the `redis.conf` file in the `../REDIS/` folder:
@@ -60,22 +60,22 @@ Parent_Folder/ (Name NOT important)
 	```
 
 ### Installing
-1. [Download](https://github.com/LeShaunJ/dffrnt.api/archive/master.zip) or [`git`](https://github.com/LeShaunJ/dffrnt.api.git) this project into the **parent folder**.
+1. [Download](https://github.com/DFFR-NT/dffrnt.api/archive/master.zip) or [`git`](https://github.com/DFFR-NT/dffrnt.api.git) this project into the **parent folder**.
 1. In your **command line**, `cd` into the **project root** location.
 1. **`[OPTIONAL]`** Install some packages at the `global` level:
-	1. Run `chmod +x npm_global.sh` to make it **excutable**.
-	1. Run `sudo ./npm_global.sh` to install some important, **global* packages.
+	1. Run `chmod +x ./.docs/npm_global.sh` to make it **excutable**.
+	1. Run `sudo ./.docs/npm_global.sh` to install some important, **global* packages.
 		> These can be utilized across ANY or your projects:
        
 		| Package | Description |
 		| --- | --- |
 		| [babel-cli](https://www.npmjs.com/package/babel-cli) | A next-gen (`ES6`) JavaScript compiler. |
-		| [bower](https://www.npmjs.com/package/bower) | A package-manager for Browser plugins. |
+		| [bower](https://www.npmjs.com/package/bower) | A package-manager for Browser `plugins`. |
 		| [cors](https://www.npmjs.com/package/cors) | A `middleware` for `Cross-Origin Resource Sharing`. |
-		| [depcheck](https://www.npmjs.com/package/depcheck) | A tool for analyzing the dependencies in a project |
+		| [depcheck](https://www.npmjs.com/package/depcheck) | A tool for analyzing the `dependencies` in a project |
 		| [express](https://www.npmjs.com/package/express) | A fast, unopinionated, minimalist web framework for `NodeJS`. |
-		| [gulp](https://www.npmjs.com/package/gulp) | A toolkit that helps automate development workflow tasks. |
-		| [less](https://www.npmjs.com/package/less) | The dynamic stylesheet language. |
+		| [gulp](https://www.npmjs.com/package/gulp) | A toolkit that helps automate development workflow `tasks`. |
+		| [less](https://www.npmjs.com/package/less) | The dynamic `stylesheet` language. |
 		| [less-plugin-clean-css](https://www.npmjs.com/package/less-plugin-clean-css) | A `gulp` plugin for `LESS -> CSS` using `clean-css`. |
 		| [nodemon](https://www.npmjs.com/package/nodemon) | Will watch for files changes and `restart` your application. |
 
