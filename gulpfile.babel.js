@@ -122,6 +122,20 @@
 
 	// Configs ----------------------------------------------------------------------------------
 
+		// Initialize Framework Directory; if necessary
+			gulp.task( 'framework', (done) => {
+				let loc = frwk.location;
+				if (!fs.existsSync(loc)) fs.mkdirSync(loc), LOG(`Created Framework Directory.`);
+				gulp.src(frwk.folders, frwk.options)
+					.pipe(map((file, done) => {
+						let pth = file.path, nme = file.basename;
+						if (!fs.existsSync(`${loc}/${nme}`)) {
+							LOG(`Linking Module, [${nme}/], to ${loc} ...`);
+							gulp.src(pth).pipe(gulp.symlink(loc));
+						};	done(null, file);
+					})); 	done();
+			});
+
 		// Initialize Configs; if necessary
 			gulp.task( 'config', (done) => {
 				let max = 0;
@@ -139,21 +153,7 @@
 					})); 	done();
 			});
 
-		// Initialize Framework Directory; if necessary
-			gulp.task( 'framework', (done) => {
-				let loc = frwk.location;
-				if (!fs.existsSync(loc)) fs.mkdirSync(loc), LOG(`Created Framework Directory.`);
-				gulp.src(frwk.folders, frwk.options)
-					.pipe(map((file, done) => {
-						let pth = file.path, nme = file.basename;
-						if (!fs.existsSync(`${loc}/${nme}`)) {
-							LOG(`Linking Module, [${nme}/], to ${loc} ...`);
-							gulp.src(pth).pipe(gulp.symlink(loc));
-						};	done(null, file);
-					})); 	done();
-			});
-
-		gulp.task('init', SERIES('config','convert','system'));
+		gulp.task('init', SERIES('framework','config'));
 
 	// Convert ----------------------------------------------------------------------------------
 
