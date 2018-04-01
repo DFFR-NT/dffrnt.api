@@ -138,14 +138,15 @@
 
 		// Initialize Configs; if necessary
 			gulp.task( 'config', (done) => {
-				let max = 0;
+				let max = 0, fld = conf.location;
+				if (!fs.existsSync(fld)) fs.mkdirSync(fld), LOG(`Created Config Directory.`);
 				gulp.src(conf.files, conf.options)
 					.pipe(map((file, done) => {
 						let len = file.basename.length;
 						max = (len>max?len:max); done(null, file);
 					}))
 					.pipe(map((file, done) => {
-						let nme = file.basename, fld = conf.location;
+						let nme = file.basename;
 						if (!fs.existsSync(`${fld}/${nme}`)) {
 							LOG(`Copied default, [${nme.padStart(max)}], to ${fld} ...`);
 							gulp.src(file.path).pipe(gulp.dest(fld));
