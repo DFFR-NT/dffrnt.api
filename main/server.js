@@ -16,21 +16,21 @@
 	// Route/Session Requires
 		import { default as express  } from 'express';
 		import { Routes, Session 	 } from 'dffrnt.route';
-		import { default as settings } from '../config/settings.js';
+		import { Settings 			 } from 'dffrnt.confs';
 
 	// Setup Requires
 		import { createServer } from 'http';
-		const 	api 	= express(),
-				server 	= createServer(api),
-				sess 	= Session(server, api),
-				port 	= settings.Port;
+		let api 	= express(),
+			server 	= createServer(api),
+			sess 	= Session(server, api),
+			port 	= Settings.Port;
 
 // ----------------------------------------------------------------------------------------------
 // Setup Server ---------------------------------------------------------------------------------
 
 	// Start the DB Connection; Configure Routes
 		// -----------------------------------------
-		Routes.Init( api, express, sess, settings );
+		Routes.Init( api, express, sess, Settings );
 
 	// The http server listens on port 3000
 		process.on('uncaughtException', function (err) {
