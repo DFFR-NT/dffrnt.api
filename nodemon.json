@@ -1,11 +1,11 @@
 {
 	"verbose": true,
-	"script": "index.js",
+	"script": "main/server.js",
 	"ext": "js json",
 	"watch": [
 		"gulpfile.js",
 		"main/server.js",
-		"modules/",
+		"framework/",
 		"config/"
 	],
 	"restartable": "rs",
