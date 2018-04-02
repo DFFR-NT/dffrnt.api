@@ -62,12 +62,13 @@
 					source: 	'bundle.js',
 					options:  	{
 						entries: [ `${brwFld}/main.js` ],
-						debug: true,
 						cache: {},
 						packageCache: {},
-						fullPaths: false
+						fullPaths: false,
+						// plugin: [watchify],
+						debug: false
 					},
-					minifyify:  {
+					mini:  {
 						map: false, uglify: {
 							mangle: true,
 							compress: {
@@ -154,7 +155,17 @@
 					})); 	done();
 			});
 
-		gulp.task('init', SERIES('framework','config'));
+		gulp.task( 'init', SERIES('framework','config'));
+
+		// Install Bower Components
+			gulp.task( 'bower', (done) => {
+				exec('bower install', (err, stdo, stde) => {
+					if (!!err) LOG(`Bower.ERR: ${JSNS(err)}`);
+					else LOG(stdo||stde);
+				}); done();
+			});
+
+		gulp.task('setup', SERIES('bower','init'));
 
 	// Convert ----------------------------------------------------------------------------------
 
@@ -168,6 +179,32 @@
 			});
 			gulp.task('jsx-watch',	WATCH( 'JSX', jsx.source, ['jsx-make']));
 			gulp.task('jsx', 		PARALLEL('jsx-make','jsx-watch'));
+
+		// Browserify Concatenation
+			gulp.task( 'brow', (done) => {
+				var BUND = new browserify(brow.options),
+					file = `${brow.location}/${brow.source}`,
+					args = process.argv.slice(2), C = 0,
+					verb = (args.slice(-1)[0]||'')=='--verbose';
+
+				function doBundle() {
+					LOG(`BUNDLE: ${brow.source} to ${brow.location} ...`);
+					BUND.bundle()
+						.pipe(source(brow.source))
+						// .pipe( babel({ presets: ['env'], compact: false }))
+						.pipe(gulp.dest(brow.location));
+					return BUND;
+				}
+
+				BUND.on('update', doBundle)
+					.plugin('watchify', { delay: 100, ignoreWatch: ['**/node_modules/**'] })
+					.plugin('minifyify', Assign({ compressPath: p => path.relative(`${__dirname}/..`, p) }, brow.mini))
+					.on('log', msg => { LOG(`BUNDLE: ${msg}`); done() });
+				if (verb) BUND.on('file', (f,i,par) => { C++; LOG(`FILE ${C}: ${f} | ${i}`); });
+				doBundle();
+			});
+
+		gulp.task('bundle', SERIES('jsx', 'brow'));
 
 		// LESS to CSS Conversion/Watch
 			gulp.task('css-make',	(done) => {
@@ -187,37 +224,10 @@
 			});
 			gulp.task('css-conv', 	SERIES('css-make','css-minify'));
 			gulp.task('css-watch',	WATCH('LESS', style.css.src, ['css-conv']));
-			gulp.task('css', 		PARALLEL('css-conv','css-watch'));
+			gulp.task('css', 		SERIES('css-conv','css-watch'));
 
-		// Browserify Concatenation
-			gulp.task( 'brow', (done) => {
-				function doBundle(watcher) {
-					watcher .bundle()
-							.pipe(source(brow.source))
-							// .pipe( babel({ presets: ['env'], compact: false }))
-							.pipe(gulp.dest(brow.location));
-					return 	watcher;
-				}
 
-				var bundler = new browserify(brow.options)
-									.plugin('minifyify', Assign({
-										compressPath: p => path.relative(`${__dirname}/..`, p)
-									}, 	brow.minifyify)),
-					watcher = watchify(bundler);
-
-				doBundle(watcher.on( 'update', () => {
-					var start = new Date(), src = brow.source,
-						frm1 = '[%s] Updating...', fin,
-						frm2 = '[%s] Updated: %ss';
-					LOG(frm1, src);
-					watcher = doBundle(watcher);
-					fin = ((new Date()-start)/1000);
-					LOG(frm2, src, fin.toFixed(3));
-					return watcher;
-				})); done();
-			});
-
-		gulp.task('convert', SERIES('jsx', 'css', 'brow'));
+		gulp.task('convert', PARALLEL('bundle', 'css'));
 
 	// System -----------------------------------------------------------------------------------
 
