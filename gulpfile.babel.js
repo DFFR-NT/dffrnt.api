@@ -6,22 +6,22 @@
 
 	// Requires ---------------------------------------------------------------------------------
 
-		import os 			from 'os';
-		import fs 			from 'fs';
-		import path 		from 'path';
-		import Assign 		from 'object-assign';
-		import gulp 		from 'gulp';
-		import nodemon 		from 'gulp-nodemon';
-		import babel 		from 'gulp-babel';
-		import cssmin 		from 'gulp-cssmin';
-		import rename 		from "gulp-rename";
-		import less 		from 'gulp-less';
-		import source 		from 'vinyl-source-stream';
-		import browserify 	from 'browserify';
-		import watchify 	from 'watchify';
-		import { exec 	  } from 'child_process';
-		import map 			from 'map-stream';
-		import redis 		from 'redis';
+		const os 		 = require('os');
+		const fs 		 = require('fs');
+		const path 		 = require('path');
+		const Assign 	 = require('object-assign');
+		const gulp 		 = require('gulp');
+		const nodemon 	 = require('gulp-nodemon');
+		const babel 	 = require('gulp-babel');
+		const cssmin 	 = require('gulp-cssmin');
+		const rename 	 = require("gulp-rename");
+		const less 		 = require('gulp-less');
+		const source 	 = require('vinyl-source-stream');
+		const browserify = require('browserify');
+		const watchify 	 = require('watchify');
+		const exec 		 = require('child_process').exec;
+		const map 		 = require('map-stream');
+		const redis 	 = require('redis');
 
 	// Variables --------------------------------------------------------------------------------
 
