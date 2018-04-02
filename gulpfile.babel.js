@@ -176,7 +176,8 @@
 				exec('bower install', (err, stdo, stde) => {
 					if (!!err) LOG(`Bower.ERR: ${JSNS(err)}`);
 					else LOG(stdo||stde);
-				}); done();
+					done();
+				});
 			});
 
 		gulp.task('setup', SERIES('npm','bower','init'));
