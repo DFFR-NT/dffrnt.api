@@ -62,7 +62,7 @@ Parent_Folder/ (Name NOT important)
 ### Installing
 1. [Download](https://github.com/DFFR-NT/dffrnt.api/archive/master.zip) or [`git`](https://github.com/DFFR-NT/dffrnt.api.git) this project into the **parent folder**.
 1. In your **command line**, `cd` into the **project root** location.
-1. **`[OPTIONAL]`** Install some packages at the `global` level:
+1. Install some packages at the `global` level:
    1. Run `chmod +x ./.docs/npm_global.sh` to make it **excutable**.
    1. Run `sudo ./.docs/npm_global.sh` to install some important, **global* packages.
       > These can be utilized across ANY or your projects:
@@ -79,11 +79,11 @@ Parent_Folder/ (Name NOT important)
       | [less-plugin-clean-css](https://www.npmjs.com/package/less-plugin-clean-css) | A `gulp` plugin for `LESS -> CSS` using `clean-css`. |
       | [nodemon](https://www.npmjs.com/package/nodemon) | Will watch for files changes and `restart` your application. |
 
-1. Run `npm install` and allow `npm` to install all the required `packages`.
-1. Run `gulp setup` to:
+1. Run `npm link gulp && gulp setup` to:
+   * Install the `npm packages`.
+   * Install the `bower components`.
    * Initialize the `config files`.
    * Link the `framework modules`.
-   * Install the `bower components`.
 
 ### Post-Configuration
 1. In the `./config/` folder, configure the `settings.js` file:
