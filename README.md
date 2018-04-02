@@ -80,7 +80,7 @@ Parent_Folder/ (Name NOT important)
 		| [nodemon](https://www.npmjs.com/package/nodemon) | Will watch for files changes and `restart` your application. |
 
 1. Run `npm install` and allow `npm` to install all the required `packages`.
-1. Run `gulp config` to initialize the `config files`.
+1. Run `gulp init` to initialize the `config files`.
 
 ### Post-Configuration
 1. In the `./config/` folder, configure the `settings.js` file:
