@@ -154,7 +154,17 @@
 					})); 	done();
 			});
 
-		gulp.task('init', SERIES('framework','config'));
+		gulp.task( 'init', SERIES('framework','config'));
+
+		// Install Bower Components
+			gulp.task( 'bower', (done) => {
+				exec('bower install', (err, stdo, stde) => {
+					if (!!err) LOG(`Bower.ERR: ${JSNS(err)}`);
+					else LOG(stdo||stde);
+				}); done();
+			});
+
+		gulp.task('setup', SERIES('bower','init'));
 
 	// Convert ----------------------------------------------------------------------------------
 
