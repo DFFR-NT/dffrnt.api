@@ -6,20 +6,20 @@
 
 	// System Requires
 		// --------------------------------------------
-		import {
+		const {
 			colors, Assign, Imm, StrTime, ROOTD, LJ, path, os, fs,
 			ARGS, TYPE, EXTEND, HIDDEN, DEFINE, NIL, UoN, IaN, IS,
 			ISS, OF, FOLDER, DCT, RGX, FRMT, CLM, CLMNS, ELOGR,
 			preARGS, Dbg, LG, TLS, JSN
-		} from 'dffrnt.utils';
+		} = require('dffrnt.utils');
 
 	// Route/Session Requires
-		import { default as express  } from 'express';
-		import { Routes, Session 	 } from 'dffrnt.route';
-		import { Settings 			 } from 'dffrnt.confs';
+		const 	express 		  = require('express');
+		const { Routes, Session } = require('dffrnt.route');
+		const { Settings 		} = require('dffrnt.confs');
+		const { createServer 	} = require('http');
 
 	// Setup Requires
-		import { createServer } from 'http';
 		let api 	= express(),
 			server 	= createServer(api),
 			sess 	= Session(server, api),
