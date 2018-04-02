@@ -9,19 +9,11 @@
 		const os 		 = require('os');
 		const fs 		 = require('fs');
 		const path 		 = require('path');
-		const Assign 	 = require('object-assign');
-		const gulp 		 = require('gulp');
-		const nodemon 	 = require('gulp-nodemon');
-		const babel 	 = require('gulp-babel');
-		const cssmin 	 = require('gulp-cssmin');
-		const rename 	 = require("gulp-rename");
-		const less 		 = require('gulp-less');
-		const source 	 = require('vinyl-source-stream');
-		const browserify = require('browserify');
-		const watchify 	 = require('watchify');
 		const exec 		 = require('child_process').exec;
-		const map 		 = require('map-stream');
-		const redis 	 = require('redis');
+		const gulp 		 = require('gulp');
+
+		let Assign, nodemon, babel, cssmin, rename, less, source,
+			browserify, watchify, map, redis;
 
 	// Variables --------------------------------------------------------------------------------
 
@@ -65,7 +57,6 @@
 						cache: {},
 						packageCache: {},
 						fullPaths: false,
-						// plugin: [watchify],
 						debug: false
 					},
 					mini:  {
@@ -118,6 +109,20 @@
 					}
 				}[opsys];
 
+		function Ready() { try {
+			Assign 		 = require('object-assign');
+			nodemon 	 = require('gulp-nodemon');
+			babel 		 = require('gulp-babel');
+			cssmin 		 = require('gulp-cssmin');
+			rename 		 = require("gulp-rename");
+			less 		 = require('gulp-less');
+			source 		 = require('vinyl-source-stream');
+			browserify 	 = require('browserify');
+			watchify 	 = require('watchify');
+			map 		 = require('map-stream');
+			redis 		 = require('redis');
+		} catch (e) {};	}; Ready();
+
 // ----------------------------------------------------------------------------------------------
 // Handle Bundle Gulp ---------------------------------------------------------------------------
 
@@ -157,6 +162,15 @@
 
 		gulp.task( 'init', SERIES('framework','config'));
 
+		// Install NPM Packages
+			gulp.task(  'npm', (done) => {
+				exec('npm install', (err, stdo, stde) => {
+					if (!!err) LOG(`NPM.ERR: ${JSNS(err)}`);
+					else LOG(stdo||stde);
+					Ready(); done();
+				});
+			});
+
 		// Install Bower Components
 			gulp.task( 'bower', (done) => {
 				exec('bower install', (err, stdo, stde) => {
@@ -165,7 +179,7 @@
 				}); done();
 			});
 
-		gulp.task('setup', SERIES('bower','init'));
+		gulp.task('setup', SERIES('npm','bower','init'));
 
 	// Convert ----------------------------------------------------------------------------------
 
