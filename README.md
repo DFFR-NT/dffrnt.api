@@ -29,7 +29,7 @@ A project for easy-_ish_ **API** creation and configuration.
 
 ```
 Parent_Folder/ (Name NOT important)
-   ├── dffrnt.api/ (Project-Root; Name also NOT important)
+   ├── dffrnt.api/ (Project-Root; any no-spaced Name will do)
    │   ├── config/ (Reference only; no need to create these!)
    │   └── ...
    └── REDIS/ (Name important! Don't change this name!!)
