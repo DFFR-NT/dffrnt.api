@@ -81,6 +81,11 @@ Parent_Folder/ (Name NOT important)
       | └ [less-plugin-clean-css](https://www.npmjs.com/package/less-plugin-clean-css) | A `gulp` plugin for `LESS -> CSS` using `clean-css`. |
       | [nodemon](https://www.npmjs.com/package/nodemon) | Will watch for files changes and `restart` your application. |
 
+1. Run `sudo chown -R USER:GROUP /usr/local/lib/node_modules/gulp-cli`, where:
+   * `USER` is your non-elevated `username`, and;
+   * `GROUP` is the main `group` the `username` is tied to.
+   * If using `Windows`, the process will be different.
+   * This allows the next part to go smoothly.
 1. Run `npm link gulp && gulp setup` to:
    * Install the `npm packages`.
    * Install the `bower components`.
