@@ -53,7 +53,7 @@ module.exports = function (global) {
 		global.GenID 	= require('password-generator');
 		global.DOHASH 	= function (obj) { return JSON.stringify(btoa(jsn)); };
 		global.UNHASH 	= function (hsh) { return JSON.parse(atob(hsh)); 	 };
-		global.classN 	= require('classNames');
+		global.classN 	= require('classnames');
 		global.ALLSTUFF = Map({});
 
 
@@ -907,6 +907,4 @@ module.exports = function (global) {
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		global.ITEMS = ITEMS; global.ITEM = ITEM;
-
-
 };
