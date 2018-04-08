@@ -1,6 +1,6 @@
 {
 	"name": "dffrnt.api",
-	"version": "1.5.0",
+	"version": "1.5.1",
 	"description": "A project for easy-ish API creation and configuration.",
 	"main": "main/server.js",
 	"author": {
@@ -16,10 +16,10 @@
 	"dependencies": {
 		"bower": "1.8.2",
 		"classnames": "^2.2.3",
-		"dffrnt.confs": "DFFR-NT/dffrnt.confs#v1.5.0",
-		"dffrnt.model": "DFFR-NT/dffrnt.model#v1.5.0",
-		"dffrnt.route": "DFFR-NT/dffrnt.route#v1.5.0",
-		"dffrnt.utils": "DFFR-NT/dffrnt.utils#v1.5.0",
+		"dffrnt.confs": "DFFR-NT/dffrnt.confs#v1.5.1",
+		"dffrnt.model": "DFFR-NT/dffrnt.model#v1.5.1",
+		"dffrnt.route": "DFFR-NT/dffrnt.route#v1.5.1",
+		"dffrnt.utils": "DFFR-NT/dffrnt.utils#v1.5.1",
 		"gulp": "^4.0.0",
 		"gulp-nodemon": "^2.0.3",
 		"keymirror": "*",

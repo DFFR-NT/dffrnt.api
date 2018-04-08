@@ -26,3 +26,4 @@
 /*.sublime-*
 public/js/bundle.js
 **/package-lock.json
+**/.DS_Store
