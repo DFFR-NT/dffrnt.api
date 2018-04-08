@@ -69,23 +69,16 @@ Parent_Folder/ (Name NOT important)
        
       | Package | Description |
       | --- | --- |
-      | [babel-core](https://www.npmjs.com/package/babel-core) | A next-gen (`ES6`) JavaScript compiler. |
-      | └ [babel-cli](https://www.npmjs.com/package/babel-cli) | The `command line` tool for `babel`. |
+      | [babel-cli](https://www.npmjs.com/package/babel-cli) | A next-gen (`ES6`) JavaScript compiler. |
       | [bower](https://www.npmjs.com/package/bower) | A package-manager for Browser `plugins`. |
       | [cors](https://www.npmjs.com/package/cors) | A `middleware` for `Cross-Origin Resource Sharing`. |
       | [depcheck](https://www.npmjs.com/package/depcheck) | A tool for analyzing the `dependencies` in a project |
       | [express](https://www.npmjs.com/package/express) | A fast, unopinionated, minimalist web framework for `NodeJS`. |
       | [gulp](https://www.npmjs.com/package/gulp) | A toolkit that helps automate development workflow `tasks`. |
-      | └ [gulp-cli](https://www.npmjs.com/package/gulp-cli) | The `command line` tool for `gulp`. |
       | [less](https://www.npmjs.com/package/less) | The dynamic `stylesheet` language. |
-      | └ [less-plugin-clean-css](https://www.npmjs.com/package/less-plugin-clean-css) | A `gulp` plugin for `LESS -> CSS` using `clean-css`. |
+      | [less-plugin-clean-css](https://www.npmjs.com/package/less-plugin-clean-css) | A `gulp` plugin for `LESS -> CSS` using `clean-css`. |
       | [nodemon](https://www.npmjs.com/package/nodemon) | Will watch for files changes and `restart` your application. |
 
-1. Run `sudo chown -R USER:GROUP /usr/local/lib/node_modules/gulp-cli`, where:
-   * `USER` is your non-elevated `username`, and;
-   * `GROUP` is the main `group` the `username` is tied to.
-   * If using `Windows`, the process will be different.
-   * This allows the next part to go smoothly.
 1. Run `npm link gulp && gulp setup` to:
    * Install the `npm packages`.
    * Install the `bower components`.

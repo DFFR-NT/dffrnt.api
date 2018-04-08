@@ -1992,7 +1992,7 @@
 		}
 		.jsonp div.value {
 			padding: 0 0 0 .25rem;
-			white-space: nowrap !important;
+			/*white-space: nowrap !important;*/
 			text-overflow: ellipsis !important;
 			overflow: hidden !important;
 			max-width: 50%;

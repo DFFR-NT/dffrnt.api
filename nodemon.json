@@ -5,7 +5,10 @@
 	"watch": [
 		"gulpfile.js",
 		"main/server.js",
-		"framework/",
+		"framework/dffrnt.confs/lib/",
+		"framework/dffrnt.model/lib/",
+		"framework/dffrnt.route/lib/",
+		"framework/dffrnt.utils/lib/",
 		"config/"
 	],
 	"restartable": "rs",
