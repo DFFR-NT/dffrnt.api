@@ -25,3 +25,4 @@
 !/public/less/LESS_FILES_HERE
 /*.sublime-*
 public/js/bundle.js
+**/package-lock.json
