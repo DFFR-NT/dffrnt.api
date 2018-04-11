@@ -1,5 +1,5 @@
-# dffrnt.api
-A project for easy-_ish_ **API** creation and configuration.
+# evectr.api
+The official **eVectr™** `API`.
 
 ## Contents
 
