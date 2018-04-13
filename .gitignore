@@ -1,3 +1,6 @@
+/.docs/*
+!/.docs/images
+!/.docs/node_modules.sh
 /config
 /framework
 /main/browser/lib/elements.js
@@ -27,3 +30,7 @@
 public/js/bundle.js
 **/package-lock.json
 **/.DS_Store
+**/.vscode
+**/jsconfig.json
+**/jsdoc.json
+**/.tern-project

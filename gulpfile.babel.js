@@ -35,7 +35,7 @@
 
 	// Configs ----------------------------------------------------------------------------------
 
-		const 	cfgfld	= './config';
+		const 	cfgfld	 = './config';
 		const 	pubFld 	= './public';
 		const 	brwFld 	= './main/browser';
 		const 	libFld 	= `${brwFld}/lib`;
