@@ -11,6 +11,7 @@ npm install -g \
 	gulp-cli@2.0.1 \
 	less@3.0.1 \
 	less-plugin-clean-css@1.5.1 \
-	nodemon@1.17.1;
+	nodemon@1.17.1 \
+	redis-commander@0.4.5;
 
 exit $?;
