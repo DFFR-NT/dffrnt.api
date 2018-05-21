@@ -581,6 +581,13 @@ module.exports = function (global) {
 						return callback(THS[k],k,i);
 					});
 				}, { E: 1, C: 0, W: 0 }),
+				filter: 	PROPS(function map (callback) {
+					var THS = this, rslt = [];
+					this.keys.map(function (k,i) {
+						var v = THS[k];
+						callback(v,k,i) && rslt.push(v);
+					}); return rslt;
+				}, { E: 1, C: 0, W: 0 }),
 				slice: 		PROPS(function slice (start, end) {
 					var THS = this; return this.keys.slice(start,end).map(function (k,i) {
 						return THS[k];
@@ -820,7 +827,7 @@ module.exports = function (global) {
 				inside: 	itmsGST('inside', 	true, true, true, false),
 				////////////////////////////////////////////////////////////////////////////////
 				value: 		PROPS({
-					get: function () { return this._value; },
+					get: function ( ) { return this._value; },
 					set: function (v) {
 						var ths = this, prnt = ths.parent, oter = this.iter,
 							iter = Iter.Is(v), val,
@@ -844,7 +851,10 @@ module.exports = function (global) {
 						} else { insert(); }
 						ths.size 	= ths.value.size||1;
 						ths.cache.value = (!!val.toObject ? val.toObject() : val);
-						ths.alone   = (!!!iter||(ths.type=='array'&&ths.size<2));
+						ths.alone   = (!!!iter||(
+							(ths.type=='array' && ths.size<2) &&
+							(val.filter(function(v){return!v.alone;}).length==0)
+						)	);
 					},
 				}, { E: 1, C: 0 }),
 				////////////////////////////////////////////////////////////////////////////////
@@ -852,43 +862,43 @@ module.exports = function (global) {
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////
 			ITEM = EXTEND(ITEM, function ITEM (name, value, config, template) {
 				// -------------------------------------------------------------
-				var id = getID(), len = (name||'').length, parent,
-					master, group, inside, max, pad, c, val;
+					var id = getID(), len = (name||'').length, parent,
+						master, group, inside, max, pad, c, val;
 				// -------------------------------------------------------------
-				parent = (config.parent || { path: [], master: id });
-				master = (config.master || parent.master);
-				group  = (config.group||{});
-				inside = (group.type||'null');
+					parent = (config.parent || { path: [], master: id });
+					master = (config.master || parent.master);
+					group  = (config.group||{});
+					inside = (group.type||'null');
 				// -------------------------------------------------------------
-				max = !!group ? group.max : 0;
-				pad = (len<max) ? new Array((max+1)-len) : [];
+					max = !!group ? group.max : 0;
+					pad = (len<max) ? new Array((max+1)-len) : [];
 				// -------------------------------------------------------------
-				c = Assign({
-					master: master,	iter: 	false,
-					id: 	id,		name: 	name,
-					path: 	[], 	pad: 	pad,
-					size: 	0, 		alone: 	true,
-					type: 	'null', inside: inside,
-					value: 	null,   toObject: this.toObject.bind(this)
-				}, template||{});
+					c = Assign({
+						master: master,	iter: 	false,
+						id: 	id,		name: 	name,
+						path: 	[], 	pad: 	pad,
+						size: 	0, 		alone: 	true,
+						type: 	'null', inside: inside,
+						value: 	null,   toObject: this.toObject.bind(this)
+					}, template||{});
 				// -------------------------------------------------------------
-				DEFINE(this, {
-					cache: 	 PROPS(c, 			{ E: 0, C: 0, W: 1 }),
-					parent:  PROPS(parent, 		{ E: 0, C: 1 }),
-					group: 	 PROPS(group, 		{ E: 0, C: 1 }),
-					id: 	 PROPS(c.id, 		{ E: 1 }),
-					name: 	 PROPS(c.name, 		{ E: 1 }),
-					master:  PROPS(c.master, 	{ E: 1 }),
-					pad: 	 PROPS(c.pad, 		{ E: 1, W: 1, C: 1 }),
-					_value:  PROPS(c.value, 	{ E: 0, W: 1, C: 1 })
-				});
+					DEFINE(this, {
+						cache: 	 PROPS(c, 			{ E: 0, C: 0, W: 1 }),
+						parent:  PROPS(parent, 		{ E: 0, C: 1 }),
+						group: 	 PROPS(group, 		{ E: 0, C: 1 }),
+						id: 	 PROPS(c.id, 		{ E: 1 }),
+						name: 	 PROPS(c.name, 		{ E: 1 }),
+						master:  PROPS(c.master, 	{ E: 1 }),
+						pad: 	 PROPS(c.pad, 		{ E: 1, W: 1, C: 1 }),
+						_value:  PROPS(c.value, 	{ E: 0, W: 1, C: 1 })
+					});
 				// -------------------------------------------------------------
-				if (!!!template) { this.value = value; }
-				else {
-					this.path  	= parent.path.concat([name]);
-					this._value = val = ITEMS.getItems(value, this);
-					this.cache.value = (!!val.toObject ? val.toObject() : val);
-				}
+					if (!!!template) { this.value = value; }
+					else {
+						this.path  	= parent.path.concat([name]);
+						this._value = val = ITEMS.getItems(value, this);
+						this.cache.value = (!!val.toObject ? val.toObject() : val);
+					}
 			}, {
 				deleteProperty: function deleteProperty (target, prop) {
 					if (prop in target) {

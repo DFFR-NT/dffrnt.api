@@ -44,7 +44,7 @@ module.exports = function (Reflux, Actions, Spaces, IOs) {
 		const 	Selector = {
 					Match: 	/%[(]([A-Z]+)[)][ds]/g,
 					Parent: 'var[data-page="%(PAGE)d"]#nav ~ main#main',
-					Levels: 'var[data-%d="%s"]#nav ~ main#main .button[data-level="%d"][data-name="%s"] > .button > label',
+					Levels: 'var[data-1="%(ROOT)s"][data-%d="%s"]#nav ~ main#main .button[data-root="%(ROOT)s"][data-level="%d"][data-name="%s"] > .button > label',
 					Hidden: Imm.Map({
 						Root: 	'nav.sidebar > div[data-root="%(ROOT)s"].button',
 						Rest: 	'nav.sidebar > div[data-root="%(ROOT)s"].button *',
@@ -237,7 +237,10 @@ module.exports = function (Reflux, Actions, Spaces, IOs) {
 					// ----------------------------------------------------------
 					keys.PATH.map(function (v,i,a) {
 						var prp = [['display','table',false,true],['line-height',lnh[i]+'rem',false,true],['opacity',1,false,true]];
-						res.push(CSS.Declare(lvl, prp).replace(/%d/g,i+1).replace(/%s/g,v).replace(/\n([\t]|(?=\}))/g, ' '));
+						res.push(CSS.Declare(lvl, prp)  .replace(mch, rep)
+									.replace(/%d/g,i+1) .replace(/%s/g,v)
+									.replace(/\n([\t]|(?=\}))/g, ' ')
+								);
 					});
 					// ----------------------------------------------------------
 					return res;

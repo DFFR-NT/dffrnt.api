@@ -2060,19 +2060,19 @@
 
 	/******************************************************************/
 	/* TRUNCATION */
-		.jsonp li.array ul.value[data-cnt="1"] {
+		.jsonp li.array > span.obrckt.alone ~ ul.value[data-cnt="1"] {
 			align-self: flex-start;
 			width: auto !important;
 		}
-		.jsonp li.array ul.value[data-cnt="1"] > li {
+		.jsonp li.array > span.obrckt.alone ~ ul.value[data-cnt="1"] > li {
 			align-items: flex-start;
 			margin: 0 !important;
 			padding: 0 .25rem;
 		}
-		.jsonp li.array ul.value[data-cnt="1"] > li > label {
+		.jsonp li.array > span.obrckt.alone ~ ul.value[data-cnt="1"] > li > label {
 			display: none;
 		}
-		.jsonp li.array ul.value[data-cnt="1"] > li .value {
+		.jsonp li.array > span.obrckt.alone ~ ul.value[data-cnt="1"] > li .value {
 			min-width: 100% !important;
 			padding: 0 .25rem;
 		}
