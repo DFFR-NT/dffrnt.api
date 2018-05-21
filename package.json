@@ -1,12 +1,18 @@
 {
-	"name": "dffrnt.api",
+	"name": "evectr.api",
 	"version": "1.5.2",
-	"description": "A project for easy-ish API creation and configuration.",
+	"description": "The official eVectr™ API.",
 	"main": "main/server.js",
 	"author": {
 		"name": "Arian Johnson",
 		"email": "arian.johnson@icloud.com"
 	},
+	"contributors": [
+		{
+			"name": "Marc Djoudi",
+			"email": "marcdjoudi@gmail.com"
+		}
+	],
 	"homepage": "https://github.com/DFFR-NT/dffrnt.api#readme",
 	"repository": "DFFR-NT/dffrnt.api",
 	"bugs": {
