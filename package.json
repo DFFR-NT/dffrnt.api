@@ -10,7 +10,7 @@
 	"homepage": "https://github.com/DFFR-NT/dffrnt.api#readme",
 	"repository": {
 		"type": "git",
-    	"url": "https://github.com/DFFR-NT/dffrnt.api"
+    	"url": "https://github.com/DFFR-NT/dffrnt.api.git"
 	},
 	"bugs": {
 		"url": "https://github.com/DFFR-NT/dffrnt.api/issues"
