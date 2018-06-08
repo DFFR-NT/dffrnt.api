@@ -16,7 +16,7 @@
 	"homepage": "https://github.com/eVectr/evectr.api#readme",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/eVectr/evectr.api"
+		"url": "https://github.com/eVectr/evectr.api.git"
 	},
 	"bugs": {
 		"url": "https://github.com/eVectr/evectr.api/issues"
