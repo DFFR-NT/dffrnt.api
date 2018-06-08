@@ -16,6 +16,7 @@
 		"url": "https://github.com/DFFR-NT/dffrnt.api/issues"
 	},
 	"license": "MIT",
+	"cpu" : [ "x64" ],
 	"os" : [ "darwin", "linux", "Win32" ],
 	"engines" : { 
 		"node" : "<=8.9.4",
