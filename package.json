@@ -1,7 +1,7 @@
 {
 	"name": "evectr.api",
 	"version": "1.5.2",
-	"description": "The official eVectr™ API.",
+	"description": "The official eVectr™ API..",
 	"main": "main/server.js",
 	"author": {
 		"name": "Arian Johnson",
