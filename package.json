@@ -7,10 +7,10 @@
 		"name": "Arian Johnson",
 		"email": "arian.johnson@icloud.com"
 	},
-	"homepage": "https://github.com/DFFR-NT/dffrnt.api",
+	"homepage": "https://github.com/DFFR-NT/dffrnt.api#readme",
 	"repository": {
 		"type": "git",
-    	"url": "git://github.com/DFFR-NT/dffrnt.api.git"
+    	"url": "https://github.com/DFFR-NT/dffrnt.api"
 	},
 	"bugs": {
 		"url": "https://github.com/DFFR-NT/dffrnt.api/issues"
