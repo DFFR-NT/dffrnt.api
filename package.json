@@ -26,7 +26,7 @@
 		"dffrnt.model": "DFFR-NT/dffrnt.model#v1.5.2",
 		"dffrnt.route": "DFFR-NT/dffrnt.route#v1.5.2",
 		"dffrnt.utils": "DFFR-NT/dffrnt.utils#v1.5.2",
-		"gulp": "^4.0.0",
+		"gulp": "4.0.0",
 		"gulp-nodemon": "^2.0.3",
 		"keymirror": "*",
 		"md5": "^2.2.1",
