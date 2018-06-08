@@ -13,10 +13,13 @@
 			"email": "marcdjoudi@gmail.com"
 		}
 	],
-	"homepage": "https://github.com/DFFR-NT/dffrnt.api#readme",
-	"repository": "DFFR-NT/dffrnt.api",
+	"homepage": "https://github.com/eVectr/evectr.api",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/eVectr/evectr.api.git"
+	},
 	"bugs": {
-		"url": "https://github.com/DFFR-NT/dffrnt.api/issues"
+		"url": "https://github.com/eVectr/evectr.api/issues"
 	},
 	"license": "MIT",
 	"dependencies": {
