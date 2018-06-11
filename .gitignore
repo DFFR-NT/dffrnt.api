@@ -7,7 +7,7 @@
 /main/browser/lib/src/*
 !/main/browser/lib/spaces/lib/api-explorer.js
 !/main/browser/lib/spaces/lib/dft-page.js
-!/main/browser/lib/src/elements.js
+!/main/browser/lib/elements.js
 /node_modules
 /public/comps/*
 !/public/comps/COMPS_GO_HERE
