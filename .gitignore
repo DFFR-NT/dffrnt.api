@@ -1,7 +1,7 @@
 /.docs/*
 !/.docs/images
 !/.docs/node_modules.sh
-/config/database.cfg.js
+/config/database.cfg*
 /framework
 /main/browser/lib/elements.js
 /main/browser/lib/src/*
