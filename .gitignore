@@ -1,13 +1,13 @@
 /.docs/*
 !/.docs/images
 !/.docs/node_modules.sh
-/config
+/config/database.cfg.js
 /framework
 /main/browser/lib/elements.js
 /main/browser/lib/src/*
+/main/browser/lib/spaces/lib/*
 !/main/browser/lib/spaces/lib/api-explorer.js
 !/main/browser/lib/spaces/lib/dft-page.js
-!/main/browser/lib/src/elements.js
 /node_modules
 /public/comps/*
 !/public/comps/COMPS_GO_HERE
