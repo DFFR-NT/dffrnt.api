@@ -1,6 +1,7 @@
 /.docs/*
 !/.docs/images
 !/.docs/node_modules.sh
+/config/database.cfg.js
 /framework
 /main/browser/lib/elements.js
 /main/browser/lib/src/*
@@ -33,4 +34,3 @@ public/js/bundle.js
 **/jsconfig.json
 **/jsdoc.json
 **/.tern-project
-config/database.cfg.js
