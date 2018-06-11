@@ -34,3 +34,4 @@ public/js/bundle.js
 **/jsconfig.json
 **/jsdoc.json
 **/.tern-project
+config/database.cfg.js
