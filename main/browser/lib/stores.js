@@ -279,7 +279,6 @@ module.exports = function (Reflux, Actions, Spaces, IOs) {
 					!!!noProg && Actions.App.progress(10, { paused:true });
 					requestAnimationFrame((function () {
 						// Actions.App.progress(50);
-						console.log(data);
 						Access.emit(point, data);
 					}).bind(this));
 				},
