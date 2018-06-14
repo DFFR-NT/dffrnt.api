@@ -2,6 +2,14 @@
 	"name": "evectr.api",
 	"version": "1.5.2",
 	"description": "The official eVectr™ API.",
+	"keywords": [
+		"api",
+		"api-server",
+		"api-wrapper",
+		"api-rest",
+		"dffrnt",
+		"evectr"
+	],
 	"main": "main/server.js",
 	"author": {
 		"name": "Arian Johnson",
