@@ -8,11 +8,20 @@
 		"email": "arian.johnson@icloud.com"
 	},
 	"homepage": "https://github.com/DFFR-NT/dffrnt.api#readme",
-	"repository": "DFFR-NT/dffrnt.api",
+	"repository": {
+		"type": "git",
+    	"url": "https://github.com/DFFR-NT/dffrnt.api.git"
+	},
 	"bugs": {
 		"url": "https://github.com/DFFR-NT/dffrnt.api/issues"
 	},
 	"license": "MIT",
+	"cpu" : [ "x64" ],
+	"os" : [ "darwin", "linux", "Win32" ],
+	"engines" : { 
+		"node" : "<=8.9.4",
+		"npm": "<=5.6.0"
+	},
 	"dependencies": {
 		"bower": "1.8.2",
 		"classnames": "2.2.5",

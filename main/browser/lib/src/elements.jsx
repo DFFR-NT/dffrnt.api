@@ -2021,7 +2021,7 @@ module.exports = function (global) {
 		function SockRConnErr(error) { Actions.App.disconnect({result:{code:4}}); }
 
 
-		global.Access = IO('/api-accessor');
+		// global.Access = IO('/api-accessor');
 		// Access.on('connect', 		Actions.App.connect);
 		Access.on('room', 			SockAuthRoom);
 		Access.on('receive', 		Actions.Data.receive);
@@ -2031,7 +2031,7 @@ module.exports = function (global) {
 			// Access.on('error', 			SockConnErr);
 		Access.on('reconnect_error',SockRConnErr);
 
-		global.Socket = IO(NMESPC);
+		// global.Socket = IO(NMESPC);
 		Socket.on('connect', 		Actions.Content.setup);
 		Socket.on('setup', 	 		Actions.Content.build);
 		Socket.on('receive', 		Actions.Data.receive);
