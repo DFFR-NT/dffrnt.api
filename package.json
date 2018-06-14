@@ -2,6 +2,13 @@
 	"name": "dffrnt.api",
 	"version": "1.5.2",
 	"description": "A project for easy-ish API creation and configuration.",
+	"keywords": [
+		"api",
+		"api-server",
+		"api-wrapper",
+		"api-rest",
+		"dffrnt"
+	],
 	"main": "main/server.js",
 	"author": {
 		"name": "Arian Johnson",
@@ -31,7 +38,7 @@
 	"dependencies": {
 		"bower": "1.8.2",
 		"classnames": "2.2.5",
-		"dffrnt.confs": "DFFR-NT/dffrnt.confs#v1.5.2",
+		"dffrnt.confs": "git://github.com/DFFR-NT/dffrnt.confs.git#v1.5.2",
 		"dffrnt.model": "1.5.2",
 		"dffrnt.route": "^1.5.2",
 		"dffrnt.utils": "1.5.2",
