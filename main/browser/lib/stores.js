@@ -139,6 +139,7 @@ module.exports = function (Reflux, Actions, Spaces, IOs) {
 					}
 				},
 				onDisconnect: 	 function (pay) {
+					// console.log(pay);
 					var code 	= pay.result.code,
 						status 	= !isNaN(code),
 						idented = this.isIdentified(),
@@ -279,7 +280,7 @@ module.exports = function (Reflux, Actions, Spaces, IOs) {
 					!!!noProg && Actions.App.progress(10, { paused:true });
 					requestAnimationFrame((function () {
 						// Actions.App.progress(50);
-						console.log(data);
+						console.log('AUTH', point, data);
 						Access.emit(point, data);
 					}).bind(this));
 				},
@@ -288,6 +289,7 @@ module.exports = function (Reflux, Actions, Spaces, IOs) {
 					this.stats.Request.Emmitted = data;
 					requestAnimationFrame((function () {
 						!!!noProg && Actions.App.progress(50);
+						console.log('SEND', point, data);
 						Socket.emit(point, data);
 					}).bind(this));
 				},
