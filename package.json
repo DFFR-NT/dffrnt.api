@@ -1,6 +1,6 @@
 {
 	"name": "evectr.api",
-	"version": "1.5.2",
+	"version": "1.5.3",
 	"description": "The official eVectr™ API.",
 	"keywords": [
 		"api",
@@ -39,10 +39,10 @@
 	"dependencies": {
 		"bower": "1.8.2",
 		"classnames": "2.2.5",
-		"dffrnt.confs": "git://github.com/DFFR-NT/dffrnt.confs.git#v1.5.2",
-		"dffrnt.model": "1.5.2",
-		"dffrnt.route": "1.5.2",
-		"dffrnt.utils": "1.5.2",
+		"dffrnt.confs": "1.5.3",
+		"dffrnt.model": "1.5.3",
+		"dffrnt.route": "1.5.3",
+		"dffrnt.utils": "1.5.3",
 		"gulp": "4.0.0",
 		"gulp-nodemon": "2.2.1",
 		"keymirror": "0.1.1",
