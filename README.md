@@ -1,9 +1,9 @@
 # dffrnt.api
 A project for easy-_ish_ **API** creation and configuration.
 
-![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/latest-v1.5.3-blue.svg?longCache=true)
-![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/node-%3C=v8.9.4-lightgrey.svg?longCache=true)
-![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/npm-%3C=v5.6.0-lightgrey.svg?longCache=true)
+![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/latest-v1.5.4-blue.svg?longCache=true)
+![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/node-%3E=v8.9.4-lightgrey.svg?longCache=true)
+![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/npm-%3E=v5.6.0-lightgrey.svg?longCache=true)
 
 ## Contents
 
