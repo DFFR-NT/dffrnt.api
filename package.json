@@ -1,6 +1,6 @@
 {
 	"name": "evectr.api",
-	"version": "1.5.3",
+	"version": "1.5.4",
 	"description": "The official eVectr™ API.",
 	"keywords": [
 		"api",
@@ -13,15 +13,17 @@
 	"main": "main/server.js",
 	"author": {
 		"name": "Arian Johnson",
-		"email": "arian.johnson@icloud.com"
+		"email": "arian.johnson@icloud.com",
+		"url": "https://github.com/LeShaunJ"
 	},
 	"contributors": [
 		{
 			"name": "Marc Djoudi",
-			"email": "marcdjoudi@gmail.com"
+			"email": "marcdjoudi@gmail.com",
+			"url": "https://github.com/mdjoudi"
 		}
 	],
-	"homepage": "https://github.com/eVectr/evectr.api#readme",
+	"homepage": "https://evectr.com",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/eVectr/evectr.api.git"
@@ -33,10 +35,10 @@
 	"dependencies": {
 		"bower": "1.8.2",
 		"classnames": "2.2.5",
-		"dffrnt.confs": "1.5.3",
-		"dffrnt.model": "1.5.3",
-		"dffrnt.route": "1.5.3",
-		"dffrnt.utils": "1.5.3",
+		"dffrnt.confs": "1.5.4",
+		"dffrnt.model": "1.5.4",
+		"dffrnt.route": "1.5.4",
+		"dffrnt.utils": "1.5.4",
 		"gulp": "4.0.0",
 		"gulp-nodemon": "2.2.1",
 		"keymirror": "0.1.1",
