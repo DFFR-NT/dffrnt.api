@@ -1647,6 +1647,7 @@
 			z-index: 0;
 			position: relative;
 			overflow: hidden;
+			overflow-y: auto;
 			margin-bottom: 1rem;
 			-webkit-flex-grow: 1; flex-grow: 1;
 			-webkit-overflow-scrolling: touch;

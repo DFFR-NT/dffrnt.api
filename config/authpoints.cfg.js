@@ -50,8 +50,11 @@
 									case !!!user: THS.ER(res, MSG.EXISTS,   {}, acct); break;;
 									default: acct = user.email_address;
 										THS.Profile(acct, true, res, user => {
-											req.session.user  = { acct:  user.Account, token: user.Token };
-											req.session.touch(); req.session.save();
+											req.session.user  = { 
+												id:		user.Scopes.user_id, 
+												acct:	user.Account, 
+												token:	user.Token 
+											};	req.session.touch(); req.session.save();
 											THS.OK(res, MSG.LOADED.temp, user, null, req.query);
 											LG.Server(sid, 'Loaded', acct, 'green');
 										}); break;;
@@ -94,18 +97,19 @@
 							var THS  = this,
 								sess = req.session,
 								sid  = req.sessionID,
-								acct = sess.user.acct,
+								user = sess.user,
+								uid  = user.id,
+								acct = user.acct,
 								head = req.headers,
+								spc  = req.originalUrl,
 								qry  = req.query||{},
+								prm  = req.params||{},
 								SSD  = { sessionID: sid }, ERR;
 							// ----------------------------------------------------------
 							switch (true) {
-								case head.token!=sess.user.token:
-									acct = sess.user.acct;
-									ERR  = MSG.TOKEN;  break;;
-								default: ERR = MSG.TOKEN;
-									acct = sess.user.acct;
-									THS.Renew(req); next(); return;
+								case head.token!=user.token: ERR  = MSG.TOKEN; break;;
+								case !!spc.match(/^\/update/): prm.uids = uid; qry.single = 'true';
+								default: THS.Renew(req); next(); return;
 							}
 							// Handle Errors --------------------------------------------
 							THS.ER(res, ERR, SSD, (acct||''), qry);

@@ -6,7 +6,7 @@ module.exports = {
 	Data:  function () { return this.Help; },
 	Build: function (Actions, Stores) {
 		return function (res) {
-			var THS = this, content = Imm.Map(res), page = 0,
+			var THS = this, content = Imm.OrderedMap(res), page = 0,
 				buttons = {}, pages = {}, nav = {}, styles = [],
 				dtn = {subs:{}}, btnOnClick = function (e) {
 					Actions.Nav.select(this.state.page);
@@ -14,7 +14,8 @@ module.exports = {
 				};
 			// -----
 			content.map(function (space, nmspc, i) {
-				var reqs = Imm.Map(space);
+				var reqs = Imm.OrderedMap(space)
+
 				reqs.reverse().map(function (req, act, a) {
 					var isAuth = (act.indexOf('/auth/') > -1);
 					if (!isAuth) {
@@ -27,6 +28,7 @@ module.exports = {
 							btn   = buttons; page++;
 						// -----
 						for (var l=0; l < level-1; l++) btn = (btn[paths[l]]||dtn).subs;
+
 						// -----
 						btn[endpt] = {
 							key: 	id,
@@ -40,6 +42,7 @@ module.exports = {
 							onClck: btnOnClick,
 							subs: 	{}
 						}
+
 						// -----
 						nav[act] = { path: act, page: page };
 						// -----
@@ -58,7 +61,7 @@ module.exports = {
 										body: 		{
 											headers: 	req.headers,
 											params: 	req.params,
-											fills: 		Imm.Map(req.params).map(function (v,k) {
+											fills: 		Imm.OrderedMap(req.params).map(function (v,k) {
 															return '';
 														}).toObject(),
 											examples: 	req.examples
@@ -86,7 +89,7 @@ module.exports = {
 
 			// -----
 			Stores.App.updateStore({
-				page: 		{ num: 2, pth: ['Search'] },
+				page: 		{ num: 1, pth: ['Users'] },
 				styles: 	THS.getSortStyle(styles),
 				content: 	{
 					built: 		true,
