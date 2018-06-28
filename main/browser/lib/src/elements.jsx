@@ -71,14 +71,11 @@ module.exports = function (global) {
 			return ImmIs(FromJS(this.state), FromJS(nextState)) === false;
 		}
 		function onSocket 	(props) {
-			var links, socks;
+			var links, socks; 
 			try {
 				links = props.value.replace('SocketLink','')
 								   .replace(/\\"/g,'"');
 				socks = JSON.parse(links);
-				// console.log('SOCKET:', {
-				// 	Links: links, Socks: socks
-				// })
 			} catch (e) {
 				console.log(e, links, socks)
 			}
@@ -1168,8 +1165,8 @@ module.exports = function (global) {
 					body 	= props.body,
 					fills 	= body.fills,
 					point 	= '/'+props.paths.join('/').toLowerCase(),
-					params 	= Imm.Map(body.params).filter(function (v,k) { return v.to == 'param' }),
-					querys 	= Imm.Map(body.params).filter(function (v,k) { return v.to == 'query' }),
+					params 	= Imm.OrderedMap(body.params).filter(function (v,k) { return v.to == 'param' }),
+					querys 	= Imm.OrderedMap(body.params).filter(function (v,k) { return v.to == 'query' }),
 					qryCnt 	= 0, prmCnt = 0,
 					exmpls 	= { point: point, items: body.examples },
 					frmCls 	= classN({ selected: props.selected }, 'draft'),
@@ -1251,8 +1248,9 @@ module.exports = function (global) {
 					isLst = isTyp('List', props),
 					focal = name+'Foc',
 					input = Assign({
-						name: name, id: fid,
+						name: name, id: fid, 
 						placeholder: (props.default || name),
+						'data-default': props.default,
 						'data-priority': reqrd, 'data-to': props.to,
 						className: 'paramInput'+(isLst?' taggee':'')
 					}, (isNum ? {
@@ -1276,6 +1274,7 @@ module.exports = function (global) {
 										id: 				input.id+'Npt',
 										placeholder: 		input.placeholder,
 										'data-priority': 	input['data-priority'],
+										'data-default': 	input['data-default'],
 										'data-to': 			input['data-to'],
 										type: 				'hidden',
 									},

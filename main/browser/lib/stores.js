@@ -139,7 +139,6 @@ module.exports = function (Reflux, Actions, Spaces, IOs) {
 					}
 				},
 				onDisconnect: 	 function (pay) {
-					// console.log(pay);
 					var code 	= pay.result.code,
 						status 	= !isNaN(code),
 						idented = this.isIdentified(),
@@ -280,7 +279,6 @@ module.exports = function (Reflux, Actions, Spaces, IOs) {
 					!!!noProg && Actions.App.progress(10, { paused:true });
 					requestAnimationFrame((function () {
 						// Actions.App.progress(50);
-						console.log('AUTH', point, data);
 						Access.emit(point, data);
 					}).bind(this));
 				},
@@ -289,7 +287,6 @@ module.exports = function (Reflux, Actions, Spaces, IOs) {
 					this.stats.Request.Emmitted = data;
 					requestAnimationFrame((function () {
 						!!!noProg && Actions.App.progress(50);
-						console.log('SEND', point, data);
 						Socket.emit(point, data);
 					}).bind(this));
 				},
@@ -356,6 +353,7 @@ module.exports = function (Reflux, Actions, Spaces, IOs) {
 						id  = qry.id,
 						to  = qry.to,
 						at  = qry.at,
+						up  = JSON.parse(qry.update||false),
 						pth = [id].concat(to),
 						itm = this.items[id],
 						raw = this.getAt(data,at).toJS(),
@@ -406,23 +404,24 @@ module.exports = function (Reflux, Actions, Spaces, IOs) {
 							HAS:  this.has(id,dta,pfx),
 							ADD:  add,
 							REM:  rem,
+							QRY:  qry,
+							UP:   up,
 						});
 
-						if (dfm.size == 0) {
-							console.log('\t\t\tRECYCLE')
-							state = itm.getIn(to);
-						} else if (dfm.size == 1 || str.size == 0) {
-							// var obj = Imm.fromJS(data,FJS).setIn(pfx,mrg).getIn(at).toJS()
-							console.log('\t\t\tSET-ITM') //, obj)
-							state = itm.setIn(to,raw) //,obj);
-						} else if (pfx.has(to.last)) {
+						/*if (dfm.size == 0) {
+						 	console.log('\t\t\tRECYCLE')
+						 	state = itm.getIn(to);
+						} else*/ if (dfm.size == 1 || str.size == 0) {
+							console.log('\t\t\tSET-ITM', raw)
+							state = itm.setIn(to,raw)
+						} else /*if (pfx.has(to.last))*/ {
 							var obj = Imm.fromJS(data,FJS).setIn(pfx,mrg).getIn(at).toJS()
 							console.log('\t\t\tSET-PAY', obj)
 							state = itm.setIn(to,obj);
-						} else {
+						} /*else {
 							console.log('\t\t\tUPDATER')
 							state = itm.update(to,dfm,mrg.toJS(),pfx);
-						}
+						}*/
 
 						// console.log('ITEMS:', itm.store.toJS());
 						console.log('STATE:', { id: state.Child.id, path: pth, state: state });
