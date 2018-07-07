@@ -405,7 +405,7 @@ module.exports = function (global) {
 			},
 			InValid: function (nput, name, fill) {
 				// -----------------------------------------------
-				let dflt = INPUT.Attr(nput,'data-default');
+				var dflt = INPUT.Attr(nput,'data-default');
 				fill.push({
 					name: 	name,
 					type: 	INPUT.Attr(nput,'data-priority'),
