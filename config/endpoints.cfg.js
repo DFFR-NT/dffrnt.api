@@ -23,25 +23,58 @@
 
 	module.exports = function () { // DO NOT CHANGE/REMOVE!!!
 		
-		const rgnme = /^[a-z]+(?:-[a-z]+)?(?: (?:[sj]r.|[0-9](?:st|nd|rd|th)))?$/i
-		const multi = function (param, name) { 
-			return function Format(cls) {
-				var regx = [/^\d+@\d+$/,/^\d+$/], 
-					json = `d.profile_${name}`
-					rslt = '', k = "'$.", d = `\n${'    '.dup(6)}`,
-					edts = SQL.BRKT(SQL.LIST([cls[param]],
-							[{ split: ORS, equals:  true, join: `,${k}`,  match: regx[0] }],
-							[],[(m=>(s=m.split('@'),`${s[1]}',${s[0]}`))]
-						),[`${k}`,""], ","), 
-					rems = SQL.BRKT(SQL.LIST([cls[param]],
-							[{ split: ORS, equals:  true, join: `',${k}`, match: regx[1] }],
-							[],[]),[`${k}`,"'"], ",");
-				rslt = (!!edts ? `JSON_SET(${d}\t${json},${d}    ${edts}${d})`: json);
-				if (!!rems) rslt = `JSON_REMOVE(${rslt},${rems})`;				
-				return rslt;
-			}
-		};
+		const 	rgnme = /^[a-z]+(?:-[a-z]+)?(?: (?:[sj]r.|[0-9](?:st|nd|rd|th)))?$/i,
+				uname = function uname(param) { 
+							return function Format(cls) { 
+								return ((cls[param]||'').match(/^[\w_.-]+$/)||[''])[0]; 
+							};	
+						},
+				email = function email(param) { 
+							return function Format(cls) { 
+								return ((cls[param]||'').match(/^[\w_.-]+@[\w_.-]+\.[A-z]+$/)||[''])[0]; 
+							};	
+						},
+				multi = function multi(param, name) { 
+							return function Format(cls) {
+								let regx = [/^\d+@\d+$/,/^\d+$/], 
+									json = `d.profile_${name}`,
+									rslt = '', k = "'$.", d = `\n${'    '.dup(6)}`,
+									edts = SQL.BRKT(SQL.LIST([cls[param]],
+											[{ split: ORS, equals:  true, join: `,${k}`,  match: regx[0] }],
+											[],[(m=>(s=m.split('@'),`${s[1]}',${s[0]}`))]
+										),[`${k}`,""], ","), 
+									rems = SQL.BRKT(SQL.LIST([cls[param]],
+											[{ split: ORS, equals:  true, join: `',${k}`, match: regx[1] }],
+											[],[]),[`${k}`,"'"], ",");
+								rslt = (!!edts ? `JSON_SET(${d}\t${json},${d}    ${edts}${d})`: json);
+								if (!!rems) rslt = `JSON_REMOVE(${rslt},${rems})`;				
+								return rslt;
+							};
+						},
+				image = function image(param, name) { return {
+							Default: 'NULL',
+							Format(cls) { 
+								return ((cls[param]||'').match(/^\d+$/)||[''])[0]; 
+							},
+							Desc: 	{
+								type: "Number", to: 'query', required: true,
+								description: "A valid {{Image ID}}", matches: {
+									[`${name} Image`]: `Updates the {{${name} Image}} of the {{User}} (([0-9]+))`
+								},
+							}
+						};	},
+				pword = function pword(required, param) { return {
+							Default: '',
+							Format(cls) { return (cls[param]||''); },
+							Desc: 	{
+								type: "Password", to: 'query', required: required,
+								description: "A valid {{Password}}", matches: {
+									"Password": 'Inserts/Updates a {{Password}} ((\\S+))'
+								},
+							}
+						};	};
 		
+		/////////////////////////////////////////////////////////////////////////////////////
 		return { 
 			// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 			__DEFAULTS: 	{
@@ -63,23 +96,55 @@
 						required: true, matches: { 'User ID': 'Matches ANY of the {{UID}} Items (([0-9]+))' },
 					}
 				},
-				eImage: 	{
-					Default: 'NULL',
-					Format 	(cls) { return cls.image; },
+				MD5: {
+					Default: '',
+					Format 	(cls) { return ((cls.md5||'').match(/^[A-Fa-f0-9]+$/)||[''])[0]; },
 					Desc: 	{
-						type: "Number", to: 'query', required: true,
-						description: "A valid {{Image}}",
-						matches: {
-							'Image': 'Matches the {{Image}} of the {{User}} (([A-z0-9_.-]+))'
+						description: "An {{MD5 Checksum}} Record", 
+						type: "Text", to: 'param', required: true, matches: {
+							'MD5 Checksum': 'The {{MD5 Checksum}} of the {{User}} (([\\w@_.-]+))'
 						},
 					}
 				},
+				Email: {
+					Default: '',
+					Format:  email('email'),
+					Desc: 	 {
+						description: "The user's {{Email Address}}", 
+						type: "Email", to: 'param', required: null, matches: {
+							'Email Address': 'The {{Email Address}} to check (([\\w@_.-]+))'
+						},
+					}
+				},
+				Username: {
+					Default: '',
+					Format:  uname('username'),
+					Desc: 	 {
+						description: "The user's {{Display Name}}", 
+						type: "Text", to: 'param', required: null, matches: {
+							'Display Name': 'The {{Display Name}} to check (([\\w_.-]+))'
+						},
+					}
+				},
+				eEmail: {
+					Default: '',
+					Format 	(cls) { return ((cls.eemail||'').match(/^[\w_.-]+@[\w_.-]+\.[A-z]+$/)||[''])[0]; },
+					Desc: 	{
+						description: "The user's {{Email Address}}", 
+						type: "Text", to: 'query', required: false, matches: {
+							'Email Address': 'The {{Email Address}} of the {{User}} (([\\w@_.-]+))'
+						},
+					}
+				},
+				ePicture: 	image('epicture','Picture'),
+				eCover: 	image('ecover',  'Cover'),
 				eHIDs: 		{
 					Default: '',
 					Format: multi('ehids','hobbies'),
 					Desc: 	{
-						type: { List: "Text", Separator: ORS }, to: 'query', required: false,
-						description: "The user's {{Hobby Edits}}", matches: {
+						type: { List: "Number", Separator: ORS }, 
+						description: "The user's {{Hobby Edits}}",
+						style: 'full', to: 'query', required: false, matches: {
 							'Hobby Edits': 'Matches the {{Hobby Edits}} for the {{User}} (([0-9]+(?:@[0-9]+)?))'
 						},
 					}
@@ -88,8 +153,9 @@
 					Default: '',
 					Format: multi('elids','languages'),
 					Desc: 	{
-						type: { List: "Text", Separator: ORS }, to: 'query', required: false,
-						description: "The user's {{Languages Edits}}", matches: {
+						type: { List: "Number", Separator: ORS }, 
+						description: "The user's {{Languages Edits}}", 
+						style: 'full', to: 'query', required: false, matches: {
 							'Languages Edits': 'Updates the {{Languages Edits}} for the {{User}} (([0-9]+(?:@[0-9]+)?))'
 						},
 					}
@@ -97,67 +163,71 @@
 				eNIDs: 		{
 					Default: '',
 					Format(cls) {
-						var regx = [/^\d+@[0-1]$/,/^\d+$/,/('\$\[[0-1]\]',\d+)/g], 
-							prms = cls.enids.slice(0,2),
-							rslt = '', k = "'$[", d = `\n${'    '.dup(6)}`,
+						var regx = [/^\d+@[0-1]$/,/^\d+$/,/('\$\[[0-1]\]'(?:,\d+|(?=,|$)))/g], 
+							prms = (cls.enids||'').match(/^((?:[\d@]+(?:;|$)){0,2})/)[1],
+							json = `d.profile_nationalities`, k = "'$[", 
+							rslt = '', d = `\n${'    '.dup(6)}`, t = ' '.dup(8), e = ' '.dup(4)
 							edts = (SQL.BRKT(SQL.LIST([prms],
 									[{ split: ORS, equals: true, join: `,${k}`,  match: regx[0] }],
 									[],[(m=>(s=m.split('@'),`${s[1]}]',${s[0]}`))]
-									),[`${k}`,""], ",").match(regx[2])||[]).join(','), 
+									),[`${k}`,""], ",").match(regx[2])||[]).join(','),
 							rems = (SQL.BRKT(SQL.LIST([prms],
 									[{ split: ORS, equals: true, join: `',${k}`, match: regx[1] }],
-									[],[]),[`${k}`,"'"], ",").match(regx[2])||[]).join(',');
-						rslt = (!!edts ? `JSON_SET(${d}\t${json},${d}    ${edts}${d})`: json);
-						if (!!rems) rslt = `JSON_REMOVE(${rslt},${rems})`;				
+									[],[]),[`${k}`,"]'"], ",").match(regx[2])||[]).join(',');
+						rslt = (!!edts ? `JSON_SET(${d}${t}${json},${d}${e.dup(3)} ${edts}${d}${e})`: json);
+						if (!!rems) rslt = `JSON_REMOVE(${rslt},  ${rems})`;				
 						return rslt;
 					},
 					Desc: 	{
-						type: { List: "Text", Separator: ORS }, to: 'query', required: false,
-						description: "Up to 2 {{Nationalities Edits}}", matches: {
+						type: { List: "Number", Separator: ORS }, 
+						description: "Up to 2 {{Nationalities Edits}}", 
+						style: 'half', to: 'query', required: false, matches: {
 							'Nationalities Edits': 'Updates the {{Nationalities Edits}} for the {{User}} (([0-9]+(?:@[0-9]+)?))'
 						},
 					}
 				},
 				eRID: 		{
 					Default: 'NULL',
-					Format 	(cls) { return cls.rid; },
+					Format 	(cls) { return cls.erid||this.Default; },
 					Desc: 	{
-						type: "Number", to: 'query', required: false,
-						description: "The user's {{Religion ID}}",
-						matches: {
+						description: "The user's {{Religion ID}}", style: 'half', 
+						type: "Number", to: 'query', required: false, matches: {
 							'Religion ID': 'Matches the {{Religion ID}} of the {{User}} (([0-9]+))'
 						},
 					}
 				},
 				eGID: 		{
-					Default: 39,
-					Format 	(cls) { return cls.gid; },
+					Default: 'NULL',
+					Format 	(cls) { return cls.egid||this.Default; },
 					Desc: 	{
-						type: "Number", to: 'query', required: false,
-						description: "The user's {{Gender ID}}",
-						matches: {
+						description: "The user's {{Gender ID}}", style: 'half', 
+						type: "Number", to: 'query', required: false, matches: {
 							'Gender ID': 'Matches the {{Gender ID}} of the {{User}} (([0-9]+))'
 						},
 					}
 				},
 				eSex: 		{
-					Default: 'NULL',
-					Format 	(cls) { return (cls.sex.match(/^M|F|I$/)||[this.Default])[0]; },
+					Default: '',
+					Format 	(cls) { return (cls.esex||'').match(/^(?:M|F|I|)$/)[0]; },
 					Desc: 	{
-						type: "Text", to: 'query', required: false,
-						description: "The user's {{Sex}}",
-						matches: {
+						description: "The user's {{Sex}}", type: { Select: [
+							{ value: 'M', label: 'Male'		},
+							{ value: 'F', label: 'Female'	},
+							{ value: 'I', label: 'Intersex'	},
+						] }, style: 'half', to: 'query', required: false, matches: {
 							'Sex': 'Matches the {{Sex}} of the {{User}} ((M|F|I))'
 						},
 					}
 				},
 				eMarital: 	{
-					Default: 'NULL',
-					Format 	(cls) { return (cls.marital.match(/^M|R|S$/)||[this.Default])[0]; },
+					Default: '',
+					Format 	(cls) { return (cls.emarital||'').match(/^(?:M|R|S|)$/)[0]; },
 					Desc: 	{
-						type: "Text", to: 'query', required: false,
-						description: "The user's {{Marital Status}}",
-						matches: {
+						description: "The user's {{Marital Status}}", type: { Select: [
+							{ value: 'M', label: 'Married'		},
+							{ value: 'R', label: 'Relationship'	},
+							{ value: 'S', label: 'Single'		},
+						] }, style: 'half', to: 'query', required: false, matches: {
 							'Marital Status': 'Matches the {{Marital Status}} of the {{User}} ((M|R|S))'
 						},
 					}
@@ -166,7 +236,7 @@
 					Default: '',
 					Format 	(cls) { return cls.edescr; },
 					Desc: 	{
-						type: "Number", to: 'query', required: false,
+						type: "TextArea", to: 'query', style: 'full', required: false,
 						description: "The user's {{Description}}", matches: {
 							'Description': 'Updates the {{Description}} of the {{User}} (([\S\s]+))'
 						},
@@ -176,7 +246,7 @@
 					Default: '',
 					Format 	(cls) { return cls.eedu; },
 					Desc: 	{
-						type: "Number", to: 'query', required: false,
+						type: "TextArea", to: 'query', style: 'full', required: false,
 						description: "The user's {{Education}}", matches: {
 							'Education': 'Updates the {{Education}} of the {{User}} (([\S\s]+))'
 						},
@@ -186,7 +256,7 @@
 					Default: '',
 					Format 	(cls) { return cls.eedudescr; },
 					Desc: 	{
-						type: "Number", to: 'query', required: false,
+						type: "TextArea", to: 'query', style: 'full', required: false,
 						description: "The user's {{Education Description}}", matches: {
 							'Education Description': 'Updates the {{Education Description}} of the {{User}} (([\S\s]+))'
 						},
@@ -194,6 +264,141 @@
 				},
 			},
 			// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+			Signup: 		{
+				Actions: 	{
+					// ======================================================================
+					Valid: {
+						Scheme: '/:uid(\\d+)/',
+						Limits: ['Tries/Day'],
+						Doc: 	{
+							Methods: 	Docs.Kinds.GET,
+							Headers: 	{},
+							Examples: 	{
+								"/:uid:14": "Returns TRUE if the {{User}} with the {{UID}}, 14, is validated; otherwise, FALSE."
+							},
+						},
+						Query: [
+							"SELECT (CASE WHEN u.validated = 1",
+							"             THEN 'true' ELSE 'false'",
+							"       END) AS validated",
+							"FROM   users u WHERE u.user_id = :UID:"
+						],
+						Params: { ID: true, UID: true },
+						Parse  	(res) { return res[0].validated; }
+					},
+					// ======================================================================
+					Validate: {
+						Scheme: '/:md5([A-Fa-f0-9]+)/',
+						Limits: ['Tries/Day'],
+						Doc: 	{ 
+							Methods: 	Docs.Kinds.GET, 
+							Headers: 	{ token: Docs.Headers.Token },
+							Examples: 	{ "/:md5:a35f64aa9fb86ba2b556d7d585122a4a": 
+								"Validates the new {{User}} account with the {{Validation Record}}, 'a35f64aa9fb86ba2b556d7d585122a4a'",
+							}
+						},
+						Query: [
+							"SET @VREC = (",
+							"    SELECT  v.user_fk FROM user_validations v",
+							"    WHERE   v.validation_auth = ':MD5:'",
+							");",
+							"UPDATE users u SET u.validated = 1 WHERE u.user_id = @VREC;",
+							":/Signup/Valid:"
+						],
+						Params: { MD5: true },
+						Parse  	(res) { return res[0].exists; }
+					},
+					// ======================================================================
+					"/": {
+						Scheme: '/',
+						Limits: ['New/Day'],
+						Doc: 	{ Methods: Docs.Kinds.POST, Examples: {} },
+						Query: [
+							"INSERT INTO users (",
+							"    email_address, user_pass",
+							") SELECT i.email, MD5(i.pass) FROM (",
+							"    SELECT ':EEMAIL:'   AS email,",
+							"           ':PASSWORD:' AS  pass,",
+							"           ':CONFPASS:' AS  conf",
+							") AS i WHERE NOT EXISTS(",
+							"    SELECT u.user_id FROM users u ",
+							"    WHERE  u.email_address = i.email",
+							") AND NOT (",
+							"    NULLIF(i.pass,'') OR NULLIF(i.conf,'')",
+							") IS NULL AND i.pass = i.conf;",
+							":/Exists/Email:"
+						],
+						Params: { 
+							eEmail: true, 
+							Password: pword(true, 'password'), 
+							ConfPass: pword(true, 'confpass') 
+						},
+						Parse  	(res) { return res[0].exists; }
+					}
+				},
+				Errors: 	{ BAD_REQ: ['/'] }
+			},
+			Exists: 		{
+				Actions: 	{
+					// ======================================================================
+					Email: {
+						Scheme: '/:email([\\w_.-]+@[\\w_.-]+\\.[A-z]+)/',
+						Doc: 	{
+							Methods: 	Docs.Kinds.GET,
+							Headers: 	{},
+							Examples: 	{
+								"/:email:leshaun.j@mail.com": "Determines if the {{Email}}, 'leshaun.j@mail.com' is tied to a {{User}}",
+							},
+						},
+						Query: [
+							"SELECT (CASE WHEN EXISTS(",
+							"	SELECT email_address FROM users",
+							"	WHERE email_address = ':EMAIL:'",
+							") THEN 'true' ELSE 'false' END) AS `exists`;"
+						],
+						Params: { ID: true, Email: true },
+						Parse  	(res) { return res[0].exists; }
+					},
+					// ======================================================================
+					Username: {
+						Scheme: '/:username([\\w_.-]+)/',
+						Doc: 	{
+							Methods: 	Docs.Kinds.GET,
+							Headers: 	{},
+							Examples: 	{
+								"/:username:LeShaunJ": "Determines if the {{Display Name}}, 'LeShaunJ' is tied to a {{User}}",
+							},
+						},
+						Query: [
+							"SELECT (CASE WHEN EXISTS(",
+							"	 SELECT display_name FROM users",
+							"	 WHERE display_name = ':USERNAME:'",
+							") THEN 'true' ELSE 'false' END) AS `exists`;"
+						],
+						Params: { ID: true, Username: true },
+						Parse  	(res) { return res[0].exists; }
+					},
+					// ======================================================================
+					"/": {
+						Scheme: '/:username([\\w_.-]+)|:email([\\w_.-]+@[\\w_.-]+\\.[A-z]+)/',
+						Doc: 	{
+							Methods: 	Docs.Kinds.GET,
+							Headers: 	{},
+							Examples: 	{
+								"/:username:LeShaunJ": "Determines if the {{Display Name}}, 'LeShaunJ' is tied to a {{User}}",
+								"/:email:leshaun.j@mail.com": "Determines if the {{Email}}, 'leshaun.j@mail.com' is tied to a {{User}}",
+							},
+						},
+						Query: [
+							":/Exists/Username:",
+							":/Exists/Email:"
+						],
+						Params: { ID: true, Username: true, Email: true },
+						Parse  	(res) { return (!!res.filter(v=>JSON.parse(v.exists)).length).toString(); }
+					}
+				},
+				Errors: 	{ BAD_REQ: ['/'] }
+			},
 			User: 			{
 				Actions: 	{
 					// ======================================================================
@@ -211,32 +416,22 @@
 						},
 						Query: [
 							"SELECT    v.user_fk as user_id, JSON_OBJECT(",
-							"              'id',      f.id,    'kind',  f.type,",
-							"              'field',   f.field, 'name',  f.name,",
-							"              'level',   f.level, 'value', f.value,",
-							"              'follows', COALESCE(f.follows,''),",
-							"              'status',  IF(v.value & f.value, 'true', 'false')",
-							"          ) As visibility",
+							"              'visibility', JSON_COMPACT(CONCAT('[',",
+							"                  GROUP_CONCAT(JSON_OBJECT(",
+							"                      'id',      f.id,    'kind',  f.type,",
+							"                      'field',   f.field, 'name',  f.name,",
+							"                      'level',   f.level, 'value', f.value,",
+							"                      'follows', COALESCE(f.follows,''),",
+							"                      'status',  IF(v.value & f.value, 'true', 'false')",
+							"                  ) SEPARATOR ','),",
+							"          ']'))) As settings",
 							"FROM      user_visibilities   v",
 							"LEFT JOIN visibility_fields   f ON f.level > 1",
 							"WHERE     v.user_fk IN (:UIDS:)",
-							"ORDER BY  v.user_fk, f.id"
+							"GROUP BY  v.user_fk ORDER BY f.id"
 						],
-						Params: { UIDs: true, Visible: true, ID: true },
+						Params: { UIDs: true, ID: true, Page: true, Limit: true },
 						Links: 	[],
-						Parse  	(res) {
-							var RQ  =this.RQ,
-								lst =Imm.fromJS(res.map(v=>Object.assign({},v))),
-								ret =lst.toList()
-										.groupBy(v=>v.get('user_id'))
-										.map((v,k)=>Imm.Map({ 
-											user_id: k, settings: { 
-											visibility: v.map(l=>l.get('visibility'))
-														.groupBy(v=>`$${v.get('field')}`)
-														.map(l=>l.get(0).delete('field'))
-										}	})  ).toList().toJS();
-							return JSN.Objectify(ret, RQ.Key, RQ.Columns, this.QY);
-						},
 						Key: 	'user_id',
 					},
 					// ======================================================================
@@ -251,8 +446,8 @@
 							},
 						},
 						Query: [
-							"SELECT     u.user_id, JSON_INSERT(",
-							"               JSON_OBJECT(",
+							"SELECT     u.user_id, JSON_COMPACT(",
+							"               JSON_INSERT(JSON_OBJECT(",
 							"                   'email',      u.email_address,",
 							"                   'timezone',   s.timezone,",
 							"                   'language',   l.language_name,",
@@ -262,7 +457,7 @@
 							"               '$.modes.admin',         s.is_admin,",
 							"               '$.modes.transactional', s.is_transactional,",
 							"               '$.modes.provider',      s.is_provider",
-							"           ) AS settings",
+							"           )) AS settings",
 							"FROM       users 			u",
 							"INNER JOIN user_settings 	s ON u.user_id      = s.user_fk",
 							"INNER JOIN languages       l ON s.language_id  = l.language_id",
@@ -270,11 +465,7 @@
 							"GROUP BY   u.user_id :LIMIT: :PAGE:"
 
 						],
-						Params: {
-							UIDs: true,
-							Visible: true, ID:    true, 
-							Page:    true, Limit: true
-						},
+						Params: { UIDs: true, ID: true, Page: true, Limit: true },
 						Links: 	[],
 						Key: 	'user_id',
 					},
@@ -292,7 +483,7 @@
 							},
 						},
 						Query: [
-							"SELECT     u.user_fk AS user_id, IF(v.value & 8192, ",
+							"SELECT     u.user_fk AS user_id, JSON_COMPACT(IF(v.value & 8192, ",
 							"               JSON_OBJECT('misc', JSON_OBJECT(",
 							"           		'description', u.profile_description",
 							"           	)),",
@@ -302,28 +493,14 @@
 							"               	)), '$.misc.education', JSON_OBJECT(),",
 							"               	'$.misc.education.institutions', u.profile_education,",
 							"               	'$.misc.education.description',  u.profile_edu_descr",
-							"           )) AS details",
+							"           ))) AS details",
 							"FROM       user_profile_details  AS u",
-							"LEFT  JOIN user_visibilities     AS v ON u.user_fk = v.user_fk AND :VISIBLE:",
+							"LEFT  JOIN user_visibilities     AS v ON u.user_fk = v.user_fk",
 							"WHERE      u.user_fk IN (:UIDS:)",
 							"GROUP BY   u.user_fk :LIMIT: :PAGE:",
 						],
-						Params: {
-							UIDs: true,
-							Visible: true, ID:    true, 
-							Page:    true, Limit: true
-						},
+						Params: { UIDs: true, ID: true, Page: true, Limit: true },
 						Links: 	[],
-						Parse  	(res) {
-							var RQ  = this.RQ, keys = Object.keys(res); 
-							keys.map((k,i)=>{ 
-								let det = JSON.parse(res[k].details),
-									ins = det.misc.education.institutions;
-								det.misc.education.institutions = ins.split(/\n|,\s+/g);
-								res[k].details = det;
-							});
-							return JSN.Objectify(res, RQ.Key, RQ.Columns, this.QY);
-						},
 						Key: 	'user_id',
 					},
 					// ======================================================================
@@ -350,15 +527,11 @@
 							"           	'$.identity.marital',      getVis(v.value, 4096, u.profile_marital_status)",
 							"           ) AS details",
 							"FROM       user_profile_details  AS u",
-							"LEFT  JOIN user_visibilities     AS v ON u.user_fk = v.user_fk AND :VISIBLE:",
+							"LEFT  JOIN user_visibilities     AS v ON u.user_fk = v.user_fk",
 							"INNER JOIN genders               AS g ON u.profile_identity = g.gender_id",
 							"WHERE      u.user_fk IN (:UIDS:) :LIMIT: :PAGE:",
 						],
-						Params: {
-							UIDs: true,
-							Visible: true, ID:    true, 
-							Page:    true, Limit: true
-						},
+						Params: { UIDs: true, ID: true, Page: true, Limit: true },
 						Links: 	[],
 						Key: 	'user_id',
 					},
@@ -382,16 +555,12 @@
 							"           	'$.religion.label', r.religion_name",
 							"           ) AS details",
 							"FROM       user_profile_details  AS u",
-							"LEFT  JOIN user_visibilities     AS v ON u.user_fk = v.user_fk AND :VISIBLE:",
+							"LEFT  JOIN user_visibilities     AS v ON u.user_fk = v.user_fk",
 							"INNER JOIN religions             AS r ON u.profile_religion = r.religion_id",
 							"                                     AND !(COALESCE(v.value,0) & 512)",
 							"WHERE      u.user_fk IN (:UIDS:) :LIMIT: :PAGE:",
 						],
-						Params: {
-							UIDs: true,
-							Visible: true, ID:    true, 
-							Page:    true, Limit: true
-						},
+						Params: { UIDs: true, ID: true, Page: true, Limit: true },
 						Links: 	[],
 						Key: 	'user_id',
 					},				
@@ -423,11 +592,7 @@
 							"WHERE      u.user_fk IN (:UIDS:)",
 							"GROUP BY   u.user_fk :LIMIT: :PAGE:"
 						],
-						Params: {
-							UIDs: true,
-							Visible: true, ID:    true, 
-							Page:    true, Limit: true
-						},
+						Params: { UIDs: true, ID: true, Page: true, Limit: true },
 						Links: 	[],
 						Key: 	'user_id',
 					},
@@ -463,11 +628,7 @@
 							"WHERE      u.user_fk IN (:UIDS:)",
 							"GROUP BY   u.user_fk :LIMIT: :PAGE:",
 						],
-						Params: {
-							UIDs: true,
-							Visible: true, ID:    true, 
-							Page:    true, Limit: true
-						},
+						Params: { UIDs: true, ID: true, Page: true, Limit: true },
 						Links: 	[],
 						Key: 	'user_id',
 					},
@@ -507,11 +668,7 @@
 							"WHERE      u.user_fk IN (:UIDS:)",
 							"GROUP BY   u.user_fk :LIMIT: :PAGE:",
 						],
-						Params: {
-							UIDs: true,
-							Visible: true, ID:    true, 
-							Page:    true, Limit: true
-						},
+						Params: { UIDs: true, ID: true, Page: true, Limit: true },
 						Links: 	[],
 						Key: 	'user_id',
 					},
@@ -539,11 +696,7 @@
 							"WHERE      u.user_id IN (:UIDS:)",
 							":LIMIT: :PAGE:"
 						],
-						Params: {
-							UIDs: true,
-							Visible: true, ID:    true, 
-							Page:    true, Limit: true
-						},
+						Params: { UIDs: true, ID: true, Page: true, Limit: true },
 						Links: 	[],
 						Key: 	'user_id',
 					},
@@ -565,14 +718,10 @@
 							"               'cover',   u.profile_cover",
 							"           ) AS photos",
 							"FROM       user_profile_details  AS u",
-							"WHERE      u.user_fk IN (:UIDS:)",
+							"WHERE      u.user_fk IN (:UIDS:);;",
 							":LIMIT: :PAGE:",
 						],
-						Params: {
-							UIDs: true,
-							Visible: true, ID:    true, 
-							Page:    true, Limit: true
-						},
+						Params: { UIDs: true, ID: true, Page: true, Limit: true },
 						Links: 	[],
 						Key: 	'user_id',
 					},
@@ -621,7 +770,7 @@
 							"           getVis(v.value, 16, u.birth_date) AS birth_date,",
 							"           u.inserted_at   AS member_since",
 							"FROM       users           AS u",
-							"LEFT  JOIN user_visibilities  v ON u.user_id = v.user_fk AND :VISIBLE:",
+							"LEFT  JOIN user_visibilities  v ON u.user_id = v.user_fk",
 							"LEFT  JOIN search_locale   AS l ON u.location = l.id",
 							"LEFT  JOIN regions         AS r ON r.id = l.region_id",
 							"LEFT  JOIN countries       AS f ON f.id = r.country_id",
@@ -645,8 +794,7 @@
 									},
 								}
 							},
-							Single: true, Visible: true, ID: true, 
-							Page:   true, Limit:   true
+							Single: true, ID: true, Page: true, Limit: true
 						},
 						Links: 	[],
 						Parse  	(res) {
@@ -672,6 +820,7 @@
 					// ======================================================================
 					Visibility: {
 						Scheme: '/:uids(\\d*)/',
+						Limits: ["Tries/Second"],
 						Sub: 	['settings'],
 						Routes: ['settings'],
 						Doc: 	{
@@ -690,35 +839,25 @@
 						Params: { 
 							eVisibles: {
 								Default: -1,
-								Format 	(cls) { return (!NaN(cls.evisibles) ? cls.evisibles : this.Default); },
+								Format 	(cls) { 
+									let val = cls.evisibles, dft = this.Default;
+									return (!isNaN(val)&&val%8===0?val:dft); 
+								},
 								Desc: 	{
-									type: "Text", to: 'query', required: false,
 									description: "The user's {{Timezone}}",
-									matches: {
+									type: "Text", to: 'query', required: false, matches: {
 										'Timezone': 'Updates the {{Timezone}} of the {{User}} ((M|R|S))'
 									},
 								}
 							}, UIDs: true, Single: true 
 						},
 						Links: 	[],
-						Parse  	(res) {
-							var RQ  =this.RQ,
-								lst =Imm.fromJS(res.map(v=>Object.assign({},v))),
-								ret =lst.toList()
-										.groupBy(v=>v.get('user_id'))
-										.map((v,k)=>Imm.Map({ 
-											user_id: k, settings: { 
-											visibility: v.map(l=>l.get('visibility'))
-														.groupBy(v=>`$${v.get('field')}`)
-														.map(l=>l.get(0).delete('field'))
-										}	})  ).toList().toJS();
-							return JSN.Objectify(ret, RQ.Key, RQ.Columns, this.QY);
-						},
 						Key: 	'user_id',
 					},
 					// ======================================================================
 					Settings: {
 						Scheme: '/:uids(\\d*)/',
+						Limits: ["Tries/Second"],
 						Doc: 	{
 							Methods: 	Docs.Kinds.POST,
 							Headers: 	{ token: Docs.Headers.Token },
@@ -727,49 +866,38 @@
 							},
 						},
 						Query: [
-							"UPDATE     user_settings s SET",
-							// "INNER JOIN users 	      u ON s.user_fk = u.user_id",
-							// "           u.email_address    = COALESCE(NULLIF(':EEMAIL:',  ''), u.email_address),",
+							"UPDATE     user_settings s",
+							"INNER JOIN users         u ON s.user_fk = u.user_id",
+							"SET        u.email_address    = COALESCE(NULLIF(':EEMAIL:',  ''), u.email_address),",
 							"           s.timezone         = COALESCE(NULLIF(':ETZONE:',  ''), s.timezone),",
-							"           s.language         = COALESCE(NULLIF( :ELANG:,    -1), s.language),",
+							"           s.language_id      = COALESCE(NULLIF( :ELANG:,    -1), s.language_id),",
 							"           s.is_provider      = COALESCE(NULLIF( :EPROVIDER:,-1), s.is_provider),",
 							"           s.is_transactional = COALESCE(NULLIF( :ETRANSACT:,-1), s.is_transactional)",
 							"WHERE      s.user_fk IN (:UIDS:);",
 							":/User/Settings:"
 						],
 						Params: { 
-							// eEmail: {
-								// Default: '',
-								// Format 	(cls) { return ((cls.eemail||'').match(/^[\w_.-]+@[\w_.-]+\.[A-z]+$/)||[''])[0]; },
-								// Desc: 	{
-									// type: "Text", to: 'query', required: false,
-									// description: "The user's {{Email Address}}",
-									// matches: {
-										// 'Email Address': 'Updates the {{Email Address}} of the {{User}} ((M|R|S))'
-									// },
-								// }
-							// },
+							eEmail: true,
 							eTZone: {
-								Default: 'UTC',
+								Default: '',
 								Format 	(cls) { 
-									return cls.etzone; 
+									let val = (cls.etzone||this.Default);
+									return (TZ.zones[val]||val); 
 								},
 								Desc: 	{
-									type: "Text", to: 'query', required: false,
 									description: "The user's {{Timezone}}",
-									matches: {
-										'Timezone': 'Updates the {{Timezone}} of the {{User}} ((M|R|S))'
+									type: "Text", to: 'query', required: false, matches: {
+										'Timezone': 'Updates the {{Timezone}} of the {{User}} (([\\w@/_-]+))'
 									},
 								}
 							},
 							eLang: {
 								Default: -1,
-								Format 	(cls) { return (!NaN(cls.elang) ? cls.elang : this.Default); },
+								Format 	(cls) { return (!isNaN(cls.elang) ? cls.elang : this.Default); },
 								Desc: 	{
-									type: "Number", to: 'query', required: false,
 									description: "The user's {{Site Language}}",
-									matches: {
-										'Site Language': 'Updates the {{Site Language}} of the {{User}} ((M|R|S))'
+									type: "Number", to: 'query', required: false, matches: {
+										'Site Language': 'Updates the {{Site Language}} of the {{User}} (([\\w(,) -]+))'
 									},
 								}
 							},
@@ -777,9 +905,8 @@
 								Default: -1,
 								Format 	(cls) { return Number(Boolean(cls.eprovider||this.Default)); },
 								Desc: 	{
-									type: "Number", to: 'query', required: false,
 									description: "The user's {{Provider Status}}",
-									matches: {
+									type: "Number", to: 'query', required: false, matches: {
 										'Provider Status': 'Updates the {{Provider Status}} of the {{User}} ((0|1|true|false))'
 									},
 								}
@@ -788,9 +915,8 @@
 								Default: -1,
 								Format 	(cls) { return Number(Boolean(cls.etransact||this.Default)); },
 								Desc: 	{
-									type: "Number", to: 'query', required: false,
 									description: "The user's {{Transaction Status}}",
-									matches: {
+									type: "Number", to: 'query', required: false, matches: {
 										'Transaction Status': 'Updates the {{Transaction Status}} of the {{User}} ((0|1|true|false))'
 									},
 								}
@@ -802,6 +928,7 @@
 					// ======================================================================
 					Education: {
 						Scheme: '/:uids(\\d*)/',
+						Limits: ["Tries/Second"],
 						Sub: 	['details'],
 						Routes: ['details'],
 						Doc: 	{
@@ -824,21 +951,12 @@
 						],
 						Params: { eEdu: true, eEduDescr: true, UIDs: true, Single: true },
 						Links: 	[],
-						Parse  	(res) {
-							var RQ  = this.RQ, keys = Object.keys(res); 
-							keys.map((k,i)=>{ 
-								let det = JSON.parse(res[k].details),
-									ins = det.misc.education.institutions;
-								det.misc.education.institutions = ins.split(/\n|,\s+/g);
-								res[k].details = det;
-							});
-							return JSN.Objectify(res, RQ.Key, RQ.Columns, this.QY);
-						},
 						Key: 	'user_id',
 					},
 					// ======================================================================
 					Description: {
 						Scheme: '/:uids(\\d*)/',
+						Limits: ["Tries/Second"],
 						Sub: 	['details'],
 						Routes: ['details'],
 						Doc: 	{
@@ -875,6 +993,7 @@
 					// ======================================================================
 					Marital: {
 						Scheme: '/:uids(\\d*)/',
+						Limits: ["Tries/Second"],
 						Sub: 	['details'],
 						Routes: ['details'],
 						Doc: 	{
@@ -887,8 +1006,8 @@
 						Query: [
 							"UPDATE     user_profile_details  AS d",
 							"SET        d.profile_marital_status = COALESCE(",
-							"               NULLIF(':EMARTIAL:',''),",
-							"               d.profile_marital_status)",
+							"               NULLIF(':EMARITAL:',''),d.profile_marital_status",
+							"           )",
 							"WHERE      d.user_fk IN (:UIDS:);",
 							":/User/Identity:"
 						],
@@ -899,6 +1018,7 @@
 					// ======================================================================
 					Sex: {
 						Scheme: '/:uids(\\d*)/',
+						Limits: ["Tries/Second"],
 						Sub: 	['details'],
 						Routes: ['details'],
 						Doc: 	{
@@ -910,9 +1030,7 @@
 						},
 						Query: [
 							"UPDATE     user_profile_details  AS d",
-							"SET        d.profile_sex   = COALESCE(",
-							"               NULLIF(':ESEX:',''),",
-							"               d.profile_sex)",
+							"SET        d.profile_sex = COALESCE(NULLIF(':ESEX:',''),d.profile_sex)",
 							"WHERE      d.user_fk IN (:UIDS:);",
 							":/User/Identity:"
 						],
@@ -923,6 +1041,7 @@
 					// ======================================================================
 					Gender: {
 						Scheme: '/:uids(\\d*)/',
+						Limits: ["Tries/Second"],
 						Sub: 	['details'],
 						Routes: ['details'],
 						Doc: 	{
@@ -934,9 +1053,9 @@
 						},
 						Query: [
 							"UPDATE     user_profile_details  AS d",
-							"INNER JOIN genders               AS g ON g.gender_id = :EGID:",
-							"SET        d.profile_identity = g.gender_id",
-							"WHERE      d.user_fk IN (:UIDS:);",
+							"LEFT  JOIN genders               AS g ON g.gender_id = :EGID:",
+							"SET        d.profile_identity = COALESCE(g.gender_id, d.profile_identity)",
+							"WHERE      d.user_fk         IN (:UIDS:);",
 							":/User/Identity:"
 						],
 						Params: { eGID: true, UIDs: true, Single: true },
@@ -946,6 +1065,7 @@
 					// ======================================================================
 					Religion: {
 						Scheme: '/:uids(\\d*)/',
+						Limits: ["Tries/Second"],
 						Sub: 	['details'],
 						Routes: ['details'],
 						Doc: 	{
@@ -957,9 +1077,9 @@
 						},
 						Query: [
 							"UPDATE     user_profile_details  AS d",
-							"INNER JOIN religions             AS r ON r.religion_id = :ERID:",
-							"SET        d.profile_religion =  r.religion_id",
-							"WHERE      d.user_fk          IN (:UIDS:);",
+							"LEFT  JOIN religions             AS r ON r.religion_id = :ERID:",
+							"SET        d.profile_religion = COALESCE(r.religion_id, d.profile_religion)",
+							"WHERE      d.user_fk         IN (:UIDS:);",
 							":/User/Religion:"
 						],
 						Params: { eRID: true, UIDs: true, Single: true },
@@ -969,6 +1089,7 @@
 					// ======================================================================
 					Nationalities: {
 						Scheme: '/:uids(\\d*)/',
+						Limits: ["Tries/Second"],
 						Sub: 	['details'],
 						Routes: ['details'],
 						Doc: 	{
@@ -982,7 +1103,7 @@
 							"UPDATE     user_profile_details AS u",
 							"INNER JOIN (",
 							"    SELECT     d.user_fk, CONCAT('[',",
-							"                   GROUP_CONCAT(h.nationality_id SEPARATOR ',\"'),",
+							"                   GROUP_CONCAT(h.nationality_id SEPARATOR ','),",
 							"               ']') as nationalities",
 							"    FROM       user_profile_details AS d",
 							"    INNER JOIN (",
@@ -1007,6 +1128,7 @@
 					// ======================================================================
 					Languages: {
 						Scheme: '/:uids(\\d*)/',
+						Limits: ["Tries/Second"],
 						Sub: 	['details'],
 						Routes: ['details'],
 						Doc: 	{
@@ -1040,7 +1162,7 @@
 							") P ON u.user_fk = P.user_fk",
 							"SET    u.profile_languages = P.languages",
 							"WHERE  u.user_fk = P.user_fk;",
-							":/User/Languages:;"
+							":/User/Languages:"
 						],
 						Params: { eLIDs: true, UIDs: true, Single: true },
 						Links: 	[],
@@ -1049,6 +1171,7 @@
 					// ======================================================================
 					Hobbies: {
 						Scheme: '/:uids(\\d*)/',
+						Limits: ["Tries/Second"],
 						Sub: 	['details'],
 						Routes: ['details'],
 						Doc: 	{
@@ -1082,7 +1205,7 @@
 							") P ON u.user_fk = P.user_fk",
 							"SET    u.profile_hobbies = P.hobbies",
 							"WHERE  u.user_fk = P.user_fk;",
-							":/User/Hobbies:;"
+							":/User/Hobbies:"
 						],
 						Params: { eHIDs: true, UIDs: true, Single: true },
 						Links: 	[],
@@ -1091,6 +1214,7 @@
 					// ======================================================================
 					Details: {
 						Scheme: '/:uids(\\d*)/',
+						Limits: ["Tries/Second"],
 						Doc: 	{
 							Methods: 	Docs.Kinds.POST,
 							Headers: 	{ token: Docs.Headers.Token },
@@ -1099,71 +1223,99 @@
 							},
 						},
 						Query: [
-							":/Update/Hobbies:;", 		":/Update/Languages:;",
-							":/Update/Nationalities:;",	":/Update/Religion:;",
-							":/Update/Sex:;",			":/Update/Marital:;",
-							":/Update/Gender:;",		":/Update/Description:;",
-							":/Update/Education:;",		":/User/Details:;",
+							":/Update/Hobbies:", 		":/Update/Languages:",
+							":/Update/Nationalities:",	":/Update/Religion:",
+							":/Update/Sex:",			":/Update/Marital:",
+							":/Update/Gender:",			":/Update/Description:",
+							":/Update/Education:"
 						],
 						Params: {
-							eHIDs:		true, eLIDs:	true,
-							eNIDs:		true, eRID:		true,
-							eMarital: 	true, eSex: 	true,
-							eGID: 		true, eEdu:		true, 
-							eEduDescr:	true, eDescr:	true,
+							eHIDs:		true, eLIDs:		true,
+							eNIDs:		true, eRID:			true,
+							eMarital: 	true, eSex: 		true,
+							eGID: 		true, eDescr:		true,
+							eEdu:		true, eEduDescr:	true, 
+							UIDs:		true, //Single:		true,
 						},
 						Links: 	[],
-						Key: 	'user_id',
+						Parse  	(res) { 
+							var ret = Imm.Map({}); res.map(v=>{
+								ret = ret.mergeDeep(Imm.fromJS(Imm.Map(v).toJS()))
+							}); return ret.toJS();
+						},
+						Key: 	'user_id'
 					},
 					// ======================================================================
 					Cover: {
 						Scheme: '/:uids(\\d*)/',
-						Sub: 	null,
+						Limits: ["Tries/Second"],
+						Sub: 	['photos'],
+						Routes: ['photos'],
 						Doc: 	{
 							Methods: 	Docs.Kinds.POST,
 							Headers: 	{ token: Docs.Headers.Token },
 							Examples: 	{
-								"/:uids:14": "Updates the {{Images}} of the {{User}} at the {{User ID}}, 14",
+								"/:uids:14": "Updates the {{Cover Image}} of the {{User}} at the {{User ID}}, 14",
 							},
 						},
 						Query: [
 							"UPDATE     user_profile_details  AS d",
-							"SET        d.profile_cover = COALESCE(",
-							"               NULLIF(':EIMAGE:',''),",
-							"               d.profile_cover)",
+							"LEFT  JOIN user_photos           AS i ON d.user_fk = i.user_fk",
+							"                                     AND i.id      = :ECOVER:",
+							"SET        d.profile_cover    = COALESCE(i.id, d.profile_cover)",
 							"WHERE      d.user_fk IN (:UIDS:);",
-							":/User:"
+							":/User/Photos:"
 						],
-						Params: { eImage: true, UIDs: true, Single: true },
+						Params: { eCover: true, UIDs: true, Single: true },
 						Links: 	[],
 						Key: 	'user_id',
 					},
 					// ======================================================================
 					Picture: {
 						Scheme: '/:uids(\\d*)/',
+						Limits: ["Tries/Second"],
+						Sub: 	['photos'],
+						Routes: ['photos'],
+						Doc: 	{
+							Methods: 	Docs.Kinds.POST,
+							Headers: 	{ token: Docs.Headers.Token },
+							Examples: 	{
+								"/:uids:14": "Updates the {{Profile Image}} of the {{User}} at the {{User ID}}, 14",
+							},
+						},
+						Query: [
+							"UPDATE     user_profile_details  AS d",
+							"LEFT  JOIN user_photos           AS i ON d.user_fk = i.user_fk",
+							"                                     AND i.id      = :EPICTURE:",
+							"SET        d.profile_picture  = COALESCE(i.id, d.profile_picture)",
+							"WHERE      d.user_fk IN (:UIDS:);",
+							":/User/Photos:"
+						],
+						Params: { ePicture: true, UIDs: true, Single: true },
+						Links: 	[],
+						Key: 	'user_id',
+					},
+					// ======================================================================
+					Photos: {
+						Scheme: '/:uids(\\d*)/',
+						Limits: ["Tries/Second"],
 						Sub: 	null,
 						Doc: 	{
 							Methods: 	Docs.Kinds.POST,
 							Headers: 	{ token: Docs.Headers.Token },
 							Examples: 	{
-								"/:uids:14": "Updates the {{Images}} of the {{User}} at the {{User ID}}, 14",
+								"/:uids:14": "Updates the {{Photos}} of the {{User}} at the {{User ID}}, 14",
 							},
 						},
-						Query: [
-							"UPDATE     user_profile_details  AS d",
-							"SET        d.profile_picture = COALESCE(",
-							"               NULLIF(':EIMAGE:',''),",
-							"               d.profile_picture)",
-							"WHERE      d.user_fk IN (:UIDS:);",
-							":/User:"
-						],
-						Params: { eImage: true, UIDs: true, Single: true },
+						Query: [":/Update/Picture:",":/Update/Cover:",":/User/Photos:"],
+						Params: { ePicture: true, eCover: true, UIDs: true, Single: true },
 						Links: 	[],
 						Key: 	'user_id',
 					},
 					// ======================================================================
 					"/": {
 						Scheme: '/:uids(\\d*)/',
+						Limits: ["Tries/Second"],
 						Sub: 	null,
 						Doc: 	{
 							Methods: 	Docs.Kinds.POST,
@@ -1187,8 +1339,8 @@
 						Params: {
 							eUserName: 	{
 								Default: 'NULL',
-								Format 	(cls) { return ((cls.eusername||'').match(/^[\w_.-]+$/)||[''])[0]; },
-								Desc: 	{
+								Format:  uname('eusername'),
+								Desc: 	 {
 									type: "Text", to: 'query', required: false,
 									description: "The user's {{Display Name}}", matches: {
 										'Display Name': 'Updates the {{Display Name}} of the {{User}} (([\\w_.-]+))'
@@ -1267,6 +1419,7 @@
 					// ======================================================================
 					Country: {
 						Scheme: '/:term([\\w\\d,;.-]+)/',
+						Limits: ["Constant/Second"],
 						Sub: 	['search'],
 						Routes: ['search'],
 						Doc: 	{
@@ -1319,6 +1472,7 @@
 					// ======================================================================
 					Region: {
 						Scheme: '/:term([\\w\\d,;.-]+)/',
+						Limits: ["Constant/Second"],
 						Sub: 	['search'],
 						Routes: ['search'],
 						Doc: 	{
@@ -1371,6 +1525,7 @@
 					// ======================================================================
 					City: {
 						Scheme: '/:term([\\w\\d,;.-]+)/',
+						Limits: ["Constant/Second"],
 						Sub: 	['search'],
 						Routes: ['search'],
 						Doc: 	{
@@ -1422,8 +1577,54 @@
 						Key: ''
 					},
 					// ======================================================================
+					Timezone: {
+						Scheme: '/:term(.+)/',
+						Limits: ["Constant/Second"],
+						Sub: 	null,
+						Doc: 	{
+							Methods: 	Docs.Kinds.GET,
+							Headers: 	{ token: Docs.Headers.Token },
+							Examples: 	{
+								"?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Users}} results per {{Page}}",
+							},
+						},
+						Query (cls) {
+							var TZone = Object.keys(TZ.zones), 
+								pgx   = /[^\d]/g, tgx = /(\[|[.({/})?+]|\])/g,
+								term  = new RegExp(`^(.*)(${cls.Term.replace(tgx,'\\$1')})(.*)$`),
+								page  = Number(cls.Page .replace(pgx,'')),
+								limit = Number(cls.Limit.replace(pgx,''));
+							return [ null,
+								TZone	.filter(v=>!!v.match(term))
+										.map(v=>({ m: v.match(term), k: v }))
+										.map(v=>({ m: v.m[1]+v.m[3], k: v.k }))
+										.sort((a,b)=>{ switch (true) {
+											case a.m < b.m: return -1;
+											case a.m > b.m: return  1;
+											default:		return  0;
+										};	}).map(v=>v.k).slice(page,limit)
+							];
+						},
+						Params: {
+							Term: {
+								Default: '',
+								Format 	(cls) { return cls.term; },
+								Desc: 	{
+									description: "A {{Search Term}} for the {{Timezone}}",
+									type: "Text", to: 'param', required: true, matches: {
+										'Timezone': 'Matches the {{Timezone}}, unless omitted ((\\b[A-z0-9/+-]+\\b))',
+									},
+								}
+							},
+							Page: true, Limit: true, ID: true
+						},
+						Links: 	[],
+						Key: ''
+					},
+					// ======================================================================
 					Search: {
 						Scheme: '/(:term([\\w\\d,;.-]+)(?:/:in((?:(?:city|region|country)(?=;|$))*))?)/',
+						Limits: ["Constant/Second"],
 						Sub: 	null,
 						Doc: 	{
 							Methods: 	Docs.Kinds.GET,
@@ -1599,6 +1800,7 @@
 					// ======================================================================
 					Search: {
 						Scheme: '/:term([\\w\\d,;.-]+)/',
+						Limits: ["Constant/Second"],
 						Sub: 	null,
 						Doc: 	{
 							Methods: 	Docs.Kinds.GET,
@@ -1674,10 +1876,7 @@
 						Links: 	[]
 					}
 				},
-				Errors: 	{ BAD_REQ: [
-					'/',
-					'/hobbies/',
-				] }
+				Errors: 	{ BAD_REQ: ['/'] }
 			},
 			Languages: 		{
 				Actions: 	{
@@ -1733,6 +1932,7 @@
 					// ======================================================================
 					Search: {
 						Scheme: '/:term([\\w\\d,;.-]+)/',
+						Limits: ["Constant/Second"],
 						Sub: 	null,
 						Doc: 	{
 							Methods: 	Docs.Kinds.GET,
@@ -1808,10 +2008,134 @@
 						Links: 	[]
 					}
 				},
-				Errors: 	{ BAD_REQ: [
-					'/',
-					'/languages/',
-				] }
+				Errors: 	{ BAD_REQ: ['/'] }
+			},
+			Nationalities: 	{
+				Actions: 	{
+					// ======================================================================
+					Locale: {
+						Scheme: '/(:uid(\\d+)(?:/:nids(\\d(?:[\\d;]+)))?)/',
+						Sub: 	null,
+						Doc: 	{
+							Methods: 	Docs.Kinds.GET,
+							Headers: 	{ token: Docs.Headers.Token },
+							Examples: 	{
+								"/:uid:14/:nid:1": "Returns the {{Users}} whose {{Nationalities}} match the {{NID}}, 1, in the same {{Locale}} as the {{User}} at the {{User ID}}, 14",
+								"?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Users}} results per {{Page}}",
+							},
+						},
+						Query: [
+							`SELECT     ${SQL.SOCKET({link:'/user/:uids:%s', columns:['u.user_id']})} AS user`,
+							"FROM       (SELECT * FROM users",
+							"            WHERE  location =  (",
+							"                SELECT location FROM users",
+							"                WHERE  user_id = :UID:",
+							"            ) AND user_id <> :UID:",
+							"           ) AS u",
+							"INNER JOIN user_profile_details AS p ON u.user_id               =  p.user_fk",
+							"                                    AND p.profile_nationality_1 IN (:NIDS:)",
+							"                                     OR p.profile_nationality_2 IN (:NIDS:)",
+							"INNER JOIN search_locale        AS l ON u.location              =  l.id",
+							"GROUP BY   u.user_id",
+							":LIMIT: :PAGE:",
+						],
+						Params: {
+							UID: true, NIDs: {
+								Default: '',
+								Format 	(cls) {
+									return SQL.LIST(cls.nids,[
+										{ split: ORS, match: /^\d+$/, equals: true, join: ',' }
+									], null);
+								},
+								Desc: 	{
+									type: { List: "Number", Separator: ORS }, to: 'param',
+									description: 'A semi-colon-separated list of {{Nationality IDs}}',
+									required: false, matches: { 'Nationality ID': 'Matches ANY of the {{Nationality ID}} Items (([0-9]+))' },
+								}
+							},
+							Page: true, Limit: true, ID: true
+						},
+						Links: 	[]
+					},
+					// ======================================================================
+					Search: {
+						Scheme: '/:term([\\w\\d,;.-]+)/',
+						Limits: ["Constant/Second"],
+						Sub: 	null,
+						Doc: 	{
+							Methods: 	Docs.Kinds.GET,
+							Headers: 	{ token: Docs.Headers.Token },
+							Examples: 	{
+								"/:term:canadian": "Displays the {{Nationalities}} with a {{Nationality Name}} matching 'canadian'",
+								"?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Nationalities}} results per {{Page}}",
+							},
+						},
+						Query: [
+							"SELECT   nationality_id          AS value,",
+							"         nationality_name        AS label,",
+							"         nationality_description AS description",
+							"FROM     nationalities",
+							"WHERE    nationality_name LIKE ':TERM:'",
+							":LIMIT: :PAGE:",
+						],
+						Params: {
+							Term: {
+								Default: '',
+								Format 	(cls) { return `%${cls.term}%`; },
+								Desc: 	{
+									type: "Text",
+									to: 'param', required: true,
+									description: "A {{Search Term}} for the {{Nationality Name}}",
+									matches: {
+										'Nationality Name': 	'Matches the name of the {{Nationality}}, (([A-z0-9,.-]+))',
+									},
+								}
+							},
+							Page: true, Limit: true, ID: true
+						},
+						Links: 	[]
+					},
+					// ======================================================================
+					"/": {
+						Scheme: '/:nids((?:\\d+)(?=;|$))?/',
+						Sub: 	null,
+						Doc: 	{
+							Methods: 	Docs.Kinds.GET,
+							Headers: 	{ token: Docs.Headers.Token },
+							Examples: 	{
+								"/:hid:3;4": "Returns the {{Nationality}} at the {{NIDs}}, 3 and 4",
+								"?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Nationalities}} results per {{Page}}",
+							},
+						},
+						Query: [
+							"SELECT   nationality_id          AS value,",
+							"         nationality_name        AS label,",
+							"         nationality_description AS description",
+							"FROM     nationalities",
+							":NIDS: :LIMIT: :PAGE:",
+						],
+						Params: {
+							NIDs: {
+								Default: '',
+								Format 	(cls) {
+									return SQL.CLAUSE("WHERE  nationality_id", "IN", SQL.BRKT(
+										SQL.LIST(cls.nids,[
+											{ split: ORS, match: /^\d+$/, equals: true, join: ',' }
+										], null), ["(",")"], PIP)
+									);
+								},
+								Desc: 	{
+									type: { List: "Number", Separator: ORS }, to: 'param',
+									description: 'A semi-colon-separated list of {{Nationality IDs}}',
+									required: false, matches: { 'Nationality ID': 'Matches ANY of the {{Nationality ID}} Items (([0-9]+))' },
+								}
+							},
+							Page: true, Limit: true, ID: true
+						},
+						Links: 	[]
+					}
+				},
+				Errors: 	{ BAD_REQ: ['/'] }
 			},
 			Religions: 		{
 				Actions: 	{
@@ -1862,6 +2186,7 @@
 					// ======================================================================
 					Search: {
 						Scheme: '/:term([\\w\\d,;.-]+)/',
+						Limits: ["Constant/Second"],
 						Sub: 	null,
 						Doc: 	{
 							Methods: 	Docs.Kinds.GET,
@@ -1935,10 +2260,7 @@
 						Links: 	[]
 					}
 				},
-				Errors: 	{ BAD_REQ: [
-					'/',
-					'/religions/',
-				] }
+				Errors: 	{ BAD_REQ: ['/'] }
 			},
 			Genders: 		{
 				Actions: 	{
@@ -1989,6 +2311,7 @@
 					// ======================================================================
 					Search: {
 						Scheme: '/:term([\\w\\d,;.-]+)/',
+						Limits: ["Constant/Second"],
 						Sub: 	null,
 						Doc: 	{
 							Methods: 	Docs.Kinds.GET,
@@ -2064,140 +2387,7 @@
 						Links: 	[]
 					}
 				},
-				Errors: 	{ BAD_REQ: [
-					'/',
-					'/genders/',
-				] }
-			},
-			Nationalities: 	{
-				Actions: 	{
-					// ======================================================================
-					Locale: {
-						Scheme: '/(:uid(\\d+)(?:/:nids(\\d(?:[\\d;]+)))?)/',
-						Sub: 	null,
-						Doc: 	{
-							Methods: 	Docs.Kinds.GET,
-							Headers: 	{ token: Docs.Headers.Token },
-							Examples: 	{
-								"/:uid:14/:nid:1": "Returns the {{Users}} whose {{Nationalities}} match the {{NID}}, 1, in the same {{Locale}} as the {{User}} at the {{User ID}}, 14",
-								"?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Users}} results per {{Page}}",
-							},
-						},
-						Query: [
-							`SELECT     ${SQL.SOCKET({link:'/user/:uids:%s', columns:['u.user_id']})} AS user`,
-							"FROM       (SELECT * FROM users",
-							"            WHERE  location =  (",
-							"                SELECT location FROM users",
-							"                WHERE  user_id = :UID:",
-							"            ) AND user_id <> :UID:",
-							"           ) AS u",
-							"INNER JOIN user_profile_details AS p ON u.user_id               =  p.user_fk",
-							"                                    AND p.profile_nationality_1 IN (:NIDS:)",
-							"                                     OR p.profile_nationality_2 IN (:NIDS:)",
-							"INNER JOIN search_locale        AS l ON u.location              =  l.id",
-							"GROUP BY   u.user_id",
-							":LIMIT: :PAGE:",
-						],
-						Params: {
-							UID: true, NIDs: {
-								Default: '',
-								Format 	(cls) {
-									return SQL.LIST(cls.nids,[
-										{ split: ORS, match: /^\d+$/, equals: true, join: ',' }
-									], null);
-								},
-								Desc: 	{
-									type: { List: "Number", Separator: ORS }, to: 'param',
-									description: 'A semi-colon-separated list of {{Nationality IDs}}',
-									required: false, matches: { 'Nationality ID': 'Matches ANY of the {{Nationality ID}} Items (([0-9]+))' },
-								}
-							},
-							Page: true, Limit: true, ID: true
-						},
-						Links: 	[]
-					},
-					// ======================================================================
-					Search: {
-						Scheme: '/:term([\\w\\d,;.-]+)/',
-						Sub: 	null,
-						Doc: 	{
-							Methods: 	Docs.Kinds.GET,
-							Headers: 	{ token: Docs.Headers.Token },
-							Examples: 	{
-								"/:term:canadian": "Displays the {{Nationalities}} with a {{Nationality Name}} matching 'canadian'",
-								"?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Nationalities}} results per {{Page}}",
-							},
-						},
-						Query: [
-							"SELECT   nationality_id          AS value,",
-							"         nationality_name        AS label,",
-							"         nationality_description AS description",
-							"FROM     nationalities",
-							"WHERE    nationality_name LIKE ':TERM:'",
-							":LIMIT: :PAGE:",
-						],
-						Params: {
-							Term: {
-								Default: '',
-								Format 	(cls) { return `%${cls.term}%`; },
-								Desc: 	{
-									type: "Text",
-									to: 'param', required: true,
-									description: "A {{Search Term}} for the {{Nationality Name}}",
-									matches: {
-										'Nationality Name': 	'Matches the name of the {{Nationality}}, (([A-z0-9,.-]+))',
-									},
-								}
-							},
-							Page: true, Limit: true, ID: true
-						},
-						Links: 	[],
-						Key: ''
-					},
-					// ======================================================================
-					"/": {
-						Scheme: '/:nids((?:\\d+)(?=;|$))?/',
-						Sub: 	null,
-						Doc: 	{
-							Methods: 	Docs.Kinds.GET,
-							Headers: 	{ token: Docs.Headers.Token },
-							Examples: 	{
-								"/:hid:3;4": "Returns the {{Nationality}} at the {{NIDs}}, 3 and 4",
-								"?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Nationalities}} results per {{Page}}",
-							},
-						},
-						Query: [
-							"SELECT   nationality_id          AS value,",
-							"         nationality_name        AS label,",
-							"         nationality_description AS description",
-							"FROM     nationalities",
-							":NIDS: :LIMIT: :PAGE:",
-						],
-						Params: {
-							NIDs: {
-								Default: '',
-								Format 	(cls) {
-									return SQL.CLAUSE("WHERE  nationality_id", "IN", SQL.BRKT(
-										SQL.LIST(cls.nids,[
-											{ split: ORS, match: /^\d+$/, equals: true, join: ',' }
-										], null), ["(",")"], PIP)
-									);
-								},
-								Desc: 	{
-									type: { List: "Number", Separator: ORS }, to: 'param',
-									description: 'A semi-colon-separated list of {{Nationality IDs}}',
-									required: false, matches: { 'Nationality ID': 'Matches ANY of the {{Nationality ID}} Items (([0-9]+))' },
-								}
-							},
-							Page: true, Limit: true, ID: true
-						},
-						Links: 	[]
-					}
-				},
-				Errors: 	{ BAD_REQ: [
-					'/',
-					'/nationalities/',
-				] }
+				Errors: 	{ BAD_REQ: ['/'] }
 			},
 		};	
 	};

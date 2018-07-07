@@ -1,6 +1,6 @@
 {
 	"name": "evectr.api",
-	"version": "1.5.5",
+	"version": "1.6.0",
 	"description": "The official eVectr™ API.",
 	"keywords": [
 		"api",
@@ -32,19 +32,25 @@
 		"url": "https://github.com/eVectr/evectr.api/issues"
 	},
 	"license": "MIT",
-	"cpu" : [ "x64" ],
-	"os" : [ "darwin", "linux", "Win32" ],
-	"engines" : { 
-		"node" : "<=8.9.4",
+	"cpu": [
+		"x64"
+	],
+	"os": [
+		"darwin",
+		"linux",
+		"Win32"
+	],
+	"engines": {
+		"node": "<=8.9.4",
 		"npm": "<=5.6.0"
 	},
 	"dependencies": {
 		"bower": "1.8.2",
 		"classnames": "2.2.5",
-		"dffrnt.confs": "1.5.5",
-		"dffrnt.model": "1.5.5",
-		"dffrnt.route": "1.5.5",
-		"dffrnt.utils": "1.5.5",
+		"dffrnt.confs": "1.6.0",
+		"dffrnt.model": "1.6.0",
+		"dffrnt.route": "1.6.0",
+		"dffrnt.utils": "1.6.0",
 		"gulp": "4.0.0",
 		"gulp-nodemon": "2.2.1",
 		"keymirror": "0.1.1",
@@ -55,6 +61,7 @@
 		"react-addons-perf": "15.4.2",
 		"react-dom": "15.6.2",
 		"reflux": "0.4.1",
+		"tzdata": "^1.0.11",
 		"utf-8-validate": "1.2.2"
 	},
 	"devDependencies": {

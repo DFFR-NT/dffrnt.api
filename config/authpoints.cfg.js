@@ -27,6 +27,7 @@
 				// ======================================================================
 				Login: {
 					Scheme: '/',
+					Limits: ['Tries/Day'],
 					Sub: 	null,
 					Doc: 	{
 						Methods: 	Docs.Kinds.POST,
@@ -90,7 +91,7 @@
 						Methods: 	Docs.Kinds.MID,
 						Headers: 	{ token: Docs.Headers.Token },
 					},
-					Proc: 		{
+					Proc: 	{
 						Error: 		'NO_DELETE',
 						NoData: 	'INVALID',
 						Main  		(req, res, next) {
@@ -107,7 +108,7 @@
 								SSD  = { sessionID: sid }, ERR;
 							// ----------------------------------------------------------
 							switch (true) {
-								case head.token!=user.token: ERR  = MSG.TOKEN; break;;
+								case head.token!==user.token: ERR  = MSG.TOKEN; break;;
 								case !!spc.match(/^\/update/): prm.uids = uid; qry.single = 'true';
 								default: THS.Renew(req); next(); return;
 							}
@@ -121,7 +122,7 @@
 					Scheme: null,
 					Sub: 	null,
 					Doc: 	{ Methods: 	Docs.Kinds.MID },
-					Proc: 		{
+					Proc: 	{
 						Error: 		'ERROR',
 						NoData: 	'INVALID',
 						Main  		(req, res, next) {
@@ -162,7 +163,7 @@
 						Examples: 	{ "/": "Ends the User Session", },
 						Params: 	{},
 					},
-					Proc: 		{
+					Proc: 	{
 						Error: 		'ERROR',
 						NoData: 	'LOGIN',
 						Main  		(req, res, next) {

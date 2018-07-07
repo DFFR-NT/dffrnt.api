@@ -7,19 +7,21 @@ module.exports = {
 	Build: function (Actions, Stores) {
 		return function (res) {
 			var THS = this, content = Imm.OrderedMap(res), page = 0,
-				buttons = {}, pages = {}, nav = {}, styles = [],
-				dtn = {subs:{}}, btnOnClick = function (e) {
+				nav = {}, pages = {}, styles = [], buttons = Imm.OrderedMap({}), 
+				dtn = {subs:Imm.OrderedMap({})}, 
+				btnOnClick = function (e) {
 					Actions.Nav.select(this.state.page);
 					return false;
 				};
 			// -----
 			content.map(function (space, nmspc, i) {
 				var reqs = Imm.OrderedMap(space)
-
+				// -----
 				reqs.reverse().map(function (req, act, a) {
 					var isAuth = (act.indexOf('/auth/') > -1);
 					if (!isAuth) {
 						var paths = TC(act).match(/\b(\w+)/g),
+							kpath = paths.slice(),
 							endpt = paths.slice(-1)[0],
 							level = paths.length,
 							id    = "Spc"+endpt,
@@ -27,22 +29,18 @@ module.exports = {
 							root  = paths[0],
 							btn   = buttons; page++;
 						// -----
-						for (var l=0; l < level-1; l++) btn = (btn[paths[l]]||dtn).subs;
-
+						for (var l=0; l < (level*2)-1; l+=2) {
+							kpath.splice(l+1,0,'subs');
+							btn = (btn[paths[l]]||dtn).subs;
+						};	kpath = kpath.slice(0,-1);
 						// -----
-						btn[endpt] = {
-							key: 	id,
-							path: 	act,
-							name: 	endpt,
-							id: 	id,
-							page: 	page,
-							level: 	level,
-							form: 	form,
-							root: 	root,
-							onClck: btnOnClick,
-							subs: 	{}
-						}
-
+						buttons = buttons.setIn(kpath, Imm.Map({
+							key: 	id, 		path: 	act,
+							name: 	endpt, 		id: 	id,
+							page: 	page, 		level: 	level,
+							form: 	form, 		root: 	root,
+							onClck: btnOnClick, subs: 	Imm.OrderedMap({})
+						}));
 						// -----
 						nav[act] = { path: act, page: page };
 						// -----
@@ -61,9 +59,9 @@ module.exports = {
 										body: 		{
 											headers: 	req.headers,
 											params: 	req.params,
-											fills: 		Imm.OrderedMap(req.params).map(function (v,k) {
-															return '';
-														}).toObject(),
+											fills: 		Imm.OrderedMap(req.params)
+														   .map(function(){return '';})
+														   .toObject(),
 											examples: 	req.examples
 										},
 										'data-point': act,
@@ -84,12 +82,10 @@ module.exports = {
 					}
 				});
 			});
-
-			// console.log('NAV', nav, 'BUTTONS', buttons, 'PAGES', pages)
-
+			// console.log({ NAV: nav, BUTTONS: buttons, PAGES: pages });
 			// -----
 			Stores.App.updateStore({
-				page: 		{ num: 1, pth: ['Users'] },
+				page: 		{ num: 7, pth: ['User'] },
 				styles: 	THS.getSortStyle(styles),
 				content: 	{
 					built: 		true,
@@ -105,7 +101,7 @@ module.exports = {
 							tag: 	'Pages',
 							props: 	 {
 								name: 	'queries',
-								items: 	 pages,
+								items: 	 Imm.OrderedMap(pages),
 							}
 						}
 					]

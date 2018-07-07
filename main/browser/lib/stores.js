@@ -160,7 +160,7 @@ module.exports = function (Reflux, Actions, Spaces, IOs) {
 				},
 				getPath: 		 function (path) {
 					var nav = this.store.getIn(['content','nav']),
-						gtr = isNaN(parseInt(path))?'path':'page';
+						gtr = (isNaN(parseInt(path))?'path':'page');
 					return TC(nav.find(function (b) { return b.get(gtr)===path; })
 							  .get('path')).match(/\b(\w+)/g);
 				},
@@ -202,34 +202,36 @@ module.exports = function (Reflux, Actions, Spaces, IOs) {
 						// ------------------------------------------------------
 						switch (k) {
 							case 'Root': 	prp = prp.concat([
-									['background','#FFFFFF',false,true],
-									['transition','background-color 0s linear',true,true],
-								]); break;;
+												['background','#FFFFFF',false,true],
+												['transition','background-color 0s linear',true,true],
+											]); break;;
 							case 'Rest': 	prp = prp.concat([
-								['color','#213745',false,true],
-								// ['opacity',1,false,true],
-							]); break;;
+												['color','#213745',false,true],
+												// ['opacity',1,false,true],
+											]); break;;
 							case 'Button': 	prp = prp.concat([
-									['cursor','default',false,true],
-									['border-right','solid 1rem cornFlowerBlue',false,true],
-								]); break;;
+												['cursor','default',false,true],
+												['border-right','solid 1rem cornFlowerBlue',false,true],
+											]); break;;
 							case 'Blurs': 	prp = prp.concat([
-									['cursor','pointer',false,true],
-								]); break;;
+												['cursor','pointer',false,true],
+											]); break;;
 							case 'Before': 	prp = prp.concat([
-									['color','cornFlowerBlue',false,true],
-									['content',"'\\02003\\2022'",false,false],
-								]); break;;
+												['color','cornFlowerBlue',false,true],
+												['content',"'\\02003\\2022'",false,false],
+											]); break;;
 							case 'After': 	prp = prp.concat([
-									['color','cornFlowerBlue',false,false],
-								]); break;;
+												['color','cornFlowerBlue',false,false],
+											]); break;;
 							case 'NAfter': 	prp = prp.concat([
-									['content',"''",false,false],
-								]); break;;
+												['content',"''",false,false],
+											]); break;;
 							case 'Others': 	prp = prp.concat([
-									['box-shadow','none',true,true],
-								]); break;;
-							default: prp.push(['display','none',false,true]);
+												['box-shadow','none',true,true],
+											]); break;;
+							default: 		prp.push([
+												'display','none',false,true
+											]);
 						}
 						// ------------------------------------------------------
 						res.push(CSS.Declare(slc, prp).replace(mch, rep).replace(/\n([\t]|(?=\}))/g, ' '));
@@ -340,91 +342,80 @@ module.exports = function (Reflux, Actions, Spaces, IOs) {
 					try { return this.items[id].getIn(pfx||[]).Child.iterHas(data); }
 					catch (e) {  console.log(e); return false; }
 				},
-				larger: 		 function (old, nxt) {
+				larger: 		 function (old, nxt) { try {
 					// -------------------------------------------------
 					var mxr = function (v,k) { try { return v.size||0; } catch (e) { return 0; }; },
 						oln = mxr(old.maxBy(mxr)), nln = mxr(nxt.maxBy(mxr)),
 						res = oln <= nln; return res;
+					} catch (e) { return true; }
 				},
 				setIn: 			 function (qry, data) {
 					var ths = this,
-						pfx = this.prefix,
+						pfx = ths.prefix,
 						emp = Imm.Map({}),
+						isc = ['object','array'],
 						id  = qry.id,
 						to  = qry.to,
 						at  = qry.at,
-						up  = JSON.parse(qry.update||false),
 						pth = [id].concat(to),
-						itm = this.items[id],
-						raw = this.getAt(data,at).toJS(),
-						srt = function (v,k) { return Number(k); },
+						itm = ths.items[id],
+						raw = ths.getAt(data,at).toJS(),
 						wth = function (o,n) { return (
 							!!Imm.fromJS(n).size&&!!!Imm.fromJS(o).size?n:o
-						); 	}, str, dtr, dta, mrg, dff, dfm, add, rem, state;
+						); 	}, 
+						str, dtr, dta, mrg, dff, dfm, 
+						add, rem, state, sis, dis;
 					// -------------------------------------------------
-					try {
-
-						// console.log('ATTO:', at, pth);
-						// console.log('STRE:', itm.store.toJS());
-
+					try { 
 						dtr = data.payload.result,
-						str = (itm.store.getIn(pfx)||emp); //.sortBy(srt);
-						dta = Imm.fromJS(dtr,FJS); //.sortBy(srt);
-						lrg = this.larger(str, dta);
-
-						dff = Dff(str, dta);
-						rem = dff.filter(function (v,i) {
-									return 	v.get('op')=='remove' &&
-											v.get('path').split('/').length == 2;
-								 })
-								 .map(   function (v,i) {
-								 	return 	v.get('path').split('/')[1];
-								 })
-								 .toArray();
-
-						// str = str.filterNot(function (v,k) { return rem.has(k); });
-						dff.filter(function (v,i) {
-								return 	v.get('op')=='remove';
-							}).map(function (v,k) {
-								var p = v.get('path').split('/').slice(1);
-								str = str.deleteIn(p);
-							});
-						mrg = (lrg?dta.mergeDeepWith(wth,str):str.mergeDeepWith(wth,dta)); //.sortBy(srt);
-						dfm = Dff(str, mrg);
-						add = dfm.filter(function (v,i) { return v.get('op')=='add';    }).size;
-
-						// console.log('ADDs:', dfm.size > 1 && add == dfm.size);
-
-						console.log('MERG ('+mrg.size+'):',{
-							STRE: str.toJS(),
-							DATA: dta.toJS(),
-							MERG: mrg.toJS(),
-							DIFM: dfm.toJS(),
-							DIFF: dff.toJS(),
-							HAS:  this.has(id,dta,pfx),
-							ADD:  add,
-							REM:  rem,
-							QRY:  qry,
-							UP:   up,
-						});
-
-						/*if (dfm.size == 0) {
-						 	console.log('\t\t\tRECYCLE')
-						 	state = itm.getIn(to);
-						} else*/ if (dfm.size == 1 || str.size == 0) {
-							console.log('\t\t\tSET-ITM', raw)
-							state = itm.setIn(to,raw)
-						} else /*if (pfx.has(to.last))*/ {
-							var obj = Imm.fromJS(data,FJS).setIn(pfx,mrg).getIn(at).toJS()
-							console.log('\t\t\tSET-PAY', obj)
-							state = itm.setIn(to,obj);
-						} /*else {
-							console.log('\t\t\tUPDATER')
-							state = itm.update(to,dfm,mrg.toJS(),pfx);
-						}*/
-
-						// console.log('ITEMS:', itm.store.toJS());
+						str = (itm.store.getIn(pfx)||emp);
+						dta = Imm.fromJS(dtr,FJS);
+						sis = IS(str); dis = IS(dta);
+						// ---------------------------------------------
+						if (isc.has(sis)&&isc.has(dis)) {
+							// -----------------------------------------
+							lrg = ths.larger(str, dta);
+							dff = Dff(str, dta);
+							rem = dff.filter(function (v,i) { return v.get('op')=='remove'&&v.get('path').split('/').length == 2; })
+									 .map(function (v,i) { return v.get('path').split('/')[1]; }).toArray();
+							dff.filter(function (v,i) {
+									return 	v.get('op')=='remove';
+								}).map(function (v,k) {
+									var p = v.get('path').split('/').slice(1);
+									str = str.deleteIn(p);
+								});
+							mrg = (lrg?dta.mergeDeepWith(wth,str):str.mergeDeepWith(wth,dta));
+							dfm = Dff(str, mrg);
+							add = dfm.filter(function (v,i) { return v.get('op')=='add';    }).size;
+							// console.log('MERG ('+mrg.size+'):',{
+								// STRE: str.toJS(),
+								// DATA: dta.toJS(),
+								// MERG: mrg.toJS(),
+								// DIFM: dfm.toJS(),
+								// DIFF: dff.toJS(),
+								// HAS:  this.has(id,dta,pfx),
+								// ADD:  add,
+								// REM:  rem,
+								// QRY:  qry,
+							// });
+							// -----------------------------------------
+							if (dfm.size == 1 || str.size == 0) {
+								console.log('\t\t\tSET-ITM', raw)
+								state = itm.setIn(to,raw)
+							} else {
+								var obj = Imm.fromJS(data,FJS).setIn(pfx,mrg).getIn(at).toJS()
+								console.log('\t\t\tSET-PAY', obj)
+								state = itm.setIn(to,obj);
+							};
+							// -----------------------------------------
+						} else { 
+							console.log(data.payload)
+							data.payload.result = data.payload.result.toString();
+							state = itm.setIn(to,data.payload); 
+						}
+						// ---------------------------------------------
 						console.log('STATE:', { id: state.Child.id, path: pth, state: state });
+						// ---------------------------------------------
 						return { id: state.Child.id, path: pth, state: state };
 					} catch (e) { console.log(e); return null; }
 				},
