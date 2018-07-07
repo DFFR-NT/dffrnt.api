@@ -144,15 +144,15 @@
 				font-size: 1.25vmin;
 			}
 			.taggr {max-width: 28.5vw;}
-			.both .taggr {max-width: 10vw;}
+			/* .both .taggr {max-width: 10vw;} */
 			.sections {
 				-webkit-flex: 1 1 100vw;
 						flex: 1 1 100vw;
 			}
-			.sidebar {
-				/* max-width: 12vw; */
-				/* min-width: 12vw; */
-			}
+			/* .sidebar {
+				max-width: 12vw;
+				min-width: 12vw;
+			} */
 		}
 		@media screen and (orientation: portrait) {
 
@@ -373,9 +373,9 @@
 		}
 		/* Safari 7.1+ (non-iOS) */
 		_::-webkit-full-page-media, _:future, :root .safari_only {
-			.accord:not(:checked) ~ ul.value > li > .collps:enabled:checked 	  ~ ul.value,
-			  .jsonp > .object > ul.value > li > .collps:enabled:checked 	  ~ ul.value,
-				  .accord:checked ~ ul.value > li > .collps:enabled:not(:checked) ~ ul.value {
+			.accord:not(:checked) ~ ul.value > li > .collps:enabled:checked ~ ul.value,
+			.jsonp > .object > ul.value > li > .collps:enabled:checked ~ ul.value,
+			.accord:checked ~ ul.value > li > .collps:enabled:not(:checked) ~ ul.value {
 				width: 50% !important;
 			}
 		}
@@ -955,14 +955,12 @@
 		/**************************************************************/
 			#settings {
 				max-width: 50%;
-				padding: .25rem;
+				padding: 0 .25rem;
 				overflow: hidden;
-				background: #E2E2E2;
-				border: solid 1px #DCDCDC;
 			}
 			#settings,
 			#settings #profile,
-			#settings > form#logout > #logoutLbl > span#user {
+			#settings > form > #logoutLbl > span#user {
 				-webkit-border-radius: .25rem;
 				   -moz-border-radius: .25rem;
 						border-radius: .25rem;
@@ -971,12 +969,10 @@
 		/**************************************************************/
 			#settings > form > *:not(#profile)  {
 				padding: 		0 .5rem;
-				line-height: 	2rem;
+				line-height: 	3rem;
 				margin: 		0;
 				font-size: 		2rem;
 				background-color: transparent !important;
-			}
-			#settings > form > * {
 			}
 
 		/**************************************************************/
@@ -1002,7 +998,7 @@
 				position: absolute;
 			}
 			#settings > form > #logoutLbl > span {
-				font-size: 1.25rem;
+				font-size: 1.5rem;
 			}
 			#settings > form > #logoutLbl > span#user {
 				padding: .25rem .5rem;
@@ -1022,6 +1018,7 @@
 
 		/**************************************************************/
 			#settings > form > .auth:hover,
+			#settings > form > button#appdrawer:hover,
 			#settings > form > #logoutLbl > span#user a:hover {
 				color: cornFlowerBlue;
 			}
@@ -1225,6 +1222,7 @@
 			cursor: text !important;
 			color: initial !important;
 			text-shadow: none !important;
+			background: rgb(242, 242, 242);
 		}
 
 		#content.loggedOut * { -webkit-overflow-scrolling: auto !important; }
@@ -1464,7 +1462,6 @@
 /**********************************************************************/
 /* SEGEMENTS */
 
-
 	.sidebar, .pages, .page, .page > * {
 		overflow: hidden;
 		display: -webkit-flex;
@@ -1490,10 +1487,11 @@
 	.sidebar {
 		background: #75717B;
 		padding: 1rem 0;
+		overflow-y: auto;
 		-webkit-flex: 2 2 12vw;
 				flex: 2 2 12vw;
-		-webkit-flex-wrap: wrap;
-				flex-wrap: wrap;
+		-webkit-flex-wrap: nowrap;
+				flex-wrap: nowrap;
 		-webkit-align-items: flex-start;
 				align-items: flex-start;
 	}
@@ -1516,7 +1514,6 @@
 	}
 	.page > *:not(:last-child) 	{ -webkit-flex: 1   1.3 50vw; flex: 1   1.3 50vw; }
 	.page > *:last-child 		{ -webkit-flex: 1.7 0   50vw; flex: 1.7 0   50vw; }
-
 
 /**********************************************************************/
 /* SIDEBAR */
@@ -1563,20 +1560,20 @@
 	}
 	.sidebar div[data-level="2"].button label {
 		font-size: 1.25rem;
-		width: calc(100% - 1.5rem);
-		margin-left: 1.5rem;
+		width: calc(100% - .5rem);
+		margin-left: .5rem;
 	}
 	.sidebar div[data-level="3"].button label {
 		font-size: 1.00rem;
-		width: calc(100% - 4rem);
-		margin-left: 4rem;
+		width: calc(100% - 1rem);
+		margin-left: 1rem;
+		font-style: italic;
 	}
 	.sidebar div#SpcDivider[data-level="1"] { height: 4rem; }
 
 
 /**********************************************************************/
 /* DRAFT */
-
 
 	/******************************************************************/
 	/* GENERAL */
@@ -1647,6 +1644,7 @@
 			z-index: 0;
 			position: relative;
 			overflow: hidden;
+			overflow-y: auto;
 			margin-bottom: 1rem;
 			-webkit-flex-grow: 1; flex-grow: 1;
 			-webkit-overflow-scrolling: touch;
@@ -1666,7 +1664,6 @@
 
 	/******************************************************************/
 	/* FIELDS */
-
 
 		.draft .fields,
 		.draft .both,
@@ -1765,9 +1762,20 @@
 			line-height: 1.5;
 			margin-right: 1rem;
 		}
-		.draft .field .npt .paramInput.focused 	{
 
-		}
+		/* Multi-Inputs ********************************************/
+			.draft .field .npt select.paramInput {
+				font-size: 1.1rem;
+				min-width: 15rem;
+				height: 2.5rem;
+			}
+			.draft .field .npt .paramInput[type="radio"],
+			.draft .field .npt .paramInput[type="checkbox"] {
+				margin-right: 0;
+			}
+			.draft .field .npt > label {
+				font-size: 1.2rem; margin-right: .5rem;
+			}
 
 
 	/******************************************************************/
