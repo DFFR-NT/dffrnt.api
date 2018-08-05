@@ -892,13 +892,6 @@
 							ID: 		true,
 						},
 						Parse   (res) {
-							// var RQ = this.RQ, QY = this.QY, ret, avg, MAP, C;
-							// ret = JSN.Objectify(res, RQ.Key, RQ.Columns, QY);
-							// MAP = Imm.Map(ret); C = MAP.size;
-							// avg = (MAP.reduce((s,v)=>s+v.score,0)/C);
-							// return 	MAP	.filter(v=>(v.score>=avg))
-							// 			.map(v=>v.user)
-							// 			.toJS();
 							var RQ = this.RQ, QY = this.QY, ret;
 							ret = JSN.Objectify(res, RQ.Key, RQ.Columns, QY);
 							return Imm.Map(ret).map(v=>v.user).toJS();
