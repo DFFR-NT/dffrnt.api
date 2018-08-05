@@ -43,18 +43,18 @@ module.exports = function (Reflux, Actions, Spaces, IOs) {
 		const 	RRegen 	 = '/auth/regenerate';
 		const 	Selector = {
 					Match: 	/%[(]([A-Z]+)[)][ds]/g,
-					Parent: 'var[data-page="%(PAGE)d"]#nav ~ main#main',
-					Levels: 'var[data-1="%(ROOT)s"][data-%d="%s"]#nav ~ main#main .button[data-root="%(ROOT)s"][data-level="%d"][data-name="%s"] > .button > label',
+					Parent: 'var[data-page="%(PAGE)d"]#nav ~',
+					Levels: 'var[data-1="%(ROOT)s"][data-%d="%s"]#nav ~ nav.sidebar .button[data-root="%(ROOT)s"][data-level="%d"][data-name="%s"] > .button > label',
 					Hidden: Imm.Map({
 						Root: 	'nav.sidebar > div[data-root="%(ROOT)s"].button',
-						Rest: 	'nav.sidebar > div[data-root="%(ROOT)s"].button *',
-						Button: 'div[data-page="%(PAGE)d"].button > label',
-						Blurs: 	'div:not([data-page="%(PAGE)d"]).button > label',
-						Before: 'div:not([data-page="%(PAGE)d"]).button > label:hover::after',
-						After: 	'div[data-page="%(PAGE)d"].button > label::after',
-						NAfter: 'div:not([data-page="%(PAGE)d"]).button > label::after',
-						Others: '> div[data-root="%(ROOT)s"].button ~ div[data-level="1"].button ~ div[data-level="1"].button',
-						Editor: '.page:not([data-page="%(PAGE)d"])',
+						// Rest: 	'nav.sidebar > div[data-root="%(ROOT)s"].button *',
+						Button: 'nav.sidebar div[data-page="%(PAGE)d"].button > label',
+						Blurs: 	'nav.sidebar div:not([data-page="%(PAGE)d"]).button > label',
+						Before: 'nav.sidebar div:not([data-page="%(PAGE)d"]).button > label:hover::after',
+						After: 	'nav.sidebar div[data-page="%(PAGE)d"].button > label::after',
+						NAfter: 'nav.sidebar div:not([data-page="%(PAGE)d"]).button > label::after',
+						Others: 'nav.sidebar div[data-root="%(ROOT)s"].button ~ div[data-level="1"].button ~ div[data-level="1"].button',
+						Editor: 'section.pages > .page:not([data-page="%(PAGE)d"])',
 					}),
 				};
 
@@ -100,11 +100,38 @@ module.exports = function (Reflux, Actions, Spaces, IOs) {
 						},
 					},
 					content: 	{ built: false, nav: {}, buttons: {}, forms: {} },
-					credits: 	{
-						author:  'Arian Johnson',
-						company: 'eVectr Inc.',
-						website: 'eVectr.com',
-						contact: 'arian.johnson@evectr.com'
+					footer: 	{
+						credits: 	{
+							author:  'Arian Johnson',
+							company: 'eVectr Inc.',
+							website: 'eVectr.com',
+							contact: 'arian.johnson@evectr.com'
+						},
+						chats:		[
+							{kind:'user',name:{First:  'Arian',Last:  'Johnson'}},
+							{kind:'user',name:{First: 'Darren',Last:      'Sun'}},
+							{kind:'user',name:{First:   'Marc',Last:   'Djoudi'}},
+							{kind:'user',name:{First:  'Sarah',Last:'Jefferson'}},
+							{kind:'user',name:{First:'Ricardo',Last:     'Mora'}},
+							{kind:'user',name:{First:   'Sean',Last:      'Kim'}},
+							{kind:'user',name:{First:  'Yosef',Last: 'Ben Zaid'}},
+							{kind:'user',name:{First: 'Farhan',Last:   'Bhatti'}},
+							{kind:'user',name:{First:'Rodrigo',Last:    'Lopez'}},
+							{kind:'user',name:{First:'Pritesh',Last:    'Patel'}},
+							{kind:'user',name:{First:'Ricardo',Last:     'Mora'}},
+
+							{kind:'user',name:{First:  'Arian',Last:  'Johnson'}},
+							{kind:'user',name:{First: 'Darren',Last:      'Sun'}},
+							{kind:'user',name:{First:   'Marc',Last:   'Djoudi'}},
+							{kind:'user',name:{First:  'Sarah',Last:'Jefferson'}},
+							{kind:'user',name:{First:'Ricardo',Last:     'Mora'}},
+							{kind:'user',name:{First:   'Sean',Last:      'Kim'}},
+							{kind:'user',name:{First:  'Yosef',Last: 'Ben Zaid'}},
+							{kind:'user',name:{First: 'Farhan',Last:   'Bhatti'}},
+							{kind:'user',name:{First:'Rodrigo',Last:    'Lopez'}},
+							{kind:'user',name:{First:'Pritesh',Last:    'Patel'}},
+							{kind:'user',name:{First:'Ricardo',Last:     'Mora'}},
+						]
 					},
 				})],
 				isIdentified: 	 function () { return this.store.getIn(['header','identified']); },
@@ -195,63 +222,67 @@ module.exports = function (Reflux, Actions, Spaces, IOs) {
 				onBuild: 		 (Spaces[NMESPC.replace('/','')]||Spaces['dft-page']).Build(Actions, Stores),
 				getMainStyle: 	 function (keys) {
 					var sel = Selector, mch = sel.Match, parent = sel.Parent, lvl = [sel.Levels],
-						res = [], lnh = [3.5,3,2.5], rep = function (mch, $key) {  return keys[$key]; };
+						res = [], lnh = [3.25,2.75,2.25], rep = function (mch, $key) {  return keys[$key]; };
 					// ----------------------------------------------------------
-					sel.Hidden.map(function (v,k,i) {
-						var slc = [parent, v], lev = [lvl, v], prp = [];
-						// ------------------------------------------------------
-						switch (k) {
-							case 'Root': 	prp = prp.concat([
-												['background','#FFFFFF',false,true],
-												['transition','background-color 0s linear',true,true],
-											]); break;;
-							case 'Rest': 	prp = prp.concat([
-												['color','#213745',false,true],
-												// ['opacity',1,false,true],
-											]); break;;
-							case 'Button': 	prp = prp.concat([
-												['cursor','default',false,true],
-												['border-right','solid 1rem cornFlowerBlue',false,true],
-											]); break;;
-							case 'Blurs': 	prp = prp.concat([
-												['cursor','pointer',false,true],
-											]); break;;
-							case 'Before': 	prp = prp.concat([
-												['color','cornFlowerBlue',false,true],
-												['content',"'\\02003\\2022'",false,false],
-											]); break;;
-							case 'After': 	prp = prp.concat([
-												['color','cornFlowerBlue',false,false],
-											]); break;;
-							case 'NAfter': 	prp = prp.concat([
-												['content',"''",false,false],
-											]); break;;
-							case 'Others': 	prp = prp.concat([
-												['box-shadow','none',true,true],
-											]); break;;
-							default: 		prp.push([
-												'display','none',false,true
-											]);
-						}
-						// ------------------------------------------------------
-						res.push(CSS.Declare(slc, prp).replace(mch, rep).replace(/\n([\t]|(?=\}))/g, ' '));
-					});
+						sel.Hidden.map(function (v,k,i) {
+							var slc = [parent, v], lev = [lvl, v], prp = [];
+							// ------------------------------------------------------
+							switch (k) {
+								case 'Root': 	prp = prp.concat([
+													['color','#213745',false,true],
+													['background','#FFFFFF',false,true],
+													['transition','background-color 0s linear',true,true],
+												]); break;;
+								/* case 'Rest': 	prp = prp.concat([
+													['color','#213745',false,true],
+													// ['opacity',1,false,true],
+												]); break;; */
+								case 'Button': 	prp = prp.concat([
+													['cursor','default',false,true],
+													['border-right','solid 1rem cornFlowerBlue',false,true],
+												]); break;;
+								case 'Blurs': 	prp = prp.concat([
+													['cursor','pointer',false,true],
+												]); break;;
+								case 'Before': 	prp = prp.concat([
+													['position','absolute',false,false],
+													['color','cornFlowerBlue',false,true],
+													['content',"'\\02003\\2022'",false,false],
+												]); break;;
+								case 'After': 	prp = prp.concat([
+													['color','cornFlowerBlue',false,false],
+												]); break;;
+								case 'NAfter': 	prp = prp.concat([
+													['content',"''",false,false],
+												]); break;;
+								case 'Others': 	prp = prp.concat([
+													['box-shadow','none',true,true],
+												]); break;;
+								default: 		prp.push([
+													'display','none',false,true
+												]);
+							}
+							// ------------------------------------------------------
+							res.push(CSS.Declare(slc, prp).replace(mch, rep).replace(/\n([\t]|(?=\}))/g, ' '));
+						});
 					// ----------------------------------------------------------
-					keys.PATH.map(function (v,i,a) {
-						var prp = [['display','table',false,true],['line-height',lnh[i]+'rem',false,true],['opacity',1,false,true]];
-						res.push(CSS.Declare(lvl, prp)  .replace(mch, rep)
-									.replace(/%d/g,i+1) .replace(/%s/g,v)
-									.replace(/\n([\t]|(?=\}))/g, ' ')
-								);
-					});
+						keys.PATH.map(function (v,i,a) {
+							var prp = [['display','table',false,true],['line-height',lnh[i]+'rem',false,true],['opacity',1,false,true]];
+							res.push(CSS.Declare(lvl, prp)  .replace(mch, rep)
+										.replace(/%d/g,i+1) .replace(/%s/g,v)
+										.replace(/\n([\t]|(?=\}))/g, ' ')
+									);
+						});
 					// ----------------------------------------------------------
-					return res;
+						return res;
 				},
 				getSortStyle: 	 function (styl) {
 					var brk = function (sel) { return sel.replace(/^[^{}]+(\{[^{}]+\})$/,'$1'); },
 						srt = function (a,b) { a=brk(a); b=brk(b); switch (true) { case a>b: return 1; case a<b: return -1; default: return 0; }; }
 					// console.log('SORTSTYLE:', styl.sort(srt).join('\n'))
-					return 	styl.sort(srt).join('\n').replace(/^([^{]+)( \{[^{}]+\})(?=\n.*\2)/gm,'$1,');
+					return 	styl.sort(srt).join('\n')
+								.replace(/^([^{]+)( \{[^{}]+\})(?=\n.*\2)/gm,'$1,')
+								.replace(/([^\n]+\n)\1+/g,'$1');
 				},
 			});
 
@@ -344,9 +375,13 @@ module.exports = function (Reflux, Actions, Spaces, IOs) {
 				},
 				larger: 		 function (old, nxt) { try {
 					// -------------------------------------------------
-					var mxr = function (v,k) { try { return v.size||0; } catch (e) { return 0; }; },
-						oln = mxr(old.maxBy(mxr)), nln = mxr(nxt.maxBy(mxr)),
-						res = oln <= nln; return res;
+					if (typeof(old)==typeof(nxt)) return true;
+					// -------------------------------------------------
+					var mxr = 	function (v,k) { try { 
+									return v.size||0; } catch (e) { return 0; 
+								}; },
+						oln = 	mxr(old.maxBy(mxr)), nln = mxr(nxt.maxBy(mxr)),
+						res = 	oln <= nln; return res;
 					} catch (e) { return true; }
 				},
 				setIn: 			 function (qry, data) {
@@ -403,6 +438,7 @@ module.exports = function (Reflux, Actions, Spaces, IOs) {
 								console.log('\t\t\tSET-ITM', raw)
 								state = itm.setIn(to,raw)
 							} else {
+								console.log(at, data, pfx, mrg.toJS())
 								var obj = Imm.fromJS(data,FJS).setIn(pfx,mrg).getIn(at).toJS()
 								console.log('\t\t\tSET-PAY', obj)
 								state = itm.setIn(to,obj);

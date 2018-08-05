@@ -166,22 +166,31 @@ module.exports = function (global) {
 						}
 					}); THS.hndRequest();
 				},
-				lenRequest: 				function (typ) {
-					return function (p, c) {
-						return (p+Number(!c.valid && c.type==typ));
-					}
+				lenRequest: 				function (typ, req) {
+					return req.filter(v=>(v.type==typ)).length||null;
+				},
+				impRequest: 				function (typ) {
+					return ((p, c)=>(p+Number(!c.valid && c.type==typ)));
 				},
 				chkRequest: 				function (req) {
-					var req = this.Required, len = req.length,
-						ast = req.reduce(this.lenRequest('*'), 0),
-						tld = req.reduce(this.lenRequest('~'), 0);
-					if (ast > 0 || tld == len) {
+					var req = this.Required,
+						ast = req.reduce(this.impRequest('*'), 0),
+						tld = req.reduce(this.impRequest('~'), 0),
+						tln = this.lenRequest('~',req);
+					if (ast > 0 || tld == tln) {
 						window.alert([
 							'<',this.props.paths.join('/'),'>',
 							'Must fill in Required Field',
-							'[',this.Required
-									.map(function (v) { return v.name; })
-									.join(' ] or [ '),'].'
+							[	this.Required
+									.filter(function(v){return v.type=='*';})
+									.map(function(v){return '[ '+v.name+' ]';})
+									.join(' and '),
+							 	this.Required
+									.filter(function(v){return v.type=='~';})
+									.map(function(v){return '[ '+v.name+' ]';})
+									.join(' or ')
+							].filter(function(v){return !!v;})
+							 .join(' or ')+'.'
 						].join(' ')); return false;
 					}; this.Latest = req; return true;
 				},
@@ -192,11 +201,11 @@ module.exports = function (global) {
 					Imm.Map(fields).map((v,k) => {
 						// let ref = v.refs, fld;
 						// if (!!ref.field) {
-						// 	fld = ref.field;
+							// fld = ref.field;
 						// } else {
-						// 	ref = ref.taggr.refs;
-						// 	fld = ref.value;
-						// 	ref.input.value = fld.value;
+							// ref = ref.taggr.refs;
+							// fld = ref.value;
+							// ref.input.value = fld.value;
 						// }
 						let fld = v.refs.field||v.refs.taggr.refs.value;
 						let key = k.toLowerCase(),
@@ -798,26 +807,31 @@ module.exports = function (global) {
 						stat 	= {status:props.status},
 						content = props.content,
 						loader 	= {progress:props.progress},
-						footer 	= props.credits,
-						classes = CSS.Flex({
-							Dir:'Col',Align:'S',Space:'B',Wrap:0
-						}, {
+						footer 	= props.footer,
+						classes = {
+							'gridMain':		true,
 							'loggedIn': 	header.identified,
 							'loggedOut': 	!header.identified,
 							'pause': 		props.paused,
 							'ready': 		props.ready(),
-						});
+						};
 					Token = header.user.Token; IsAuthd = header.identified;
 					if (!!props.styles && !this.styled) {
 						document.getElementById('navigation').innerHTML = props.styles;
 						this.styled = true;
 					};
-					return (<main id="content" className={classes}>
+					return (<main id="content" className={Imm.Map(classes).filter((v)=>v).keySeq().toArray().join(' ')}>
 						<Head {...header}	/>
 						<Load {...loader}	/>
 						<Navi {...navi}		/>
 						<Stat {...stat}		/>
-						<Body {...content}	/>
+
+
+						{/* <Body {...content}	/> */}
+						<Load.Lock />
+						{(content.segments||[]).map((v,i) => Agnostic(v, i))}
+
+
 						<Foot {...footer}	/>
 						<Load.Wait ready={props.ready()} />
 					</main>);
@@ -933,12 +947,12 @@ module.exports = function (global) {
 					var props 	= this.props, 	user 	= props.user,
 						profile = user.Profile, prShow 	= 'proShow',
 						locate  = window.location, targ = '/login';
-					return (<header id='header' className={CSS.Flex({Align:'C',Space:'B',Wrap:0})}>
-						<div id="banner" className={CSS.Flex({Align:'C'},'noSelect')}>
+					return (<header id='header' className="gridHeader">
+						<div id="banner" className={CSS.Flex({Align:'C'},'noSelect gridItemBranding')}>
 							<div id='logo'>&nbsp;</div>
 							<div id='title'><span>{this.title}</span></div>
 						</div>
-						<div id='settings' className={CSS.Flex({Wrap:0,Space:'B'},'noSelect')}>
+						<div id='settings' className='noSelect gridItemSettings'>
 							{props.identified ? (
 								<form target='temp' id='auth' key='auth' method='POST' onSubmit={this.handleLogout}
 									className={CSS.Flex({Wrap:0,Space:'B'})} action='#'>
@@ -959,7 +973,7 @@ module.exports = function (global) {
 									</div>
 								</form>
 							) : ([
-								<iframe src="/public/html/login.htm" id="temp" name="temp" style={{display:'none'}} />,
+								<iframe key='autocomp' src="/public/html/login.htm" id="temp" name="temp" style={{display:'none'}} />,
 								<form target='temp' id='auth'  key='auth' method='POST' onSubmit={this.handleLogin}
 									className={CSS.Flex({Wrap:0,Space:'B'})} action='/public/html/login.htm' ref='login'>
 									<label htmlFor='email_address' id='unameLbl' className='icon'>
@@ -1079,7 +1093,7 @@ module.exports = function (global) {
 						name 	= (props.name||'').replace(/^([^#].*)$/,'#$1'),
 						buttons = Imm.OrderedMap(props.items);
 					return (
-						<nav id={name} className='sidebar gpu'>
+						<nav id={name} className='sidebar gpu gridItemSidebar'>
 							{buttons.map(function (v,k) {
 								return <SideBar.Bttn {...v} key={v.key} />
 							}).toArray()}
@@ -1120,12 +1134,12 @@ module.exports = function (global) {
 						name 	= (props.name||'').replace(/^([^#].*)$/,'#$1'),
 						pages 	= Imm.OrderedMap(props.items);
 					return (
-						<section id={name} className='pages gpu'>
+						<section id={name} className='pages gpu gridItemContent'>
 							{pages.map((p,k) => {
 								let prp = {
 										key: k, id: k,
 										'data-page': p.page,
-										className: 'page gpu'
+										className: 'page gpu gridContent'
 									};
 								return (
 									<article {...prp}>
@@ -1146,7 +1160,7 @@ module.exports = function (global) {
 						name 	= (props.name||'').replace(/^([^#].*)$/,'#$1'),
 						pages 	= Imm.Map(props.items);
 					return (
-						<article id={name} className='page gpu'>
+						<article id={name+'helo'} className='page gpu gridContent'>
 							{pages.map((p,k) => p.map((v,i) => Agnostic(v,i))).toArray()}
 						</article>
 					);
@@ -1168,7 +1182,9 @@ module.exports = function (global) {
 						params 	= Imm.OrderedMap(body.params).filter(function (v) { return v.to == 'param' }),
 						querys 	= Imm.OrderedMap(body.params).filter(function (v) { return v.to == 'query' }),
 						exmpls 	= { point: point, items: body.examples },
-						frmCls 	= classN({ selected: props.selected }, 'draft'),
+						frmCls 	= classN({ selected: props.selected }, 'draft gridItemFields'),
+						exmCnt  = Object.keys(body.examples).length,
+						hasFld  = Boolean(params.size||querys.size||exmCnt),
 						formPrp = {
 							className: 		frmCls,
 							action: 		'',
@@ -1186,22 +1202,22 @@ module.exports = function (global) {
 								<h1>{props.paths.map(function (v, i) {
 										var key = v+'.'+i;
 										return <span key={key} className="route">{v}</span>;
-									})}<sup>{props.method}</sup>
+									})}<sup>{hasFld?props.method:'UNAVAILABLE'}</sup>
 								</h1>
 							</div>
 							<div className='body'>
-								<div>
+								{hasFld?(<div>
 									<div className='fields'>
 										{this.toSingle(params)}
 										{this.toDouble(querys)}
 									</div>
 									<Draft.Case {...exmpls} key="exams" />
-								</div>
+								</div>):null}
 							</div>
 							<div className="foot" id="submit">
-								<div>
+								{hasFld?(<div>
 									<button id="send" name="send" type="submit">Send</button>
-								</div>
+								</div>):null}
 							</div>
 						</form>
 					);
@@ -1260,6 +1276,7 @@ module.exports = function (global) {
 						reqrd = INPUT.Priority(props.required),
 						ODoEV = props.index%2==0 ? 'even' : 'odd',
 						flexC = classN(props.to, ODoEV,'field'),
+						isPrm = props.to == 'param',
 						isTyp = this.isType,
 						isTxA = kind == 'textarea',
 						isSlc = kind == 'select',
@@ -1275,12 +1292,12 @@ module.exports = function (global) {
 							className: 'paramInput'+(isLst?' taggee':'')
 						}, (isNum ? {
 							type: 'number',
-							min:  type.Number.min,
-							max:  type.Number.max,
+							min:  type.Number .min||'',
+							max:  type.Number .max||'',
+							step: type.Number.step||'',
 						} : { 
 							type: isLst?'text':kind
 						}));
-					// console.log("FIELD:", props)
 					return (
 						<div key={name} className={flexC} data-index={props.index}>
 							<div className='lbl pair'>
@@ -1315,10 +1332,10 @@ module.exports = function (global) {
 													<input 	key={nme} ref='field' {...input} value={o.value} 
 															{...(kind=='checkbox'?{name:nme}:{})} />,
 													<label htmlFor={nme}>{o.label}</label>
-											]	}) : [ <br/>,
-											<select key={name} ref='field' {...input}>
-												{[<option key={name+0} ref='field' value="" disabled selected>
-													None
+											]	}) : [ <br key='breaker'/>,
+											<select key={name} ref='field' {...input} defaultValue="">
+												{[<option key={name+0} ref='field' value="">
+													---
 												  </option>].concat(
 												type.Select.map(function (o,i) { return (
 													<option key={name+i+1} ref='field' value={o.value}>
@@ -1338,7 +1355,7 @@ module.exports = function (global) {
 									<table>
 										<tbody>
 											<tr id="description">
-												<td className="doc"><div>Description</div></td>
+												{isPrm?(<td className="doc"><div>Description</div></td>):null}
 												<td className="doc">
 													<blockquote className='block doc'>
 														<p>{this.toMono(props.description)}</p>
@@ -1346,7 +1363,7 @@ module.exports = function (global) {
 												</td>
 											</tr>
 											<tr id="type">
-												<td className="doc"><div>Type</div></td>
+												{isPrm?(<td className="doc"><div>Type</div></td>):null}
 												<td className="doc">
 													<blockquote className='block doc'>
 														<p>{this.fmtType(type)}</p>
@@ -1354,7 +1371,7 @@ module.exports = function (global) {
 												</td>
 											</tr>
 											{!!!match.length ? null : (<tr className="matches">
-												<td className="doc"><div>Matches</div></td>
+												{isPrm?(<td className="doc"><div>Matches</div></td>):null}
 												<td className="doc">
 													<blockquote className='block doc'>
 														<Table.List {...{data:match}} />
@@ -1635,7 +1652,7 @@ module.exports = function (global) {
 					var props = this.state, content = props.content, refrs = this.refs,
 						css = this.CSS(), roots = css.roots, hghts = css.hghts, hides = css.hides;
 					return (
-						<div data-page={props.page} className='jsonp'
+						<div data-page={props.page} className='jsonp gridItemResults'
 							onWheel={(e) => {
 								// var tmp = 'HGT: %d | SCR: %d | TOP: %d | MIN: %d | BTM: %d | OBJ: %d | OBH: %d',
 								// 	jsn = refrs.jsonp,
@@ -1713,17 +1730,21 @@ module.exports = function (global) {
 				name: 'JSONP.ITER',
 				mixins: [ DFFRNT.Mixins.Dynamic ],
 				render: function () {
-					var th  = this, props = th.state, size = (props.size || 0), items;
+					var th  = this, props = th.state, size = (props.size || 0), sbsz = 0, items;
 					try {
 						// console.log("PROPS:", props.map((k,v) => k))
 						items = props/*.slice(0,20)*/.map( function (v,k) {
 							// console.log("k,v:", k, v)
 							return (<JSONP.Item {...v} key={v.id} hndMouseUp={props.hndMouseUp} />);
 						});
+						//
+						if ( items.length>0 ) { let prp = props[props.keys[0]];
+							sbsz = ( ['array','object'].has(prp.type) ? prp.size : 1 );
+						}
 					} catch (e) { items = []; }
 					// console.log("ITEMS:", items)
 					return (
-						<ul id={props.id} data-cnt={size} className="value gpu">
+						<ul id={props.id} data-cnt={`${size}.${sbsz}`} className="value gpu">
 							{items}
 						</ul>
 					);
@@ -1864,16 +1885,22 @@ module.exports = function (global) {
 				mixins: [ DFFRNT.Mixins.Static ],
 				render: function () {
 					var props 	= this.props||{},
-						Opts 	= props.opts||[],
-						Name 	= props.name||{First:'',Last:''},
+						Name 	= Object.values(props.name||{First:'',Last:''}).join(' '),
 						Photo 	= props.img,
+						Kind 	= props.kind||'',
+						Opts 	= [Kind].concat(props.opts||[]),
+						Icons 	= {user:'user',add:'plus',more:'ellipsis-h','':''},
 						classes = classN('bubble', Opts),
-						Initial = Name.First.replace(/^([A-Z]).+$/, '$1') ||
-									(<i className="fa fa-plus" aria-hidden="true"></i>);
+						attrs	= Imm.Map({
+							'className':   `fa${Icons[Kind].replace(/^(.+)$/,' fa-$1')}`,
+							'data-initial':	Name.replace(/[^A-Z]|\B[A-Z]/g,''),
+							'aria-hidden':	true,
+						}).filter(v=>!!v).toJS();
 					return (
-						<div id="pic" className={classes}><div>{!!Photo ?
-							<img key="img" className="image" src={Photo} /> : Initial
-						}</div></div>
+						<div style={props.style} className={classes}>{
+							!!!Photo ? <i {...attrs}></i> :
+							<img key="img" className="image" src={Photo} /> 
+						}</div>
 					);
 				}
 			});
@@ -1962,7 +1989,6 @@ module.exports = function (global) {
 							onClick: 		 hndls.hndRequest.bind(this),
 							// onClick: 	 	 cnfgs.cncRequest,
 						}; hndls.setRequest.bind(this)();
-					// console.log('TO:', (props.query.to||[]).join('\\/'))
 					return (<a {...attrs}>{!!disp ?
 						this.toText(disp) : this.toLink(kind, props)
 					}</a>);
@@ -2013,28 +2039,31 @@ module.exports = function (global) {
 				mixins: 	[ DFFRNT.Mixins.Static ],
 				render: 	function () {
 					var props 	= this.props,
-						cssFoot = CSS.Flex({Dir:'Row',Align:'S',Space:'B',Wrap:0}, 'noSelect'),
-						cssCred = CSS.Flex({Dir:'Row',Align:'C',Space:'S',Wrap:0}),
-						cssChat = CSS.Flex({Dir:'Row',Align:'R',Space:'E',Wrap:0});
+						crdts	= props.credits,
+						chats	= props.chats.reverse(),
+						optns 	= Imm.fromJS({opts:['lite','small']});
 					return (
-						<footer id='footer' className={cssFoot}>
-							<section id="credits" className={cssCred}>
+						<footer id='footer' className="noSelect gridItemFooter gridFooter">
+							<section id="credits" className='gridItemCopyright'>
 								<p>
 									<span id='copyright'>{new Date().getFullYear()}</span>
 									<span id='author'>
-										<a key='author' href={'mailto:'+props.contact} target='_blank'>
-											{props.author}
+										<a key='author' href={'mailto:'+crdts.contact} target='_blank'>
+											{crdts.author}
 										</a>
 									</span>
 									<span id='company'>
-										<a key='company' href={'http://'+props.website} target='_blank'>
-											{props.company}
+										<a key='company' href={'http://'+crdts.website} target='_blank'>
+											{crdts.company}
 										</a>
 									</span>
 								</p>
 							</section>
-							<section id="chatter" className={cssChat}>
-								<Bubble {...{opts:['lite','small']}} />
+							<section id="chatter" className='gridItemThreads'>
+								<Bubble {...optns.mergeDeep(Imm.fromJS({kind:'more',opts:['dark']})).toJS()} />
+								{chats.map((b,i)=><Bubble key={`chat${i}`} style={{gridColumn:i+2}} 
+													{...optns.mergeDeep(Imm.fromJS(b)).toJS()}/>)}
+								<Bubble {...optns.mergeDeep(Imm.fromJS({kind: 'add',opts:['dark']})).toJS()} />
 							</section>
 						</footer>
 					);

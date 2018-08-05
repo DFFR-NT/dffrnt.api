@@ -108,8 +108,9 @@
 								SSD  = { sessionID: sid }, ERR;
 							// ----------------------------------------------------------
 							switch (true) {
-								case head.token!==user.token: ERR  = MSG.TOKEN; break;;
+								case head.token!==user.token: ERR = MSG.TOKEN; break;;
 								case !!spc.match(/^\/update/): prm.uids = uid; qry.single = 'true';
+								case !!!prm.uid && !!!qry.uid: qry.uid  = uid;
 								default: THS.Renew(req); next(); return;
 							}
 							// Handle Errors --------------------------------------------

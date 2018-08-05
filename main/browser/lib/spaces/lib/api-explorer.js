@@ -85,7 +85,7 @@ module.exports = {
 			// console.log({ NAV: nav, BUTTONS: buttons, PAGES: pages });
 			// -----
 			Stores.App.updateStore({
-				page: 		{ num: 7, pth: ['User'] },
+				page: 		{ num: 1, pth: ['Search'] },
 				styles: 	THS.getSortStyle(styles),
 				content: 	{
 					built: 		true,
