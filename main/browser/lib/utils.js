@@ -405,11 +405,12 @@ module.exports = function (global) {
 			},
 			InValid: function (nput, name, fill) {
 				// -----------------------------------------------
-				var dflt = INPUT.Attr(nput,'data-default');
+				var dflt = INPUT.Attr(nput,'data-default'),
+					prty = INPUT.Attr(nput,'data-priority'),
+					valu = nput.value;
 				fill.push({
-					name: 	name,
-					type: 	INPUT.Attr(nput,'data-priority'),
-					valid: 	!!nput.value || !!dflt
+					name:  name, type:  prty,
+					valid: (prty==" "||!!valu||!!dflt)
 				});
 			},
 			Has: function (elm, attr) {
