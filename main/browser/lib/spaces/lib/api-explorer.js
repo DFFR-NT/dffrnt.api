@@ -1,11 +1,11 @@
 
 'use strict';
 
-
 module.exports = {
-	Data:  function () { return this.Help; },
+	Data:  function () { return this.Help.Document; },
 	Build: function (Actions, Stores) {
 		return function (res) {
+
 			var THS = this, content = Imm.OrderedMap(res), page = 0,
 				nav = {}, pages = {}, styles = [], buttons = Imm.OrderedMap({}), 
 				dtn = {subs:Imm.OrderedMap({})}, 
