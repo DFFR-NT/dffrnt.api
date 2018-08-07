@@ -166,7 +166,7 @@
 				loctn = function loctn(kind = 'param') {
 							return {
 								Default: '',
-								Format 	(cls) { return cls.lid||'o.location'; },
+								Format 	(cls) { return cls.lid||'x.location'; },
 								Desc: 	{
 									description: 'A valid {{Locale ID}}',
 									type: "Number", to: kind, required: false, 
@@ -726,7 +726,7 @@
 							Methods: 	Docs.Kinds.GET,
 							Headers: 	{ token: Docs.Headers.Token },
 							Examples: 	{
-								"?=14&lid=2717431&svctype=01120": [
+								"?uid=14&lid=2717431&svctype=01120": [
 									'Executes a {{Search}} for  the {{User}} at {{User ID}}: {{14}}, located in',
 									'New York ({{LID}}: {{2717431}}) who provides a Translation {{Service}}.'
 								].join(' ')
@@ -833,10 +833,10 @@
 									"speaks French ({{LG@142}}) & English ({{LG@124}})",
 									"and enjoy Reading ({{HB@32}})",
 								].join(', '),
-								"/:terms:LG@83?uid=14&page=3&limit=10": [
+								"/:terms:LG@142?uid=14&page=3&limit=10": [
 									"Displays the 3rd {{Page}} ––",
 									"at a {{Limit}} of 'ten' {{Users}} results per {{Page}} ––",
-									"who speak Chinese ({{LG@83}}) in the {{User's}} own {{Location}}",
+									"who speak French ({{LG@142}}) in the {{User's}} own {{Location}}",
 								].join(' '),
 							},
 						},
@@ -1242,7 +1242,7 @@
 							Methods: 	Docs.Kinds.GET,
 							Headers: 	{ token: Docs.Headers.Token },
 							Examples: 	{
-								"/:account:ajohnson": "Displays the {{Users}} with a {{User Name}} of 'ajohnson'",
+								"/:account:leshaunj": "Displays the {{Users}} with a {{User Name}} of 'LeShaunJ'",
 								"?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Users}} results per {{Page}}",
 							},
 						},
@@ -1937,7 +1937,7 @@
 							Headers: 	{ token: Docs.Headers.Token },
 							Examples: 	{
 								"/:lid:312844": "Returns the {{Locales}} within a 25km {{Radius}} of 'Calgary, Canada' ({{LID:312844}})",
-								"/:radius:50/:lid:312844": "Returns the {{Locales}} within a 50km {{Radius}} of 'Calgary, Canada' ({{LID:312844}})",
+								"/:lid:312844?radius=50": "Returns the {{Locales}} within a 50km {{Radius}} of 'Calgary, Canada' ({{LID:312844}})",
 								"?page=3": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Locales}} per {{Page}}",
 							},
 						},
@@ -2252,15 +2252,15 @@
 							Methods: 	Docs.Kinds.GET,
 							Headers: 	{ token: Docs.Headers.Token },
 							Examples: 	{
-								"/:uid:14/:hid:1": "Returns the {{Users}} whose {{Hobbies}} match the {{HID}}, 1 in the same {{Locale}} as the {{User}} at the {{User ID}}, 14",
+								"/:hids:1?uid=14": "Returns the {{Users}} whose {{Hobbies}} match the {{HID}}, 1 in the same {{Locale}} as the {{User}} at the {{User ID}}, 14",
 								"?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Users}} results per {{Page}}",
 							},
 						},
 						Query: 	[
 							"SELECT     u.user_id,",
 							`           ${SQL.SOCKET({link:'/user/:uids:%s', columns:['u.user_id']})} AS user`,
-							"FROM      (SELECT * FROM users WHERE user_id = :UID:) AS o",
-							"INNER JOIN user_profile_details AS d ON o.user_id   = d.user_fk",
+							"FROM      (SELECT * FROM users WHERE user_id = :UID:) AS x",
+							"INNER JOIN user_profile_details AS d ON x.user_id   = d.user_fk",
 							"INNER JOIN users                AS u ON u.user_id  <> :UID:",
 							"                                    AND chkRadDist(u.location,:UID:,:LID:,:RADIUS:)",
 							"INNER JOIN user_profile_details AS p ON u.user_id   = p.user_fk",
@@ -2331,7 +2331,7 @@
 							Methods: 	Docs.Kinds.GET,
 							Headers: 	{ token: Docs.Headers.Token },
 							Examples: 	{
-								"/:hid:3;4": "Returns the {{Hobby}} at the {{HIDs}}, 3 and 4",
+								"/:hids:3;4": "Returns the {{Hobby}} at the {{HIDs}}, 3 and 4",
 								"?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Hobbies}} results per {{Page}}",
 							},
 						},
@@ -2359,15 +2359,15 @@
 							Methods: 	Docs.Kinds.GET,
 							Headers: 	{ token: Docs.Headers.Token },
 							Examples: 	{
-								":lgid:1?uid=14": "Returns the {{Users}} whose {{Languages}} match the {{LGID}}, 1, in the same {{Locale}} as the {{User}} at the {{User ID}}, 14",
+								":lgids:1?uid=14": "Returns the {{Users}} whose {{Languages}} match the {{LGID}}, 1, in the same {{Locale}} as the {{User}} at the {{User ID}}, 14",
 								"?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Users}} results per {{Page}}",
 							},
 						},
 						Query: 	[
 							"SELECT     u.user_id,",
 							`           ${SQL.SOCKET({link:'/user/:uids:%s', columns:['u.user_id']})} AS user`,
-							"FROM      (SELECT * FROM users WHERE user_id = :UID:) AS o",
-							"INNER JOIN user_profile_details AS d ON o.user_id  = d.user_fk",
+							"FROM      (SELECT * FROM users WHERE user_id = :UID:) AS x",
+							"INNER JOIN user_profile_details AS d ON x.user_id  = d.user_fk",
 							"INNER JOIN users                AS u ON u.user_id  <> :UID:",
 							"                                    AND chkRadDist(u.location,:UID:,:LID:,:RADIUS:)",
 							"INNER JOIN user_profile_details AS p ON u.user_id  = p.user_fk",
@@ -2439,7 +2439,7 @@
 							Methods: 	Docs.Kinds.GET,
 							Headers: 	{ token: Docs.Headers.Token },
 							Examples: 	{
-								"/:hid:3;4": "Returns the {{Language}} at the {{LGIDs}}, 3 and 4",
+								"/:lgids:3;4": "Returns the {{Language}} at the {{LGIDs}}, 3 and 4",
 								"?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Languages}} results per {{Page}}",
 							},
 						},
@@ -2466,15 +2466,15 @@
 							Methods: 	Docs.Kinds.GET,
 							Headers: 	{ token: Docs.Headers.Token },
 							Examples: 	{
-								"/:nid:1?uid=14": "Returns the {{Users}} whose {{Nationalities}} match the {{NID}}, 1, in the same {{Locale}} as the {{User}} at the {{User ID}}, 14",
+								"/:nids:1?uid=14": "Returns the {{Users}} whose {{Nationalities}} match the {{NID}}, 1, in the same {{Locale}} as the {{User}} at the {{User ID}}, 14",
 								"?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Users}} results per {{Page}}",
 							},
 						},
 						Query: 	[
 							"SELECT     u.user_id,",
 							`           ${SQL.SOCKET({link:'/user/:uids:%s', columns:['u.user_id']})} AS user`,
-							"FROM      (SELECT * FROM users WHERE user_id = :UID:) AS o",
-							"INNER JOIN user_profile_details AS d ON o.user_id   = d.user_fk",
+							"FROM      (SELECT * FROM users WHERE user_id = :UID:) AS x",
+							"INNER JOIN user_profile_details AS d ON x.user_id   = d.user_fk",
 							"INNER JOIN users                AS u ON u.user_id  <> :UID:",
 							"                                    AND chkRadDist(u.location,:UID:,:LID:,:RADIUS:)",
 							"INNER JOIN user_profile_details AS p ON u.user_id   = p.user_fk",
@@ -2543,7 +2543,7 @@
 							Methods: 	Docs.Kinds.GET,
 							Headers: 	{ token: Docs.Headers.Token },
 							Examples: 	{
-								"/:hid:3;4": "Returns the {{Nationality}} at the {{NIDs}}, 3 and 4",
+								"/:nids:3;4": "Returns the {{Nationality}} at the {{NIDs}}, 3 and 4",
 								"?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Nationalities}} results per {{Page}}",
 							},
 						},
@@ -2570,15 +2570,15 @@
 							Methods: 	Docs.Kinds.GET,
 							Headers: 	{ token: Docs.Headers.Token },
 							Examples: 	{
-								"/:rid:1?uid=14": "Returns the {{Users}} whose {{Religions}} match the {{RID}}, 1, in the same {{Locale}} as the {{User}} at the {{User ID}}, 14",
+								"/:rids:1?uid=14": "Returns the {{Users}} whose {{Religions}} match the {{RID}}, 1, in the same {{Locale}} as the {{User}} at the {{User ID}}, 14",
 								"?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Users}} results per {{Page}}",
 							},
 						},
 						Query: [
 							"SELECT     u.user_id,",
 							`           ${SQL.SOCKET({link:'/user/:uids:%s', columns:['u.user_id']})} AS user`,
-							"FROM      (SELECT * FROM users WHERE user_id = :UID:) AS o",
-							"INNER JOIN user_profile_details AS d ON o.user_id   = d.user_fk",
+							"FROM      (SELECT * FROM users WHERE user_id = :UID:) AS x",
+							"INNER JOIN user_profile_details AS d ON x.user_id   = d.user_fk",
 							"INNER JOIN users                AS u ON u.user_id  <> :UID:",
 							"                                    AND chkRadDist(u.location,:UID:,:LID:,:RADIUS:)",
 							"INNER JOIN user_profile_details AS p ON u.user_id   = p.user_fk",
@@ -2642,7 +2642,7 @@
 							Methods: 	Docs.Kinds.GET,
 							Headers: 	{ token: Docs.Headers.Token },
 							Examples: 	{
-								"/:hid:3;4": "Returns the {{Religion}} at the {{RIDs}}, 3 and 4",
+								"/:rids:3;4": "Returns the {{Religion}} at the {{RIDs}}, 3 and 4",
 								"?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Religions}} results per {{Page}}",
 							},
 						},
@@ -2676,8 +2676,8 @@
 						Query: [
 							"SELECT     u.user_id,",
 							`           ${SQL.SOCKET({link:'/user/:uids:%s', columns:['u.user_id']})} AS user`,
-							"FROM      (SELECT * FROM users WHERE user_id = :UID:) AS o",
-							"INNER JOIN user_profile_details AS d ON o.user_id   = d.user_fk",
+							"FROM      (SELECT * FROM users WHERE user_id = :UID:) AS x",
+							"INNER JOIN user_profile_details AS d ON x.user_id   = d.user_fk",
 							"INNER JOIN users                AS u ON u.user_id  <> :UID:",
 							"                                    AND chkRadDist(u.location,:UID:,:LID:,:RADIUS:)",
 							"INNER JOIN user_profile_details AS p ON u.user_id   = p.user_fk",
@@ -2776,8 +2776,8 @@
 						Query: [
 							"SELECT     u.user_id,",
 							`           ${SQL.SOCKET({link:'/user/:uids:%s', columns:['u.user_id']})} AS user`,
-							"FROM      (SELECT * FROM users WHERE user_id = :UID:) AS o",
-							"INNER JOIN user_profile_details AS d ON o.user_id   = d.user_fk",
+							"FROM      (SELECT * FROM users WHERE user_id = :UID:) AS x",
+							"INNER JOIN user_profile_details AS d ON x.user_id   = d.user_fk",
 							"INNER JOIN users                AS u ON u.user_id  <> :UID:",
 							"                                    AND chkRadDist(u.location,:UID:,:LID:,:RADIUS:)",
 							"INNER JOIN user_profile_details AS p ON u.user_id   = p.user_fk",
@@ -2973,14 +2973,14 @@
 							Methods: 	Docs.Kinds.GET,
 							Headers: 	{ token: Docs.Headers.Token },
 							Examples: 	{
-								"/:uid:14/:sids:1": "Returns the {{Providers}} whose {{Service Type}} match the {{SIDs}}, 1, in the same {{Locale}} as the {{User}} at the {{User ID}}, 14",
+								"/:sids:1?uid=14": "Returns the {{Providers}} whose {{Service Type}} match the {{SIDs}}, 1, in the same {{Locale}} as the {{User}} at the {{User ID}}, 14",
 								"?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Users}} results per {{Page}}",
 							},
 						},
 						Query: [
 							"SELECT     u.user_id,",
 							`           ${SQL.SOCKET({link:'/user/:uids:%s', columns:['u.user_id']})} AS user`,
-							"FROM      (SELECT * FROM users WHERE user_id = :UID:) AS o",
+							"FROM      (SELECT * FROM users WHERE user_id = :UID:) AS x",
 							"INNER JOIN users                  AS u ON u.user_id           <> :UID:",
 							"                                      AND chkRadDist(u.location, :UID:,:LID:,:RADIUS:)",
 							"INNER JOIN user_provider_details  AS d ON u.user_id            = d.user_fk",
