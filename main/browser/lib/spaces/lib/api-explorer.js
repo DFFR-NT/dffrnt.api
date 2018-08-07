@@ -1,11 +1,11 @@
 
 'use strict';
 
-
 module.exports = {
-	Data:  function () { return this.Help; },
+	Data:  function () { return this.Help.Document; },
 	Build: function (Actions, Stores) {
 		return function (res) {
+
 			var THS = this, content = Imm.OrderedMap(res), page = 0,
 				nav = {}, pages = {}, styles = [], buttons = Imm.OrderedMap({}), 
 				dtn = {subs:Imm.OrderedMap({})}, 
@@ -85,7 +85,7 @@ module.exports = {
 			// console.log({ NAV: nav, BUTTONS: buttons, PAGES: pages });
 			// -----
 			Stores.App.updateStore({
-				page: 		{ num: 7, pth: ['User'] },
+				page: 		{ num: 1, pth: ['Search'] },
 				styles: 	THS.getSortStyle(styles),
 				content: 	{
 					built: 		true,
