@@ -1,2 +1,2 @@
 
-require('./lib/elements.js')(global);
+require('./lib/renders').Render(global);

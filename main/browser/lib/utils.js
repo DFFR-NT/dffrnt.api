@@ -1,3 +1,4 @@
+'use strict';
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CONSTANTS ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -40,7 +41,14 @@ module.exports = function (global) {
 		global.Assign 	= require('object-assign');
 		global.Imm 		= require('immutable');
 		global.Dff 		= require('immutablediff');
-		global.FromJS 	= Imm.fromJS;
+		global.isKeyed 	= Imm.Iterable.isKeyed;
+		global.FromJS 	= function FromJS(js) {
+			return Imm.fromJS(js, function FJSO(key, val) {
+				return isKeyed(val) ? 
+					val.toOrderedMap() : 
+					val.toList();
+			});
+		};
 		global.ImmIs 	= Imm.is;
 		global.List 	= Imm.List;
 		global.Map 		= Imm.Map;
@@ -73,7 +81,7 @@ module.exports = function (global) {
 		// ARRAY
 
 			// HAS ITEM
-				if (!Array.prototype.has) {
+				if (!Array.prototype.hasOwnProperty('has')) {
 					Object.defineProperty(Array.prototype, 'has', {
 						enumerable: false, configurable: false, writable: false,
 						value: function (val) {
@@ -84,7 +92,7 @@ module.exports = function (global) {
 				}
 
 			// LAST ITEM
-				if (!Array.prototype.last) {
+				if (!Array.prototype.hasOwnProperty('last')) {
 					Object.defineProperty(Array.prototype, 'last', {
 						enumerable: false, configurable: false,
 						get: function getLast ( ) { return this[(this.length-1)]; },
@@ -93,7 +101,7 @@ module.exports = function (global) {
 				}
 
 			// SAVE INDEX
-				if (!Array.prototype.safeIndex) {
+				if (!Array.prototype.hasOwnProperty('safeIndex')) {
 					Object.defineProperty(Array.prototype, 'safeIndex', {
 						enumerable: false, configurable: false, writable: false,
 						value: function (idx, dir) {
@@ -115,7 +123,7 @@ module.exports = function (global) {
 		// NUMBER
 
 			// NUMBER IS BETWEEN
-				if (!Number.prototype.amid) {
+				if (!Number.prototype.hasOwnProperty('amid')) {
 					Number.prototype.amid = function(a, b, eq) {
 						var min = Math.min.apply(Math, [a, b]),
 						max = Math.max.apply(Math, [a, b]);
@@ -131,7 +139,7 @@ module.exports = function (global) {
 		// STRING
 
 			// TEXT APPEARANCES
-				if (!String.prototype.appears) {
+				if (!String.prototype.hasOwnProperty('appears')) {
 					String.prototype.appears = function (char) {
 						var reg = new RegExp(char, 'g');
 						return (this.match(reg) || []).length;
@@ -139,7 +147,7 @@ module.exports = function (global) {
 				}
 
 			// DUPLICATE
-				if (!String.prototype.dup) {
+				if (!String.prototype.hasOwnProperty('dup')) {
 					String.prototype.dup = function (amount) {
 						var amt = amount+1; return new Array(amt).join(this);
 					}
@@ -321,7 +329,7 @@ module.exports = function (global) {
 		}
 		global.SOCKET 	= function (options) {
 			// -----------------------------------------------------------------------
-			var mtch, pnts, prms, qrys, sock, json, rslt,
+			var mtch, pnts, prms, qrys, sock, json, link, rslt,
 				opts = Assign({ link: "/", escapes: 1 }, options||{}),
 				cls  = 'SocketLink', as = { as: 'item' };
 			// -----------------------------------------------------------------------
@@ -481,20 +489,14 @@ module.exports = function (global) {
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// CLASS.STATICS ////////////////////////////////////////////////////////////////////////////////////////////
 
-			function getID () {
-				var ID = null; while ((!!!ID || OBIDs.has(ID))) {
+			function getID   (id) {
+				var ID = id; while ((!!!ID || OBIDs.has(ID))) {
 					ID = GenID(9, false, /[\w\d]/);
 				}; 	OBIDs = OBIDs.set(ID,ID); return ID;
 			}
-			function toLog () { !!this.debug && console.log.apply(console, ARGS(arguments)); }
-			function toObject () { return this.cache; }
-			function toDepth (depth) {
-				if (path.length <= depth) {
-					return this.cache;
-				} else {
-					return null;
-				}
-			}
+			function toLog 	 () { !!this.debug && console.log.apply(console, ARGS(arguments)); }
+			function toObject() { return this.cache; }
+			function toDepth (depth) { return (path.length <= depth) ? this.cache : null; }
 
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -546,7 +548,7 @@ module.exports = function (global) {
 					!!getter && (def.get = function () { return this.cache[prop]; });
 					!!setter && (def.set = function (v) { this.cache[prop] = v;   });
 					return PROPS(def, { E: enumer, C: config });
-				}
+				},
 				itmsWch = { array: Imm.List, object: Imm.OrderedMap },
 				itmsDsc = { E: 1, W: 1, C: 1 };
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -720,7 +722,7 @@ module.exports = function (global) {
 					var ths = this, prp = ((val instanceof ITEM ?
 							itmsItm : (itmsHsh(ths.hash,key,IS(val)) ?
 							itmsTmp : itmsMap))).bind(ths)(val,key);
-						res = prp.value; return prp;
+						return prp;
 				}, { E: 0, C: 0, W: 0 }),
 				////////////////////////////////////////////////////////////////////////////////
 			});
@@ -729,7 +731,8 @@ module.exports = function (global) {
 				// ------------------------------------------------------
 				var ths  =  this, type = IS(data),
 					keys = Object.keys(data),
-					id 	 =  getID(), mast = (master||(parent||{}).master),
+					id 	 =  getID(typeof(master)=='string'?master:null), 
+					mast = (master||(parent||{}).master),
 					max  =  MAX(keys).length,
 					hash = 	keys.toString().replace(/\d+,?/g,'')
 								.replace(/^(.+)$/,'{'+mast+':[$1]}');
@@ -862,10 +865,10 @@ module.exports = function (global) {
 				////////////////////////////////////////////////////////////////////////////////
 			});
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////
-			ITEM = EXTEND(ITEM, function ITEM (name, value, config, template) {
+			ITEM = EXTEND(ITEM, function ITEM (name, value, config, template, custID) {
 				// -------------------------------------------------------------
-					var id = getID(), len = (name||'').length, parent,
-						master, group, inside, max, pad, c, val;
+					var id = getID(custID), len = (name||'').length, 
+						parent, master, group, inside, max, pad, c, val;
 				// -------------------------------------------------------------
 					parent = (config.parent || { path: [], master: id });
 					master = (config.master || parent.master);
