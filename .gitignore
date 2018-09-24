@@ -5,13 +5,8 @@
 /main/browser/lib/*.js
 /node_modules
 /public/comps/*
-/public/css/*
-/public/fonts/*
-/public/images/*
-/public/images/icons/*
 /public/js/*
 /public/js/bundle.js
-/public/less/*
 /storage/*/*
 /*.sublime-*
 **/package-lock.json
@@ -25,7 +20,4 @@
 !/main/browser/lib/spaces/**
 !/public/images
 !/public/css/explorer.css/Loading.gif
-!/public/images/icons
-!/public/images/icons/browserconfig.xml
-!/public/images/icons/manifest.json
 !**/*_HERE
