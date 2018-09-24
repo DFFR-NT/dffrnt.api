@@ -1,7 +1,7 @@
 # evectr.api
 The official **eVectr™** `API`.
 
-![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/latest-v1.6.5-blue.svg?longCache=true)
+![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/latest-v2.0.0-blue.svg?longCache=true)
 ![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/node-%3E=v8.9.4-lightgrey.svg?longCache=true)
 ![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/npm-%3E=v5.6.0-lightgrey.svg?longCache=true)
 ![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/mysql-%3E=v5.6.0-lightgrey.svg?longCache=true)
@@ -97,11 +97,18 @@ Parent_Folder/ (Name NOT important)
    // ./config/settings.js 
    export default {
        Debug: true, // Debug‑Mode will display verbose Logs
-       Port: 3001, // This is the Server's listening Port
-       Public: {
-           // Cache‑Age for Browser files
-           Age: 365*86400, 
-           // ...
+       // This is the Server's listening Port
+       Port: 3001, 
+       // If using as a separate Frontend...
+       API:	'http://localhost:3001',
+       // Setup Folders for Static Content 
+       Folders: 
+           Uploads: { 
+               Folder:  'storage',
+               // Cache‑Age for Browser files
+               Age: 365*86400, 
+               // ...
+           }
        },
        Session: {
            // This should be something hard to guess, like a phrase

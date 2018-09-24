@@ -1,0 +1,424 @@
+<!doctype html>
+<html>
+	<head>
+		<title>eVectr</title>
+		<!-- META DATA -->
+		<meta name="viewport" content="initial-scale=1 maximum-scale=1 user-scalable=no">
+		<meta name="X-UA-Compatible" content="IE=Edge" http-equiv="X-UA-Compatible">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="white-translucent">
+		<meta name="apple-mobile-web-app-title" content="eVectr">
+		<meta name="application-name" content="eVectr">
+		<meta name="msapplication-TileColor" content="#00aba9">
+		<meta name="msapplication-TileImage" content="images/icons/mstile-144x144.png">
+		<meta name="msapplication-config" content="images/icons/browserconfig.xml">
+		<meta name="theme-color" content="#e5e5e5">
+		<!-- ICONS -->
+		<link type="image/png" rel="mask-icon" href="images/icons/safari-pinned-tab.svg" color="#5bbad5">
+		<link type="image/png" rel="apple-touch-icon" href="images/icons/apple-icon-57x57.png" sizes="57x57">
+		<link type="image/png" rel="apple-touch-icon" href="images/icons/apple-icon-60x60.png" sizes="60x60">
+		<link type="image/png" rel="apple-touch-icon" href="images/icons/apple-icon-72x72.png" sizes="72x72">
+		<link type="image/png" rel="apple-touch-icon" href="images/icons/apple-icon-76x76.png" sizes="76x76">
+		<link type="image/png" rel="apple-touch-icon" href="images/icons/apple-icon-114x114.png" sizes="114x114">
+		<link type="image/png" rel="apple-touch-icon" href="images/icons/apple-icon-120x120.png" sizes="120x120">
+		<link type="image/png" rel="apple-touch-icon" href="images/icons/apple-icon-144x144.png" sizes="144x144">
+		<link type="image/png" rel="apple-touch-icon" href="images/icons/apple-icon-152x152.png" sizes="152x152">
+		<link type="image/png" rel="apple-touch-icon" href="images/icons/apple-icon-180x180.png" sizes="180x180">
+		<link type="image/png" rel="icon" href="images/icons/android-chrome-192x192.png" sizes="192x192">
+		<link type="image/png" rel="icon" href="images/icons/favicon-32x32.png" sizes="32x32">
+		<link type="image/png" rel="icon" href="images/icons/favicon-16x16.png" sizes="16x16">
+		<link type="image/x-icon" rel="icon" href="images/icons/favicon.ico">
+		<link type="image/x-icon" rel="shortcut icon" href="images/icons/favicon.ico">
+		<link type="application/json" rel="manifest" href="images/icons/manifest.json">
+		<!-- CSS -->
+		<link type="text/css" rel="stylesheet" href="comps/font-awesome/web-fonts-with-css/css/fontawesome-all.min.css">
+		<link type="text/css" rel="stylesheet" href="css/style.min.css">
+		<!-- NAV -->
+		<style type="text/css" id="navigation"></style>
+	</head>
+	<body>
+	<!-- GUIDE TOGGLE -->
+		<input class="refs" type="checkbox" name="references" id="references"/>
+		<label class="refs" for="references" aria-hidden="true">Guide</label>
+	<!-- MAIN -->
+		<main id="app">
+			<main class="gridMain stock loggedOut" data-reactroot="" id="content">
+			<!-- VARIABLES -->
+				<var data-value="4" id="stat"></var>
+				<var data-1="Search" data-2="" data-3="" data-page="1" id="nav"></var>
+			<!-- SEARCH -->
+				<section class="gridItemSearch gridSearch norm-b" id="search">
+					<div class="tkn norm"><i class="fas fa-search fa-fw"></i></div>
+					<input 	type="search" id="search-box" name="search-box" autocomplete="off" 
+							placeholder="Search for anything (Well, not anything, but...)" 
+							class="gridItemSearchBox">
+					<button type="button" id="search-go" name="search-go" class="tkn norm">
+						GO
+					</button>
+				</section>
+			<!-- HEADING -->
+				<header class="gridItemName d" aria-labelledby="pageName">
+					<div class="noShadow trunc"><h1 class="gpu" id="pageName"><span class="trunc">My Settings</span></h1></div>
+				</header>
+				<hr class="gridItemDivide"/>
+			<!-- FOOTER -->
+				<footer class="gridItemFooter">
+					<section class="gridFooter noSelect gpu" style="background-image: url('images/Logo.sm.white.png');">
+					<!-- CONTACT -->
+						<section id="contact" class="gridItemContact gridContact">
+							<a href="about-us">About</a>
+							<a href="help">Help</a>
+							<a href="safety">Safety</a>
+							<a href="privacy">Privacy</a>
+							<a href="terms">Terms</a>
+						</section>
+					<!-- CREDITS -->
+						<section id="credits" class="gridItemCredits">
+							<p><span id="copyright">2018</span><span id="company"><a href="http://eVectr.com" target="_blank">eVectr Inc</a></span></p>
+						</section>
+					</section>
+				</footer>
+			<!-- CONTENT -->
+				<section class="gridItemContent gridContent guide" data-guide=".gridItemContent.gridContent">
+				<!-- SIDE-MENU -->
+					<nav class="gridItemSidebar gridMenu guide" data-guide=".gridItemSidebar.gridMenu" id="#requests">
+						<label class="btn"><a href="#about">About Me <i class="fas fa-heart fa-fw"></i></a></label>
+						<label class="btn"><a href="#services">My Services <i class="fas fa-handshake fa-fw"></i></a></label>
+						<label class="btn"><a href="#info">Other Info <i class="fas fa-briefcase fa-fw"></i></a></label>
+						<label class="btn"><a href="#forms">Forms & Inputs <i class="fas fa-edit fa-fw"></i></a></label>
+						<label class="btn"><a href="#typography">Typography <i class="fas fa-pen-fancy fa-fw"></i></a></label>
+					</nav>
+				<!-- MAIN CONTENT -->
+					<section class="gridItemCopy PLR guide" data-guide=".gridItemCopy.PA">
+					<!-- ABOUT-ME    STYLES -->
+						<section class="panel guide" data-guide=".panel" id="results">
+							<header class="heading">
+								<h3 class="guide" data-guide=".heading">5 People Found<i class="fas fa-search fa-fw"></i></h3>
+							</header>
+							<article class="body guide" data-guide=".body">
+								<a class="gridStub">
+									<div class="bubble medium lite gpu guide" data-guide=".bubble.large.lite" style="background-image:url('images/profile.jpg');"></div>
+									<h3><span class="trunc">Arian LeShaun Johnson</span></h3>
+									<h3>
+										<sup aria-hidden="true">
+											<span>LeShaunJ</span>
+											<div class="badge sm norm"><i class="fas fa-handshake"></i></div>
+											<div class="badge sm good"><i class="fas fa-shield-alt"></i></div>
+										</sup>
+									</h3>
+									<h6>Calgary, Alberta, Canada</h6>
+									<h6><i class="fas fa-mars fa-fw"></i>31<sup>years old</sup></h6>
+									<div>
+										<button type="button" class="multi tkn good small" value="156" data-x1>
+											<span>Weightlifting</span>
+										</button>
+										<button type="button" class="multi tkn good small" value="206" data-x4>
+											<span>Basketball</span>
+										</button>
+									</div>
+								</a>
+								<a class="gridStub">
+									<div class="bubble medium lite gpu guide" data-guide=".bubble.large.lite" style="background-image:url('images/profile.jpg');"></div>
+									<h3><span class="trunc">Marc Djoudi</span></h3>
+									<h3>
+										<sup aria-hidden="true">
+											<span>mdjoudi</span>
+											<div class="badge sm norm"><i class="fas fa-handshake"></i></div>
+											<div class="badge sm good"><i class="fas fa-shield-alt"></i></div>
+										</sup>
+									</h3>
+									<h6>Calgary, Alberta, Canada</h6>
+									<h6><i class="fas fa-mars fa-fw"></i>31<sup>years old</sup></h6>
+									<div>
+										<button type="button" class="multi tkn good small" value="156" data-x1>
+											<span>Weightlifting</span>
+										</button>
+										<button type="button" class="multi tkn good small" value="206" data-x4>
+											<span>Acting</span>
+										</button>
+									</div>
+								</a>
+								<a class="gridStub">
+									<div class="bubble medium lite gpu guide" data-guide=".bubble.large.lite" style="background-image:url('images/profile.jpg');"></div>
+									<h3><span class="trunc">Darren Sun</span></h3>
+									<h3>
+										<sup aria-hidden="true">
+											<span>darrensun09</span>
+											<div class="badge sm norm"><i class="fas fa-handshake"></i></div>
+											<div class="badge sm good"><i class="fas fa-shield-alt"></i></div>
+										</sup>
+									</h3>
+									<h6>Calgary, Alberta, Canada</h6>
+									<h6><i class="fas fa-mars fa-fw"></i>31<sup>years old</sup></h6>
+									<div>
+										<button type="button" class="multi tkn good small" value="156" data-x1>
+											<span>Acting</span>
+										</button>
+										<button type="button" class="multi tkn good small" value="206" data-x4>
+											<span>Basketball</span>
+										</button>
+									</div>
+								</a>
+								<a class="gridStub">
+									<div class="bubble medium lite gpu guide" data-guide=".bubble.large.lite" style="background-image:url('images/profile.jpg');"></div>
+									<h3><span class="trunc">Ben Ashford</span></h3>
+									<h3>
+										<sup aria-hidden="true">
+											<span>theBigBen</span>
+											<div class="badge sm norm"><i class="fas fa-handshake"></i></div>
+										</sup>
+									</h3>
+									<h6>Calgary, Alberta, Canada</h6>
+									<h6><i class="fas fa-mars fa-fw"></i>31<sup>years old</sup></h6>
+									<div>
+										<button type="button" class="multi tkn good small" value="156" data-x1>
+											<span>Weightlifting</span>
+										</button>
+										<button type="button" class="multi tkn good small" value="206" data-x4>
+											<span>Basketball</span>
+										</button>
+									</div>
+								</a>
+								<a class="gridStub">
+									<div class="bubble medium lite gpu guide" data-guide=".bubble.large.lite" style="background-image:url('images/profile.jpg');"></div>
+									<h3><span class="trunc">Farhan Bhatti</span></h3>
+									<h3>
+										<sup aria-hidden="true">
+											<span>fabhatti</span>
+											<div class="badge sm good"><i class="fas fa-shield-alt"></i></div>
+										</sup>
+									</h3>
+									<h6>Calgary, Alberta, Canada</h6>
+									<h6><i class="fas fa-mars fa-fw"></i>31<sup>years old</sup></h6>
+									<div>
+										<button type="button" class="multi tkn good small" value="156" data-x1>
+											<span>Weightlifting</span>
+										</button>
+										<button type="button" class="multi tkn good small" value="206" data-x4>
+											<span>Basketball</span>
+										</button>
+									</div>
+								</a>
+							</article>
+						</section>
+					<!-- HEADING     STYLES -->
+					</section>
+				<!-- OTHER CONTENT -->
+					<aside class="gridItemOther guide" data-guide=".gridItemOther" aria-hidden="true">
+						<section class="panel side guide" data-guide=".panel.side" id="achievements">
+							<header class="heading">
+								<h4 class="guide" data-guide=".heading">Trust & Achievements<i class="fas fa-trophy fa-fw"></i></h4>
+							</header>
+							<article class="body gridPair guide" data-guide=".body.gridPair">
+								<label class="shield identified large guide" data-guide=".shield.identified">
+									<i></i><span></span>
+								</label>
+								<label class="shield credential large guide" data-guide=".shield.credential">
+									<i></i><span></span>
+								</label>
+								<div class="spread guide" data-guide=".spread">
+									<label class="rating">
+										<div>
+											<label></label>
+											<label data-rating></label>
+											<label></label>
+											<label></label>
+											<label></label>
+										</div>
+									</label>
+									<label class="rating" data-cnt="50">
+										<div>
+											<label data-rating></label>
+											<label></label>
+											<label></label>
+											<label></label>
+											<label></label>
+										</div>
+									</label>
+									<label class="rating" data-cnt="100">
+										<div>
+											<label></label>
+											<label data-rating></label>
+											<label></label>
+											<label></label>
+											<label></label>
+										</div>
+									</label>
+									<label class="rating" data-cnt="500">
+										<div>
+											<label></label>
+											<label></label>
+											<label data-rating></label>
+											<label></label>
+											<label></label>
+										</div>
+									</label>
+									<label class="rating" data-cnt="500">
+										<div>
+											<label data-rating-half></label>
+											<label></label>
+											<label></label>
+											<label></label>
+											<label data-strike></label>
+										</div>
+									</label>
+								</div>
+							</article>
+						</section>
+					</aside>
+				</section>
+			<!-- HEADER -->
+				<header class="gridItemHeader gridHeader" id="header">
+				<!-- BANNER -->
+					<section class="noSelect gridItemBranding" id="banner" role="banner">
+						<a href="guide.cover.html">
+							<div id="logo" class="gpu" style="background-image: url('images/Logo.png');" role="logo"></div>
+						</a>
+					</section>
+				<!-- NAVIGATION -->
+					<nav class="gridItemNav gridTabs compact" tabindex="0" role="menubar">
+						<div class="gridDrop">
+							<label role="menuitem">
+								<a class="fas fa-search fa-fw" href="#app"></a>
+							</label>
+						</div>
+						<div class="gridDrop">
+							<input type="radio" class="reveal" name="navDrops" id="navMessages" aria-hidden="true" tabindex="1" />
+							<label class="reveal" role="menuitem" aria-expanded="false" for="navMessages">
+								<i class="fas fa-envelope fa-fw"></i>
+							</label>
+							<div class="drop reveal" role="menu">
+								<div class="menu">
+									<input type="radio" class="ctrl" name="navMsg" id="navMsg-1" aria-hidden="true" tabindex="2" />
+									<a role="menuitem" href="#">
+										<div class="message prev">
+											<header>
+												<strong>John Smith</strong>
+												<span class="pull-right muted">
+													<em>Yesterday</em>
+												</span>
+											</header>
+											<div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
+										</div>
+									</a>
+									<input type="radio" class="ctrl" name="navMsg" id="navMsg-2" aria-hidden="true" tabindex="2" />
+									<a role="menuitem" href="#">
+										<div class="message prev">
+											<header>
+												<strong>John Smith</strong>
+												<span class="pull-right muted">
+													<em>Yesterday</em>
+												</span>
+											</header>
+											<div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
+										</div>
+									</a>
+									<input type="radio" class="ctrl" name="navMsg" id="navMsg-3" aria-hidden="true" tabindex="2" />
+									<a role="menuitem" href="#">
+										<div class="message prev">
+											<header>
+												<strong>John Smith</strong>
+												<span class="pull-right muted">
+													<em>Yesterday</em>
+												</span>
+											</header>
+											<div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
+										</div>
+									</a>
+									<input type="radio" class="ctrl" name="navMsg" id="navMsg-all" aria-hidden="true" tabindex="2" />
+									<a role="menuitem" class="seeAll" href="#">
+										<div class="msg all">
+											<strong>Read All Messages</strong>
+											<i class="fas fa-angle-right"></i>
+										</div>
+									</a>
+									<input type="radio" class="ctrl" name="navMsg" id="navMsg-0" aria-hidden="true" tabindex="2" />
+								</div>
+							</div>
+						</div>
+						<div class="gridDrop">
+							<input type="radio" class="reveal" name="navDrops" id="navNotify" aria-hidden="true" tabindex="1" />
+							<label class="reveal" role="menuitem" aria-expanded="false" for="navNotify">
+								<i class="fas fa-bell fa-fw"></i>
+							</label>
+							<div class="drop reveal" role="menu">
+								<div class="menu">
+									<input type="radio" class="ctrl" name="navNotif" id="navNotif-1" aria-hidden="true" tabindex="3" />
+									<a role="menuitem" href="#">
+										<div class="notification">
+											<i class="fas fa-comment fa-fw"></i> New Comment<span class="pull-right muted small">4 minutes ago</span>
+										</div>
+									</a>
+									<input type="radio" class="ctrl" name="navNotif" id="navNotif-2" aria-hidden="true" tabindex="3" />
+									<a role="menuitem" href="#">
+										<div class="notification">
+											<i class="fas fa-user-friends fa-fw"></i> 3 New Connections<span class="pull-right muted small">12 minutes ago</span>
+										</div>
+									</a>
+									<input type="radio" class="ctrl" name="navNotif" id="navNotif-3" aria-hidden="true" tabindex="3" />
+									<a role="menuitem" href="#">
+										<div class="notification">
+											<i class="fas fa-handshake fa-fw"></i> 1 Provider Response<span class="pull-right muted small">4 minutes ago</span>
+										</div>
+									</a>
+									<input type="radio" class="ctrl" name="navNotif" id="navNotif-all" aria-hidden="true" tabindex="3" />
+									<a role="menuitem" class="text-center" href="#">
+										<div class="notif all">
+											<strong>See All Alerts</strong>
+											<i class="fas fa-angle-right"></i>
+										</div>
+									</a>
+									<input type="radio" class="ctrl" name="navNotif" id="navNotif-0" aria-hidden="true" tabindex="3" />
+								</div>
+							</div>
+						</div>
+						<div class="gridDrop">
+							<input type="radio" class="reveal" name="navDrops" id="navUser" aria-hidden="true" tabindex="1" />
+							<label class="reveal" role="menuitem" aria-expanded="false" for="navUser">
+								<i class="fas fa-user-circle fa-fw"></i><span class="hidden-xs hidden-sm">Arian Johnson</span>
+							</label>
+							<div class="drop reveal" role="menu">
+								<div class="menu">
+									<input type="radio" class="ctrl" name="navDropUser" id="navDropProfile" aria-hidden="true" tabindex="4" />
+									<a role="menuitem" href="guide.cover.html" class="active divide"><label for="navDropProfile"><i class="fas fa-user fa-fw"></i> Profile</label></a>
+									<input type="radio" class="ctrl" name="navDropUser" id="navDropSetting" aria-hidden="true" tabindex="4" />
+									<a role="menuitem" href="guide.stock.html"><label for="navDropSetting"><i class="fas fa-cog fa-fw"></i> Settings</label></a>
+									<input type="radio" class="ctrl" name="navDropUser" id="navDropLogout" aria-hidden="true" tabindex="4" />
+									<a role="menuitem" href="/logout"><label for="navDropLogout"><i class="fas fa-sign-out-alt fa-fw"></i> Logout</label></a>
+									<input type="radio" class="ctrl" name="navDropUser" id="navDropEmpty" aria-hidden="true" tabindex="4" />
+								</div>
+							</div>
+						</div>
+						<input type="radio" class="ctrl" name="navDrops" id="navNone" tabindex="1" checked/>
+					</nav>
+				</header>
+			<!-- THREADS -->
+				<section class="noSelect gridItemChat gridThreads" id="footer">
+					<div class="gridItemThreads" id="chatter">
+						<div class="bubble more dark small gpu">
+							<i aria-hidden="true" class="fas fa-ellipsis-h"></i>
+						</div>
+						<div class="bubble user lite small gpu" style="grid-column:2">
+							<i aria-hidden="true" class="fas fa-user" data-initial="RM"></i>
+						</div>
+						<div class="bubble user lite small gpu" style="grid-column:3">
+							<i aria-hidden="true" class="fas fa-user" data-initial="PP"></i>
+						</div>
+						<div class="bubble user lite small gpu" style="grid-column:4">
+							<i aria-hidden="true" class="fas fa-user" data-initial="RL"></i>
+						</div>
+						<div class="bubble user lite small gpu" style="grid-column:5">
+							<i aria-hidden="true" class="fas fa-user" data-initial="FB"></i>
+						</div>
+						<div class="bubble  add dark small gpu">
+							<i aria-hidden="true" class="fas fa-plus"></i>
+						</div>
+					</div>
+				</section>
+			</main>
+		</main>
+		<script>
+			(function(global){global.NMESPC="/api-explorer";global.TITLE="API Explorer";})(window);
+		</script>
+	</body>
+</html>

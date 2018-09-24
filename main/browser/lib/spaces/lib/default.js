@@ -2,7 +2,9 @@
 'use strict';
 
 module.exports = {
-	Data:  function () { return {}; },
+	Data:  [
+		function (path, req) { return {}; },
+	],
 	Build: function (Actions, Stores) {
 		return function (res) {
 			Stores.App.updateStore({
