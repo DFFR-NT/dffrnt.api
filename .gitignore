@@ -5,6 +5,7 @@
 /main/browser/lib/*.js
 /node_modules
 /public/comps/*
+/public/css/*.min.css
 /public/js/*
 /public/js/bundle.js
 /storage/*/*
