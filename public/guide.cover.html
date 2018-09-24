@@ -1,0 +1,796 @@
+<!doctype html>
+<html>
+	<head>
+		<title>eVectr</title>
+		<!-- META DATA -->
+		<meta name="viewport" content="initial-scale=1 maximum-scale=1 user-scalable=no">
+		<meta name="X-UA-Compatible" content="IE=Edge" http-equiv="X-UA-Compatible">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="white-translucent">
+		<meta name="apple-mobile-web-app-title" content="eVectr">
+		<meta name="application-name" content="eVectr">
+		<meta name="msapplication-TileColor" content="#00aba9">
+		<meta name="msapplication-TileImage" content="images/icons/mstile-144x144.png">
+		<meta name="msapplication-config" content="images/icons/browserconfig.xml">
+		<meta name="theme-color" content="#e5e5e5">
+		<!-- ICONS -->
+		<link type="image/png" rel="mask-icon" href="images/icons/safari-pinned-tab.svg" color="#5bbad5">
+		<link type="image/png" rel="apple-touch-icon" href="images/icons/apple-icon-57x57.png" sizes="57x57">
+		<link type="image/png" rel="apple-touch-icon" href="images/icons/apple-icon-60x60.png" sizes="60x60">
+		<link type="image/png" rel="apple-touch-icon" href="images/icons/apple-icon-72x72.png" sizes="72x72">
+		<link type="image/png" rel="apple-touch-icon" href="images/icons/apple-icon-76x76.png" sizes="76x76">
+		<link type="image/png" rel="apple-touch-icon" href="images/icons/apple-icon-114x114.png" sizes="114x114">
+		<link type="image/png" rel="apple-touch-icon" href="images/icons/apple-icon-120x120.png" sizes="120x120">
+		<link type="image/png" rel="apple-touch-icon" href="images/icons/apple-icon-144x144.png" sizes="144x144">
+		<link type="image/png" rel="apple-touch-icon" href="images/icons/apple-icon-152x152.png" sizes="152x152">
+		<link type="image/png" rel="apple-touch-icon" href="images/icons/apple-icon-180x180.png" sizes="180x180">
+		<link type="image/png" rel="icon" href="images/icons/android-chrome-192x192.png" sizes="192x192">
+		<link type="image/png" rel="icon" href="images/icons/favicon-32x32.png" sizes="32x32">
+		<link type="image/png" rel="icon" href="images/icons/favicon-16x16.png" sizes="16x16">
+		<link type="image/x-icon" rel="icon" href="images/icons/favicon.ico">
+		<link type="image/x-icon" rel="shortcut icon" href="images/icons/favicon.ico">
+		<link type="application/json" rel="manifest" href="images/icons/manifest.json">
+		<!-- CSS -->
+		<link type="text/css" rel="stylesheet" href="comps/font-awesome/web-fonts-with-css/css/fontawesome-all.min.css">
+		<link type="text/css" rel="stylesheet" href="css/style.min.css">
+		<!-- NAV -->
+		<style type="text/css" id="navigation"></style>
+	</head>
+	<body>
+	<!-- GUIDE TOGGLE -->
+		<input class="refs" type="checkbox" name="references" id="references"/>
+		<label class="refs" for="references" aria-hidden="true">Guide</label>
+	<!-- MAIN -->
+		<main id="app">
+			<main class="gridMain cover loggedOut" data-reactroot="" id="content">
+			<!-- VARIABLES -->
+				<var data-value="4" id="stat"></var>
+				<var data-1="Search" data-2="" data-3="" data-page="1" id="nav"></var>
+			<!-- SEARCH -->
+				<section class="gridItemSearch gridSearch norm-b" id="search">
+					<div class="tkn norm"><i class="fas fa-search fa-fw"></i></div>
+					<input 	type="search" id="search-box" name="search-box" autocomplete="off" 
+							placeholder="Search for anything (Well, not anything, but...)" 
+							class="gridItemSearchBox">
+					<button type="button" id="search-go" name="search-go" class="tkn norm">
+						GO
+					</button>
+				</section>
+			<!-- COVER PHOTO -->
+				<header class="gridItemCover">
+					<div class="gpu" style="background-image: url('images/cover.jpg');"></div>
+				</header>
+			<!-- PROFILE STUB -->
+				<!-- PROFILE PHOTO -->
+					<header class="gridItemPic d">
+						<div class="bubble small er lite gpu" style="background-image:url('images/profile.jpg');"></div>
+					</header>
+					<header class="gridItemPic">
+						<div class="cutout bubble huge gpu" id="profile_picture" style="background-image:url('images/profile.jpg');"></div>
+					</header>
+				<!-- PROFILE INFO  -->
+					<header class="gridItemName d" aria-hidden="true" data-full="Arian LeShaun Johnson&#xa;(LeShaunJ)">
+						<div class="noShadow">
+							<h1 class="gpu">
+								<span class="trunc">Arian LeShaun Johnson</span>
+								<sup aria-hidden="true">
+									<span>LeShaunJ</span>
+									<div class="badge sm mron"><i class="fas fa-handshake"></i></div>
+									<div class="badge sm doog"><i class="fas fa-shield-alt"></i></div>
+								</sup>
+							</h1>
+						</div>
+					</header>
+					<header class="gridItemName" aria-labelledby="profileName">
+						<div class="noShadow">
+							<h1 class="gpu" id="profileName">
+								<span class="trunc">Arian LeShaun Johnson</span>
+								<sup aria-hidden="true">
+									<span>LeShaunJ</span>
+									<div class="badge sm norm"><i class="fas fa-handshake"></i></div>
+									<div class="badge sm good"><i class="fas fa-shield-alt"></i></div>
+								</sup>
+							</h1>
+						</div>
+					</header>
+					<header class="gridItemInfo PLR">
+						<div class="noShadow">
+							<h4>Calgary, Alberta, Canada</h4>
+							<h6><i class="fas fa-mars fa-fw"></i>31<sup>years old</sup></h6>
+						</div>
+					</header>
+				<!-- PROFILE JOIN  -->
+					<header class="gridItemJoin">
+						<div class="cutout">
+							<button class="tkn good large block" type="submit">
+								<i class="fas fa-user-plus"></i> Join my Community
+							</button>
+						</div>
+					</header>
+			<!-- FOOTER -->
+				<footer class="gridItemFooter">
+					<section class="gridFooter noSelect gpu" style="background-image: url('images/Logo.sm.white.png');">
+					<!-- CONTACT -->
+						<section id="contact" class="gridItemContact gridContact">
+							<a href="about-us">About</a>
+							<a href="help">Help</a>
+							<a href="safety">Safety</a>
+							<a href="privacy">Privacy</a>
+							<a href="terms">Terms</a>
+						</section>
+					<!-- CREDITS -->
+						<section id="credits" class="gridItemCredits">
+							<p><span id="copyright">2018</span><span id="company"><a href="http://eVectr.com" target="_blank">eVectr Inc</a></span></p>
+						</section>
+					</section>
+				</footer>
+			<!-- CONTENT -->
+				<section class="gridItemContent gridContent guide" data-guide=".gridItemContent.gridContent">
+				<!-- SIDE-MENU -->
+					<nav class="gridItemSidebar gridMenu guide" data-guide=".gridItemSidebar.gridMenu" id="#requests">
+						<label class="btn"><a href="#about">About Me <i class="fas fa-heart fa-fw"></i></a></label>
+						<label class="btn"><a href="#services">My Services <i class="fas fa-handshake fa-fw"></i></a></label>
+						<label class="btn"><a href="#info">Other Info <i class="fas fa-briefcase fa-fw"></i></a></label>
+						<label class="btn"><a href="#forms">Forms & Inputs <i class="fas fa-edit fa-fw"></i></a></label>
+						<label class="btn"><a href="#typography">Typography <i class="fas fa-pen-fancy fa-fw"></i></a></label>
+					</nav>
+				<!-- MAIN CONTENT -->
+					<section class="gridItemCopy PLR guide" data-guide=".gridItemCopy.PA">
+					<!-- ABOUT-ME    STYLES -->
+						<section class="panel guide" data-guide=".panel" id="about">
+							<header class="heading">
+								<h3 class="guide" data-guide=".heading">About Me<i class="fas fa-heart fa-fw"></i></h3>
+							</header>
+							<article class="body guide" data-guide=".body">
+								<p class="guide" data-guide="body text">Designer | Innovator | Philosopher</p>
+								<br>
+								<div class="spread">
+									<button type="button" class="multi tkn good" value="5" data-x1>
+										<a href="/hobby/Computer+programming">Computer programming</a>
+									</button>
+									<button type="button" class="multi tkn good" value="10" data-x1>
+										<a href="/hobby/Digital+arts">Digital arts</a>
+									</button>
+									<button type="button" class="multi tkn good" value="156" data-x1>
+										<a href="/hobby/Weightlifting">Weightlifting</a>
+									</button>
+									<button type="button" class="multi tkn good" value="206" data-x4>
+										<a href="/hobby/Basketball_Spectative">Basketball</a>
+									</button>
+									<button type="button" class="multi tkn good" value="1">
+										<a href="/hobby/Acting">Acting</a>
+									</button>
+								</div>
+							</article>
+						</section>
+					<!-- SERVICES    STYLES -->
+						<section class="panel guide" data-guide=".panel" id="services">
+							<header class="heading">
+								<h3 class="guide" data-guide=".heading">My Services<i class="fas fa-handshake fa-fw"></i></h3>
+							</header>
+							<article class="body accordian PTB guide" data-guide=".body.accordian.PTB">
+								<div class="panel slab guide" data-guide=".panel.stub">
+									<input type="checkbox" id="showSvcInfo" name="showSvcInfo" class="reveal">
+									<label class="heading reveal tkn info block guide" data-guide=".heading.tkn.block.reveal.info" for="showSvcInfo">
+										<h6>Pretentious Caricatures by Ari<span class="mirror">Artist</span></h6>
+									</label>
+									<div class="body gridSlice gap reveal guide" data-guide=".body.gridSlice.gap.reveal" aria-hidden="true">
+										<div class="greedy guide" data-guide=".greedy">
+											<p class="lead muted">iamart. urmyart.</p>
+											<p class="lead muted">This is my masterpiece. My coup de grâce...<br>
+											We are all God's children.<br>
+											We are all his pain.<br>
+											</p>
+											<p class="lead muted">Praise be to Buddha.</p>
+										</div>
+										<div class="sliver gridR guide" data-guide=".sliver.gridR"><h5><dt>$560</dt></h5></div>
+										<button class="tkn block good some guide" data-guide=".tkn.block.good.some"><i class="fas fa-credit-card"></i><span>Inquire</span></button>
+										<label class="tkn block norm more reveal guide" data-guide=".tkn.block.norm.more" for="svcInfo-1"><i class="fas fa-binoculars"></i><span>Get more Info</span></label>
+										<input type="checkbox" id="svcInfo-1" name="svcInfo-1" class="reveal">
+										<div class="reveal spread guide" data-guide=".reveal.spread">
+											<p><small>Check out any relavent <b>Documents</b>, <b>Credentials</b>, <b>Images</b> &amp; <b>Links</b> regarding this Service below!</small></p>
+											<br/>
+											<div class="tabs flex flexDirColR guide" data-guide=".tabs.flex.flexDirColR">
+												<div class="tabBody guide" data-guide=".tabBody">
+													<div>
+														<input type="radio" id="svcTabDoc-1" name="svcTab-1" class="reveal" checked>
+														<div class="table spread reveal guide" data-guide=".table.spread.reveal">
+															<div class="column nowrap guide" data-guide=".column.nowrap">
+																<div class="trunc head guide" data-guide=".head.trunc">Document</div>
+																<div class="trunc">
+																	<a href="/doc/2/CanadaUnlocking%20Receipt%20(05-21-16).pdf" target="_blank">CanadaUnlocking Receipt (05-21-16).pdf</a>
+																</div>
+															</div>
+															<div class="column">
+																<div class="trunc head">Description</div>
+																<div class="trunc"><p>I unlock phones....</p></div>
+															</div>
+														</div>
+													</div>
+													<div>
+														<input type="radio" id="svcTabCrd-1" name="svcTab-1" class="reveal">
+														<div class="table spread reveal">
+															<div class="column nowrap">
+																<div class="trunc head">Credential</div>
+																<div class="trunc">
+																	<a href="/doc/2/3)%20Government%20IDs.pdf" target="_blank">3) Government IDs.pdf</a>
+																</div>
+															</div>
+															<div class="column">
+																<div class="trunc head">Description</div>
+																<div class="trunc">
+																	<p>I am who I say I am. If I wasn't, then why would I say I am?</p>
+																	<p>Seriously, I'm actually asking...</p>
+																</div>
+															</div>
+														</div>
+													</div>
+													<div>
+														<input type="radio" id="svcTabImg-1" name="svcTab-1" class="reveal">
+														<div class="table spread reveal">
+															<div class="column nowrap">
+																<div class="trunc head">Image</div>
+																<div class="trunc">
+																	<a href="/doc/2/XYFVFD_1_0711154234526_S.jpg" target="_blank">XYFVFD_1_0711154234526_S.jpg</a>
+																</div>
+															</div>
+															<div class="column">
+																<div class="trunc head">Description</div>
+																<div class="trunc">
+																	<p>This is me and my boo at the One World Trade Center.</p>
+																</div>
+															</div>
+														</div>
+													</div>
+													<div>
+														<input type="radio" id="svcTabLnk-1" name="svcTab-1" class="reveal">
+														<div class="table spread reveal">
+															<div class="column nowrap">
+																<div class="trunc head">Link</div>
+																<div class="trunc">
+																	<a href="http://Facebook.com/LeShaunJohn" target="_blank">Facebook.com/LeShaunJohn</a>
+																</div>
+																<div class="trunc">
+																	<a href="http://Instagram.com/LeShaunJohn" target="_blank">Instagram.com/LeShaunJohn</a>
+																</div>
+															</div>
+															<div class="column">
+																<div class="trunc head">Description</div>			
+																<div class="trunc">
+																	<p>Hit me up on my Facebook, y'all.</p>
+																</div>
+																<div class="trunc">
+																	<p>Check out my 'Gram, y'all.</p>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<nav class="gridTabs buttons guide" data-guide=".gridTabs.buttons" role="tabgroup">
+													<label for="svcTabDoc-1"><span class="hidden thin">Documents</span><i class="fas fa-file fa-fw hidden wide"></i></label>
+													<label for="svcTabCrd-1"><span class="hidden thin">Credentials</span><i class="fas fa-id-card fa-fw hidden wide"></i></label>
+													<label for="svcTabImg-1"><span class="hidden thin">Images</span><i class="fas fa-images fa-fw hidden wide"></i></label>
+													<label for="svcTabLnk-1"><span class="hidden thin">Links</span><i class="fas fa-link fa-fw hidden wide"></i></label>
+												</nav>
+											</div>
+										</div>
+									</div>
+								</div>
+							</article>
+						</section>
+					<!-- DISTINCTION STYLES -->
+						<section class="panel guide" data-guide=".panel" id="info">
+							<header class="heading">
+								<h3 class="guide" data-guide=".heading">Other Information<i class="fas fa-briefcase fa-fw"></i></h3>
+							</header>
+							<article class="body gridPair guide" data-guide=".body.gridPair">
+								<div class="split guide" data-guide=".split">
+									<h5>Languages</h5>
+									<button type="button" class="multi tkn info" value="5" data-x1>
+										<a href="/language/English">English</a>
+									</button>
+								</div>
+								<div class="split guide" data-guide=".split">
+									<h5>Background</h5>
+									<button type="button" class="multi tkn info" value="5" data-x1>
+										<a href="/nationality/Canadian">Canadian</a>
+									</button>
+									<button type="button" class="multi tkn info" value="10" data-x1>
+											<a href="/nationality/Vincentian">Vincentian</a>
+									</button>
+								</div>
+								<div class="split guide" data-guide=".split">
+									<h5>Spirituality</h5>
+									<button type="button" class="multi tkn nope" value="5" data-x1>
+										<a href="/religion/Agnostic">Agnostic</a>
+									</button>
+								</div>
+								<div class="split guide" data-guide=".split">
+									<h5>Status</h5>
+									<button type="button" class="multi tkn warn" value="M" data-x1>
+										<a href="/marital/Married">Married</a>
+									</button>
+								</div>
+								<div class="spread guide" data-guide=".spread">
+									<h5>Education</h5>
+									<ul class="bare">
+										<li>SAIT Polytechnic &mdash; Computer Technology</li>
+										<li>Mount Royal University &mdash; Electronic Publishing</li>
+									</ul>
+								</div>
+							</article>
+						</section>
+					<!-- FORM/INPUT  STYLES -->
+						<section class="panel guide" data-guide=".panel" id="forms">
+							<header class="heading">
+								<h3 class="guide" data-guide=".heading">Forms & Inputs<i class="fas fa-edit fa-fw"></i></h3>
+							</header>
+							<form class="body gridSlice guide" data-guide=".body.gridPair">
+							<!-- CHECKBOX / RADIOS -->
+								<h5 class="spread">Provider Settings</h5>
+								<div class="more guide" data-guide=".more">
+									<label class="input toggle">
+										<span>You are a Service Provider: </span>
+										<label for="is-provider" class="toggle gpu">
+											<input 	tabindex="5" type="checkbox" 
+													id="is-provider" 
+													name="is-provider" 
+													class="token autocomplete feedback"
+													value="1">
+										</label>
+									</label>
+								</div>
+								<div class="some guide" data-guide=".some">
+									<label for="svc-rating" class="input rating" tabindex="6">
+										<span>How was the Service?</span>
+										<div>
+											<input type="radio" id="svc-star-5" name="svc-rating" value="5">
+											<label for="svc-star-5"></label>
+											<input type="radio" id="svc-star-4" name="svc-rating" value="4">
+											<label for="svc-star-4"></label>
+											<input type="radio" id="svc-star-3" name="svc-rating" value="3">
+											<label for="svc-star-3"></label>
+											<input type="radio" id="svc-star-2" name="svc-rating" value="2">
+											<label for="svc-star-2"></label>
+											<input type="radio" id="svc-star-1" name="svc-rating" value="1">
+											<label for="svc-star-1"></label>
+										</div>
+									</label>
+									<br/>
+									<label for="cli-rating" class="input rating thumbs" tabindex="7">
+										<span>How was the Client?</span>
+										<div>
+											<input type="radio" id="cli-bad"  name="cli-rating" value="0">
+											<label for="cli-bad"></label>
+											<input type="radio" id="cli-good" name="cli-rating" value="1">
+											<label for="cli-good"></label>
+										</div>
+									</label>
+								</div>
+							<!-- DATES -->
+								<h5 class="spread">Dates</h5>
+								<div class="third guide" data-guide=".third">
+									<label for="bdates" data-rel="*" class="input glyph date fa-birthday-cake">
+										<input type="number" id="bdate-mth" name="bdates" align="center" placeholder="09"   size="2" min="01"   max="31"   tabindex="8">
+										<i></i>
+										<input type="number" id="bdate-day" name="bdates" align="center" placeholder="06"   size="2" min="01"   max="12"   tabindex="8">
+										<i></i>
+										<input type="number" id="bdate-yrs" name="bdates" align="center" placeholder="1986" size="4" min="1900" max="2003" tabindex="8">
+										<input type="hidden" autocomplete="off" id="bdate" name="bdate">
+									</label>
+								</div>
+								<div class="more guide" data-guide=".more">
+									<label for="datetimes" class="input glyph date time fa-clock">
+										<input type="number" id="dt-mth" name="dts" align="center" placeholder="09"   size="2" min="01"   max="31"   tabindex="9">
+										<i></i>
+										<input type="number" id="dt-day" name="dts" align="center" placeholder="06"   size="2" min="01"   max="12"   tabindex="9">
+										<i></i>
+										<input type="number" id="dt-yrs" name="dts" align="center" placeholder="1986" size="4" min="1900" max="2003" tabindex="9">
+										<input type="number" id="dt-hr"  name="dts" align="center" placeholder="00"   size="2" min="00"   max="24"   tabindex="9">
+										<i></i>
+										<input type="number" id="dt-min" name="dts" align="center" placeholder="00"   size="2" min="00"   max="59"   tabindex="9" step="10">
+										<input type="hidden" autocomplete="off" id="datetime" name="datetime">
+									</label>
+								</div>
+							<!-- TOKENS -->
+								<h5 class="spread">Languages</h5>
+								<div class="spread guide" data-guide=".spread">
+									<label for="languages-token" data-rel="~" class="input glyph fa-language">
+										<input 	tabindex="10" type="text" 
+												id="languages-token" 
+												name="languages-token" 
+												class="token autocomplete feedback" 
+												placeholder="Other Languages" 
+												autocomplete="off">
+									</label>
+								</div>
+								<h5 class="spread">Background</h5>
+								<div class="more guide" data-guide=".more">
+									<label for="nationalities-token" class="input glyph fa-globe-americas">
+										<input 	tabindex="11" type="text" 
+												id="nationalities-token" 
+												name="nationalities-token" 
+												class="token autocomplete feedback" 
+												placeholder="Add Nationalities" 
+												autocomplete="off">
+									</label>
+								</div>
+								<div class="some guide" data-guide=".some">
+									<label 	for="religion-token" class="input glyph fa-hand-peace fao" 
+											data-nfo="">
+										<input 	tabindex="12" type="text"  
+												id="religion-tokenfield" 
+												name="religion-tokenfield"
+												class="token autocomplete feedback" 
+												placeholder="Spirituality" 
+												autocomplete="off">
+										<div class="help info">
+											<p>Hey, just so know; people... They're are dicks.</p>
+											<p>There's a good chance some intolerant asshole is going to target you because of your religion -- which has nothing to with that person, but that's unfortunately life.</p>
+											<p>Be careful with this information is all we're saying.</p>
+										</div>
+									</label>
+								</div>
+							<!-- CODE -->
+								<div class="spread guide" data-guide=".spread">
+									<div class="code">
+										<code>&lt;div class="more guide" data-guide=".more"&gt;</code>
+										<code>    &lt;label for="nationalities-token" class="input glyph fa-globe-americas"&gt;</code>
+										<code>        &lt;input  tabindex="11" type="text"</code>
+										<code>                id="nationalities-token"</code>
+										<code>                name="nationalities-token"</code>
+										<code>                class="token autocomplete feedback"</code>
+										<code>                placeholder="Add Nationalities"</code>
+										<code>                autocomplete="off"&gt;</code>
+										<code>    &lt;/label&gt;</code>
+										<code>&lt;/div&gt;</code>
+										<code>&lt;div class="some guide" data-guide=".some"&gt;</code>
+										<code>    &lt;label  for="religion-token" class="input glyph fa-hand-peace fao" data-nfo=""&gt;</code>
+										<code>        &lt;input  tabindex="12" type="text"</code>
+										<code>                id="religion-tokenfield"</code>
+										<code>                name="religion-tokenfield"</code>
+										<code>                class="token autocomplete feedback"</code>
+										<code>                placeholder="Spirituality"</code>
+										<code>                autocomplete="off"&gt;</code>
+										<code>        &lt;div class="help info"&gt;</code>
+										<code>            &lt;p&gt;Hey, just so know; people... They're are dicks.&lt;/p&gt;</code>
+										<code>            &lt;p&gt;</code>
+										<code>                There's a good chance some intolerant asshole is going to</code>
+										<code>                target you because of your religion -- which has nothing to with</code>
+										<code>                that person, but that's unfortunately life.</code>
+										<code>            &lt;/p&gt;</code>
+										<code>            &lt;p&gt;Be careful with this information is all we're saying.&lt;/p&gt;</code>
+										<code>        &lt;/div&gt;</code>
+										<code>    &lt;/label&gt;</code>
+										<code>&lt;/div&gt;</code>
+									</div>
+								</div>
+							<!-- SELECTS -->
+								<div class="more guide" data-guide=".more">
+									<label for="sex" class="input glyph slc-txt fa-transgender-alt">
+										<select tabindex="13" title="Sex" 
+												id="sex" name="sex" 
+												class="token autocomplete feedback">
+											<option disabled selected value="">Sex</option>
+											<option value="M">Male</option>
+											<option value="F">Female</option>
+											<option value="I">Intersex</option>
+										</select><span></span>
+										<input 	tabindex="14" type="text"
+												id="gender-tokenfield" 
+												name="gender-tokenfield" 
+												class="token autocomplete feedback" 
+												placeholder="Gender Identity" 
+												autocomplete="off">
+									</label>
+								</div>
+								<div class="some guide" data-guide=".some">
+									<label for="marital" class="input glyph fa-gem fao">
+										<select tabindex="15" title="Marital Status" 
+												id="marital" name="marital" 
+												class="token autocomplete feedback">
+											<option disabled selected value="">Marital Status</option>
+											<option value="M">Married</option>
+											<option value="R">In a Relationship</option>
+											<option value="S">Single</option>
+										</select><span></span>
+									</label>
+								</div>
+							<!-- TEXTAREAS -->
+								<h5 class="spread">Education</h5>
+								<div class="spread guide" data-guide=".spread">
+									<label for="education" class="input glyph fa-graduation-cap">
+										<textarea 	tabindex="16" id="education" name="education" rows="2" 
+													placeholder="Name of School(s) Attended">
+											SAIT Polytechnic &mdash; Computer Technology
+											Mount Royal University &mdash; Electronic Publishing</textarea>
+									</label>
+								</div>
+								<div class="spread guide" data-guide=".spread">
+									<label for="edu_descr" class="input glyph fa-ellipsis-h">
+										<textarea 	tabindex="17" id="edu_descr" name="edu_descr" rows="3" 
+													placeholder="Describe your Education in more detail here if you choose. You may want to include Accreditation, Degrees and Diploma information."></textarea>
+									</label>
+								</div>
+							</form>
+						</section>
+					<!-- HEADING     STYLES -->
+						<section class="panel guide" data-guide=".panel" id="typography" aria-hidden="true">
+							<header class="heading">
+								<h3 class="guide" data-guide=".heading">Typography<i class="fas fa-pen-fancy fa-fw"></i></h3>
+							</header>
+							<article class="body guide" data-guide=".body.gridPair">
+								<h1 class="guide" data-guide="h1">Heading Level 1</h1>
+								<h2 class="guide" data-guide="h2">Heading Level 2</h2>
+								<h3 class="guide" data-guide="h3">Heading Level 3</h3>
+								<h4 class="guide" data-guide="h4">Heading Level 4</h4>
+								<h5 class="guide" data-guide="h5">Heading Level 5</h5>
+								<h6 class="guide" data-guide="h6">Heading Level 6</h6>
+							</article>
+						</section>
+					</section>
+				<!-- OTHER CONTENT -->
+					<aside class="gridItemOther guide" data-guide=".gridItemOther" aria-hidden="true">
+						<section class="panel side guide" data-guide=".panel.side" id="achievements">
+							<header class="heading">
+								<h4 class="guide" data-guide=".heading">Trust & Achievements<i class="fas fa-trophy fa-fw"></i></h4>
+							</header>
+							<article class="body gridPair guide" data-guide=".body.gridPair">
+								<label class="shield identified large guide" data-guide=".shield.identified">
+									<i></i><span></span>
+								</label>
+								<label class="shield credential large guide" data-guide=".shield.credential">
+									<i></i><span></span>
+								</label>
+								<div class="spread guide" data-guide=".spread">
+									<label class="rating">
+										<div>
+											<label></label>
+											<label data-rating></label>
+											<label></label>
+											<label></label>
+											<label></label>
+										</div>
+									</label>
+									<label class="rating" data-cnt="50">
+										<div>
+											<label data-rating></label>
+											<label></label>
+											<label></label>
+											<label></label>
+											<label></label>
+										</div>
+									</label>
+									<label class="rating" data-cnt="100">
+										<div>
+											<label></label>
+											<label data-rating></label>
+											<label></label>
+											<label></label>
+											<label></label>
+										</div>
+									</label>
+									<label class="rating" data-cnt="500">
+										<div>
+											<label></label>
+											<label></label>
+											<label data-rating></label>
+											<label></label>
+											<label></label>
+										</div>
+									</label>
+									<label class="rating" data-cnt="500">
+										<div>
+											<label data-rating-half></label>
+											<label></label>
+											<label></label>
+											<label></label>
+											<label data-strike></label>
+										</div>
+									</label>
+								</div>
+							</article>
+						</section>
+						<section class="panel side guide" data-guide=".panel.side" id="community">
+							<header class="heading">
+								<h4 class="guide" data-guide=".heading">My Community<i class="fas fa-users fa-fw"></i></h4>
+							</header>
+							<article class="body gridPair guide" data-guide=".body.gridPair">
+								<a href="theBigBen" class="stub small guide" data-guide=".stub.small">
+									<div class="bubble small lite gpu guide" data-guide=".bubble.small.lite" style="background-image:url('images/profile.jpg');"></div>
+									<dt>Ben Ashton</dt>
+								</a>
+								<a href="mdjoudi" class="stub small guide" data-guide=".stub.small">
+									<div class="bubble small lite gpu" style="background-image:url('images/profile.jpg');"></div>
+									<dt>Marc Djoudi</dt>
+								</a>
+								<a href="dsun" class="stub small guide" data-guide=".stub.small">
+									<div class="bubble small lite gpu" style="background-image:url('images/profile.jpg');"></div>
+									<dt>Darren Sun</dt>
+								</a>
+							</article>
+						</section>
+						<section class="panel side guide" data-guide=".panel.side" id="activity">
+							<header class="heading">
+								<h4 class="guide" data-guide=".heading">Recent Activity<i class="fas fa-compress fa-fw"></i></h4>
+							</header>
+							<article class="body spaced guide" data-guide=".body.spaced">
+								<dl class="guide" data-guide=".dl">
+									<dt class="guide" data-guide=".dl > .dt">Marc Djoudi</dt>
+									<dd class="ellipsis guide" data-guide=".dl > .dd">Quae si potest singula consolando levare, universa quo modo sustinebit?</dd>
+								</dl>
+								<dl  class="guide" data-guide=".dl">
+									<dt class="guide" data-guide=".dl > .dt">Ben Ashton</dt>
+									<dd class="ellipsis guide" data-guide=".dl > .dd">Praesertim cum in re publica princeps esse velles ad eamque tuendam cum summa tua dignitate maxime a nobis ornari atque instrui posses.</dd>
+								</dl>
+							</article>
+						</section>
+						<section class="panel side guide" data-guide=".panel.side" id="progress">
+							<article class="body spaced guide" data-guide=".body.spaced">
+								<dl class="guide" data-guide=".dl">
+									<dt class="guide" data-guide=".dl > .dt">Marc Djoudi</dt>
+									<dd class="ellipsis guide" data-guide=".dl > .dd">Quae si potest singula consolando levare, universa quo modo sustinebit?</dd>
+								</dl>
+								<dl class="guide" data-guide=".dl">
+									<dt class="guide" data-guide=".dl > .dt">Ben Ashton</dt>
+									<dd class="ellipsis guide" data-guide=".dl > .dd">Praesertim cum in re publica princeps esse velles ad eamque tuendam cum summa tua dignitate maxime a nobis ornari atque instrui posses.</dd>
+								</dl>
+							</article>
+						</section>
+					</aside>
+				</section>
+			<!-- HEADER -->
+				<header class="gridItemHeader gridHeader" id="header">
+				<!-- BANNER -->
+					<section class="noSelect gridItemBranding" id="banner" role="banner">
+						<a href="guide.cover.html">
+							<div id="logo" class="gpu" style="background-image: url('images/Logo.png');" role="logo"></div>
+						</a>
+					</section>
+				<!-- NAVIGATION -->
+					<nav class="gridItemNav gridTabs compact" tabindex="0" role="menubar">
+						<div class="gridDrop">
+							<label role="menuitem">
+								<a class="fas fa-search fa-fw" href="#app"></a>
+							</label>
+						</div>
+						<div class="gridDrop">
+							<input type="radio" class="reveal" name="navDrops" id="navMessages" aria-hidden="true" tabindex="1" />
+							<label class="reveal" role="menuitem" aria-expanded="false" for="navMessages">
+								<i class="fas fa-envelope fa-fw"></i>
+							</label>
+							<div class="drop reveal" role="menu">
+								<div class="menu">
+									<input type="radio" class="ctrl" name="navMsg" id="navMsg-1" aria-hidden="true" tabindex="2" />
+									<a role="menuitem" href="#">
+										<div class="message prev">
+											<header>
+												<strong>John Smith</strong>
+												<span class="pull-right muted">
+													<em>Yesterday</em>
+												</span>
+											</header>
+											<div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
+										</div>
+									</a>
+									<input type="radio" class="ctrl" name="navMsg" id="navMsg-2" aria-hidden="true" tabindex="2" />
+									<a role="menuitem" href="#">
+										<div class="message prev">
+											<header>
+												<strong>John Smith</strong>
+												<span class="pull-right muted">
+													<em>Yesterday</em>
+												</span>
+											</header>
+											<div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
+										</div>
+									</a>
+									<input type="radio" class="ctrl" name="navMsg" id="navMsg-3" aria-hidden="true" tabindex="2" />
+									<a role="menuitem" href="#">
+										<div class="message prev">
+											<header>
+												<strong>John Smith</strong>
+												<span class="pull-right muted">
+													<em>Yesterday</em>
+												</span>
+											</header>
+											<div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
+										</div>
+									</a>
+									<input type="radio" class="ctrl" name="navMsg" id="navMsg-all" aria-hidden="true" tabindex="2" />
+									<a role="menuitem" class="seeAll" href="#">
+										<div class="msg all">
+											<strong>Read All Messages</strong>
+											<i class="fas fa-angle-right"></i>
+										</div>
+									</a>
+									<input type="radio" class="ctrl" name="navMsg" id="navMsg-0" aria-hidden="true" tabindex="2" />
+								</div>
+							</div>
+						</div>
+						<div class="gridDrop">
+							<input type="radio" class="reveal" name="navDrops" id="navNotify" aria-hidden="true" tabindex="1" />
+							<label class="reveal" role="menuitem" aria-expanded="false" for="navNotify">
+								<i class="fas fa-bell fa-fw"></i>
+							</label>
+							<div class="drop reveal" role="menu">
+								<div class="menu">
+									<input type="radio" class="ctrl" name="navNotif" id="navNotif-1" aria-hidden="true" tabindex="3" />
+									<a role="menuitem" href="#">
+										<div class="notification">
+											<i class="fas fa-comment fa-fw"></i> New Comment<span class="pull-right muted small">4 minutes ago</span>
+										</div>
+									</a>
+									<input type="radio" class="ctrl" name="navNotif" id="navNotif-2" aria-hidden="true" tabindex="3" />
+									<a role="menuitem" href="#">
+										<div class="notification">
+											<i class="fas fa-user-friends fa-fw"></i> 3 New Connections<span class="pull-right muted small">12 minutes ago</span>
+										</div>
+									</a>
+									<input type="radio" class="ctrl" name="navNotif" id="navNotif-3" aria-hidden="true" tabindex="3" />
+									<a role="menuitem" href="#">
+										<div class="notification">
+											<i class="fas fa-handshake fa-fw"></i> 1 Provider Response<span class="pull-right muted small">4 minutes ago</span>
+										</div>
+									</a>
+									<input type="radio" class="ctrl" name="navNotif" id="navNotif-all" aria-hidden="true" tabindex="3" />
+									<a role="menuitem" class="text-center" href="#">
+										<div class="notif all">
+											<strong>See All Alerts</strong>
+											<i class="fas fa-angle-right"></i>
+										</div>
+									</a>
+									<input type="radio" class="ctrl" name="navNotif" id="navNotif-0" aria-hidden="true" tabindex="3" />
+								</div>
+							</div>
+						</div>
+						<div class="gridDrop">
+							<input type="radio" class="reveal" name="navDrops" id="navUser" aria-hidden="true" tabindex="1" />
+							<label class="reveal" role="menuitem" aria-expanded="false" for="navUser">
+								<i class="fas fa-user-circle fa-fw"></i><span class="hidden-xs hidden-sm">Arian Johnson</span>
+							</label>
+							<div class="drop reveal" role="menu">
+								<div class="menu">
+									<input type="radio" class="ctrl" name="navDropUser" id="navDropProfile" aria-hidden="true" tabindex="4" />
+									<a role="menuitem" href="guide.cover.html" class="active divide"><label for="navDropProfile"><i class="fas fa-user fa-fw"></i> Profile</label></a>
+									<input type="radio" class="ctrl" name="navDropUser" id="navDropSetting" aria-hidden="true" tabindex="4" />
+									<a role="menuitem" href="guide.stock.html"><label for="navDropSetting"><i class="fas fa-cog fa-fw"></i> Settings</label></a>
+									<input type="radio" class="ctrl" name="navDropUser" id="navDropLogout" aria-hidden="true" tabindex="4" />
+									<a role="menuitem" href="/logout"><label for="navDropLogout"><i class="fas fa-sign-out-alt fa-fw"></i> Logout</label></a>
+									<input type="radio" class="ctrl" name="navDropUser" id="navDropEmpty" aria-hidden="true" tabindex="4" />
+								</div>
+							</div>
+						</div>
+						<input type="radio" class="ctrl" name="navDrops" id="navNone" tabindex="1" checked/>
+					</nav>
+				</header>
+			<!-- THREADS -->
+				<section class="noSelect gridItemChat gridThreads" id="footer">
+					<div class="gridItemThreads" id="chatter">
+						<div class="bubble more dark small gpu">
+							<i aria-hidden="true" class="fas fa-ellipsis-h"></i>
+						</div>
+						<div class="bubble user lite small gpu" style="grid-column:2">
+							<i aria-hidden="true" class="fas fa-user" data-initial="RM"></i>
+						</div>
+						<div class="bubble user lite small gpu" style="grid-column:3">
+							<i aria-hidden="true" class="fas fa-user" data-initial="PP"></i>
+						</div>
+						<div class="bubble user lite small gpu" style="grid-column:4">
+							<i aria-hidden="true" class="fas fa-user" data-initial="RL"></i>
+						</div>
+						<div class="bubble user lite small gpu" style="grid-column:5">
+							<i aria-hidden="true" class="fas fa-user" data-initial="FB"></i>
+						</div>
+						<div class="bubble  add dark small gpu">
+							<i aria-hidden="true" class="fas fa-plus"></i>
+						</div>
+					</div>
+				</section>
+			</main>
+		</main>
+		<script>
+			(function(global){global.NMESPC="/api-explorer";global.TITLE="API Explorer";})(window);
+		</script>
+	</body>
+</html>
