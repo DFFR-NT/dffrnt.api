@@ -696,7 +696,7 @@ module.exports = function Comps(COMPS) {
 						sideb = (!!sgmnt.sidebar?sgmnt.sidebar:
 								this.getSideBar(copy,other));
 					return (
-						<section className="gridItemContent gridContent guide">
+						<section className="gridItemContent gridContent">
 							<SideBar {...{ name: 'sidebar', items: sideb }} />
 							<Copy    {...{ name:    'copy', items:  copy }} />
 							<Other   {...{ name:   'other', items: other }} />
@@ -773,18 +773,179 @@ module.exports = function Comps(COMPS) {
 				render() {
 					let props = this.props,   name  = props.name, 
 						head  = props.header, body  = props.body,
+						accrd = !!props.accordian?'accordian':null,
 						kind  = classN("panel",props.kind||''), 
-						fixed = !!head.fixed?'fixed':null,   
+						fixed = !!head.fixed?'fixed':null,
 						align = props.align||'';
 					return (
 						<section id={name} className={kind}>
 							{!!head?<header className={classN('heading',fixed)}>
 								<h3>{head.label}{!!head.icon?<i className={FA(head.icon)}></i>:null}</h3>
 							</header>:null}
-							<article className={`body ${align}`.trim()}>
+							<article className={classN('body',align,accrd)}>
 								{body.map((v,i) => Agnostic(v, i))}
 							</article>
 						</section>
+					);
+				}
+			};
+
+			EV.Content.Slab 	= class Slab 		extends Mix('Pure',  MX.Static) {
+				constructor(props) {
+					super(props); this.name = 'SLAB';
+				}
+
+				render() {
+					let props = this.props,   
+						id    = props.id, 
+						IDs   = {
+							svc: 	`showSvc-${id}`,
+							info: 	`showSvcInfo-${id}`,
+						},
+						kind  = props.kind, 
+						name  = props.name, 
+						desc  = props.description, 
+						dllar = (<span className="muted">$</span>),
+						slash = (<span className="muted">/</span>),
+						chrg  = {
+							Free:	 c => ('Free!'),
+							Flat:	 c => (<Frag key="chrg">{dllar}{c}</Frag>),
+							Hourly:	 c => (<Frag key="chrg">{dllar}{c}{slash}hour</Frag>),
+							Daily:	 c => (<Frag key="chrg">{dllar}{c}{slash}daily</Frag>),
+							Monthly: c => (<Frag key="chrg">{dllar}{c}{slash}monthly</Frag>),
+							Quote:	 c => ('Quote'),
+						}[props.rate](props.charge);
+					return (
+						<div key={IDs.svc} className="panel slab block">
+							<input type="checkbox" id={IDs.svc} name={IDs.svc} className="reveal"/>
+							<label className="heading reveal tkn info block" htmlFor={IDs.svc}>
+								<h6>{name}<span className="mirror">{kind}</span></h6>
+							</label>
+							<div className="body gridSlice gap reveal" aria-hidden="true">
+								<div className="greedy">{
+								  	desc.match(/(\S[\S\s]+?)(?=\n\n|$)/g).map((p,i) => (
+										<p key={`${IDs.svc}-${i}`} className="lead">
+											{p.match(/([^\n]+)(?=\n|$)/g).map((t,k)=>
+												<React.Fragment key={`${i}-${k}`}>{t}<br/></React.Fragment>
+											)}
+										</p>
+									)	)
+								}</div>
+								<div className="sliver gridR"><h5><dt>{chrg}</dt></h5></div>
+								<button className="tkn block good some"><span><i className="fas fa-credit-card"></i> Inquire</span></button>
+								<label className="tkn block norm more reveal" htmlFor={IDs.info}><span><i className="fas fa-binoculars"></i> Get more Info</span></label>
+								<input type="checkbox" id={IDs.info} name={IDs.info} className="reveal"/>
+								<div className="reveal spread">
+									<p><small>Check out any relavent <b>Documents</b>, <b>Credentials</b>, <b>Images</b> &amp; <b>Links</b> regarding this Service below!</small></p>
+									<br/>
+									<Content.TabTab id={id} />
+								</div>
+							</div>
+						</div>
+					);
+				}
+			};
+
+			EV.Content.TabTab 	= class TabTab 		extends Mix('Pure',  MX.Static) {
+				constructor(props) {
+					super(props); this.name = 'TABTAB';
+				}
+
+				render() {
+					let props = this.props,   
+						id    = props.id, 
+						IDs   = {
+							main: 	`svcTab-${id}`,
+							doc: 	`svcTabDoc-${id}`,
+							crd: 	`svcTabCrd-${id}`,
+							img: 	`svcTabImg-${id}`,
+							lnk: 	`svcTabLnk-${id}`,
+						},
+						items = [];
+					return (
+						<div className="tabs flex flexDirColR">
+							<div className="tabBody">
+								<div>
+									<input type="radio" id={IDs.doc} name={IDs.main} className="reveal" defaultChecked/>
+									<div className="table spread reveal">
+										<div className="column nowrap">
+											<div className="trunc head">Document</div>
+											<div className="trunc">
+												<a href="/doc/2/CanadaUnlocking%20Receipt%20(05-21-16).pdf" target="_blank">CanadaUnlocking Receipt (05-21-16).pdf</a>
+											</div>
+										</div>
+										<div className="column">
+											<div className="trunc head">Description</div>
+											<div className="trunc"><p>I unlock phones....</p></div>
+										</div>
+									</div>
+								</div>
+								<div>
+									<input type="radio" id={IDs.crd} name={IDs.main} className="reveal"/>
+									<div className="table spread reveal">
+										<div className="column nowrap">
+											<div className="trunc head">Credential</div>
+											<div className="trunc">
+												<a href="/doc/2/3)%20Government%20IDs.pdf" target="_blank">3) Government IDs.pdf</a>
+											</div>
+										</div>
+										<div className="column">
+											<div className="trunc head">Description</div>
+											<div className="trunc">
+												<p>I am who I say I am. If I wasn't, then why would I say I am?</p>
+												<p>Seriously, I'm actually asking...</p>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div>
+									<input type="radio" id={IDs.img} name={IDs.main} className="reveal"/>
+									<div className="table spread reveal">
+										<div className="column nowrap">
+											<div className="trunc head">Image</div>
+											<div className="trunc">
+												<a href="/doc/2/XYFVFD_1_0711154234526_S.jpg" target="_blank">XYFVFD_1_0711154234526_S.jpg</a>
+											</div>
+										</div>
+										<div className="column">
+											<div className="trunc head">Description</div>
+											<div className="trunc">
+												<p>This is me and my boo at the One World Trade Center.</p>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div>
+									<input type="radio" id={IDs.lnk} name={IDs.main} className="reveal"/>
+									<div className="table spread reveal">
+										<div className="column nowrap">
+											<div className="trunc head">Link</div>
+											<div className="trunc">
+												<a href="http://Facebook.com/LeShaunJohn" target="_blank">Facebook.com/LeShaunJohn</a>
+											</div>
+											<div className="trunc">
+												<a href="http://Instagram.com/LeShaunJohn" target="_blank">Instagram.com/LeShaunJohn</a>
+											</div>
+										</div>
+										<div className="column">
+											<div className="trunc head">Description</div>			
+											<div className="trunc">
+												<p>Hit me up on my Facebook, y'all.</p>
+											</div>
+											<div className="trunc">
+												<p>Check out my 'Gram, y'all.</p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<nav className="gridTabs buttons" role="tabgroup">
+								<label htmlFor={IDs.doc}><span className="hidden thin">Documents </span><i className="fas fa-file fa-fw hidden wide"></i></label>
+								<label htmlFor={IDs.crd}><span className="hidden thin">Credentials </span><i className="fas fa-id-card fa-fw hidden wide"></i></label>
+								<label htmlFor={IDs.img}><span className="hidden thin">Images </span><i className="fas fa-images fa-fw hidden wide"></i></label>
+								<label htmlFor={IDs.lnk}><span className="hidden thin">Links </span><i className="fas fa-link fa-fw hidden wide"></i></label>
+							</nav>
+						</div>
 					);
 				}
 			};

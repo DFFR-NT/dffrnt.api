@@ -95,7 +95,8 @@ module.exports = {
 									R: { value: 'R', label: 'In a Relationship'	},
 								}[identity.marital],
 				gender			= null, //identity.gender,
-				orient			= identity.orient;
+				orient			= identity.orient,
+				services 		= res.services||[];
 
 			function fnull(v) { return !!v; }
 			
@@ -162,9 +163,13 @@ module.exports = {
 									from: 'Evectr', name: ['Content','Panel'] 
 								},
 								props: 	{ 
-									name:	'services',
-									header: { label: 'My Services', icon: 'handshake' },
-									body:	[],	
+									name:		'services',
+									accordian: 	true,
+									header: 	{ label: 'My Services', icon: 'handshake' },
+									body:		services.map(function(s) { return {
+										tag: { from: 'Evectr', name: ['Content','Slab'] },
+										props: s,
+									};	}	)
 								}
 							}, { // OTHER INFO
 								tag:	{ 
