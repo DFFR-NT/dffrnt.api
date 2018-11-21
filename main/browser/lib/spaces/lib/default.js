@@ -7,7 +7,7 @@ module.exports = {
 	],
 	Build: function (Actions, Stores) {
 		return function (res) {
-			Stores.App.updateStore({
+			Stores.App.singleton.updateStore({
 				page: 		1,
 				styles: 	'',
 				content: 	{

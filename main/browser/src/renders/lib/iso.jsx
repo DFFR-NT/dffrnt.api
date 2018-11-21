@@ -7,7 +7,6 @@ module.exports = (function ISO(global, space, REST, user, path) {
 	// VARIABLES -----------------------------------------------------------
 
 		global.NMESPC = space; 
-		global.TITLE  = space.page.title; 
 
 		// Requires
 		const 	PAGE 	= NMESPC.page;
@@ -35,29 +34,31 @@ module.exports = (function ISO(global, space, REST, user, path) {
 		const   Single	= Stores.App.singleton;
 		const   State	= Single.state;
 
-		Single.reset();
-		Build.Auth(user, TITLE);
 		// Build.Page(Data, TITLE);
 
 		const   Styles	= State.style.replace(/\n */g,' ');
-		// const   Render	= RDOMServ.renderToString(App());
 
 		return {
 			Styles:	Styles,
 			HTML: 	'',
 			State: 	Single.state,
 			Call: 	Spaces.Page.Call,
+			Auth: 	function (title) {
+				global.TITLE  = title; 
+				Single.reset();
+				Build.Auth(user, TITLE);
+			},
 			Render: function (Build, Data) {
 				return function Render(res) {
 					Build.Page(res||Data, TITLE);
 					return RDOMServ.renderToString(App());
-				}
+				}.bind(this)
 			}(Build, Data),
 			Build: 	function (Build, Data, App) {
 				return function Builder(res) {
 					Build.Page(res||Data, TITLE);
 					return App.singleton.state;
-				}
+				}.bind(this)
 			}(Build, Data, Stores.App)
 		};
 });

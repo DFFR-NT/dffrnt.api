@@ -36,16 +36,16 @@
 		<!-- NAV -->
 		<style type="text/css"  id="navigation">/*!- STYLES -*/</style>
 	</head>
-	<body><main id="app"><!--CONTENT--></main></body>
+	<body><main id="app-root"><!--CONTENT--></main><div id="modal-root"></div></body>
 	<script>
 		(function(global){
 			global.NMESPC={/*!- CONFIG -*/};global.TITLE=NMESPC.page.title;global.LOCKER="/*!- LOCKER -*/";
-			document.getElementById('gotoSearch')
+			try{ document.getElementById('gotoSearch')
 					.addEventListener('click', function(e) {
 						e.stopImmediatePropagation(); e.stopPropagation();
-						var elm = document.getElementById('search-box');
+						var elm = document.getElementById('tag-terms-input');
 						elm.blur(); elm.focus(); return;
-					});
+					}); }catch(e){}
 		})(window);</script>
 	<script type="text/javascript" src="public/js/bundle.js"></script>
 </html>
