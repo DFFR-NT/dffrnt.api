@@ -24,7 +24,8 @@
 	module.exports = function () { // DO NOT CHANGE/REMOVE!!!
 		
 		const 	rgnme = /^[a-z]+(?:-[a-z]+)?(?: (?:[sj]r.|[0-9](?:st|nd|rd|th)))?$/i,
-				rgcur = new RegExp(`^[^\\s\\d]{0,3}(\\d+(,\\d{2,3})*([.]\\d{2})?)$`),
+				rgcur = new RegExp(`^[^\\s\\d]{0,3}(\\d+(,\\d{2,3})*([.]\\d{2})?)( [A-Z]{1,3}|)$`),
+				tzone = Object.keys(TZ.zones),
 				optns = {
 							Sex: [
 								{ value: 'M', label: 'Male'		},
@@ -120,11 +121,13 @@
 							let x =[/\w+/g, /("(?:\\"|[^"])+")/g],
 								a = term.match(x[1])||[],
 								r =[term.replace(x[1],'')
+										.replace(/([;.-]+|\b(the|of)\b)/g,' ')
 										.split(/[,\s]+/)
 										.filter((v,i)=>!!v&&!a.has(v))
 										.join(', ')
-										.replace(/(\b\S+?\b)(?!,)/g, '+(<$1* >"$1")')
-										.replace(/(\b\S+?\b),/g, '+"$1"'),
+										.replace(/(\b\S{3,}\b)(?!,)/g, '+(<$1* >"$1")')
+										.replace(/(\b\S{3,}\b),/g, '+"$1"')
+										.replace(/(\b\S{1,2}\b),/g, '$1'),
 									(!!a.length?a.join(' +'):'')
 										.replace(/(^.+$)/,'+$1')];
 							return r.filter(v=>!!v).join(' ');
@@ -191,7 +194,7 @@
 				multi = function multi(param, name, edit, column, required = false, dflt = '', kind = 'param') { 
 							return (!!edit ?
 								function Format(cls) {
-									let regx = [/^\d+@\d+$/,/^\d+$/], 
+									let regx = [/^[A-Z]?\d+@\d+$/,/^\d+$/], 
 										json = `d.profile_${name}`,
 										rslt = '', k = "'$.", d = `\n${'    '.dup(6)}`,
 										edts = SQL.BRKT(SQL.LIST([cls[param]],
@@ -232,14 +235,18 @@
 				slect = function slect(param, clause, quotes = true) {
 							return function Format(cls) { 
 								let val = slval(this,cls[param]||''), quo = (!!quotes?"'":""); 
-								return (!!val ? `+ (${clause} ${quo}${val}${quo})` : '');	
+								return (!!val ? (!!clause ?
+									`+ (${clause} ${quo}${val}${quo})` :
+									`${quo}${val}${quo}`
+								) : '');	
 							};
 						},
-				scuid = function scuid(hidden = false, required = false) {
-							return merge(dflts.UID, { Desc: { 
+				scuid = function scuid(hidden = false, required = false, to = 'query', plural = false) {
+							let prm = plural ? dflts.UIDs : dflts.UID;
+							return merge(prm, { Desc: { 
 									required: required,
 									hidden:   hidden,
-									to:       'query'
+									to:       to
 							}	}	);
 						},
 				sterm = function sterm(name, to = 'param', required = false, matches = {}, param = 'term') {
@@ -290,6 +297,49 @@
 									  	":LIMIT: :PAGE:"];
 							// Build & Return Query ---------------------------------------- //
 								return BEG.concat(QRY.map(v=>`${SP}${v}`),END);
+						},
+				spars = function sparse() {
+							return function Parse(res) {
+								var RQ  = this.RQ, QY = this.QY, 
+									IDs = [], obj, avg, MAP, C, ret,
+									cat = Imm.Map({ user: 'user' }), 
+									sgl = !!eval(QY.single),
+									trm = QY.terms.split(';'),
+									mlt = Imm.List([]);
+								// ------------------------------------------------------------
+									obj = 	FromJS(res).groupBy(v=>v.get('user_id'));
+									MAP = 	obj.map(v=>v.get(0));
+											C = MAP.size;
+									avg =  (MAP .reduce((s,v)=>s+v.get('score'),0)/C);
+									ret =	MAP	.filter(r=>((r.get('score')/avg)>=.6));
+								// ------------------------------------------------------------
+									if (IDs = ret.keySeq().toArray(), IDs) { 
+										var qry = `?${[ 'to=["payload","result"]',
+														`single=${sgl}`,
+														`links=["${[
+															'photos',
+															'identity',
+															'settings',
+														].join('","')}"]`,
+														'as=item',
+													].join('&')}`,
+											prm = `:uids:${IDs.join(';')}`;
+										cat.map((l,c)=>{
+											var lnk = `/${l}/${prm}${qry}`;
+											RQ.links[c]=SQL.SOCKET({ link: lnk });
+										});
+									};
+								// ------------------------------------------------------------
+									ret		.map(u=>u.get('multi').map(m=>
+												!!m&&!mlt.includes(m)&&(mlt=mlt.push(m))
+											)	);
+									mlt =	mlt.sortBy(m=>trm.indexOf(
+												`${m.get('tag')}@${m.get('value')}`
+											)	).toArray();
+									ret = 	ret.set('terms', mlt);
+								// ------------------------------------------------------------
+									return 	ret.toJS();
+							};
 						};
 
 		const 	dflts = {
@@ -385,7 +435,7 @@
 						},
 						Bucket: 	{
 							Default: 'profile',
-							Format 	(cls) { return cls.bucket||this.Default; },
+							Format 	(cls) { return (cls.bucket||this.Default).replace(/[+]/g,'/'); },
 							Desc: 	{
 								description: 'A valid {{Bucket}} location for {{Uploads}}', 
 								type: "Text", to: 'query', required: true, matches: {}
@@ -406,8 +456,8 @@
 					// EDITORS ==================================================================
 						eEmail: 	{
 							Default: '',
-							Format 	(cls) { return ((cls.eemail||'').match(/^[\w_.-]+@[\w_.-]+\.[A-z]+$/)||[''])[0]; },
-							Desc: 	{
+							Format:  email('eemail'),
+							Desc: 	 {
 								description: "The user's {{Email Address}}", 
 								type: "Text", to: 'query', required: false, matches: {
 									'Email Address': 'The {{Email Address}} of the {{User}} (([\\w@_.-]+))'
@@ -558,89 +608,152 @@
 							}
 						},
 					// SERVICES =================================================================
-						PDIDs: {
-							Default: '',
-							Format 	(cls) { return (cls.pdids||'0').toString().split(';').join(','); },
+						PDID: 		{
+							Default: '0',
+							Format (cls) { return Number(cls.pdid)||this.Default; },
+							Desc: {
+								description: "The service provider {{ID}}",
+								type: "Number", to: "param", required: true
+							}
+						},
+						PDIDs: 		{
+							Default: '0',
+							Format 	(cls) { return (cls.pdids||this.Default).toString().split(';').join(','); },
 							Desc: 	{
 								description: 'A semi-colon-separated list of {{Provider IDs}}', 
 								type: { List: "Number", Separator: ORS }, to: 'param', required: null, 
 								matches: { 'Provider ID': 'Matches ANY of the {{Provider ID}} Items (([0-9]+))' },
 							}
 						},
-						SIDs: merge(multi( 'sids','Service Type', false,'s.service_cpc_code', false),{
+						VTIDs: merge(multi('vtids','Service Type',false,'s.service_cpc_code',false),{
 										description: "The Provider's {{Service Type}}", 
 										type: { Select: optns.SvcType }, 
 										style: 'half', to: 'query', required: false, matches: {
 											'Service Type Code': 'Matches a valid {{Service Type Code}} ((0[0-9]{4}))'
 										},
 									}),
-						CIDs: 		multi( 'cids',    'Currency', false,     'c.currency_id', false),
-						SvcDescr: 	{
-							Default: '',
-							Format 	(cls) { 
-								let val = (cls.svcdescr ? ftxts(cls.svcdescr) : '');
-								return (!!val ? `+ (MATCH(s.provider_svc_name,s.provider_svc_descr) AGAINST ('${val}' IN BOOLEAN MODE))` : '');
-							},
+						CIDs: 		 multi( 'cids',    'Currency',false,     'c.currency_id',false),
+						SID: 		{
+							Default: '0',
+							Format 	(cls) {return Number(cls.sid)||this.Default;},
 							Desc: 	{
-								type: "Text", to: 'query', style: 'full', required: false,
-								description: "A Service {{Description}}", matches: {
-									'Service Description': 'Matches the contents in a Service\'s {{Service Description}} (([^\\n]+))'
-								},
+								type: "Number", to: 'param', description: 'A valid {{Service ID}}',
+								required: true, matches: {'Service ID': 'Matches the {{Service ID}} (([0-9]+))'}
 							}
 						},
-						SvcType: 	{
-							Default: 	'',
-							Format:		slect('svctype','s.provider_svc_type      ='),
-							Desc: 		{
-								description: "The Provider's {{Service Type}}", type: { Select: optns.SvcType }, 
-								style: 'half', to: 'query', required: false, matches: {
-									'Service Type Code': 'Matches a valid {{Service Type Code}} (([0-9]+))'
-								},
+						SIDs: 		{
+							Default: '0',
+							Format 	(cls) { return (cls.sids||this.Default).toString().split(';').join(','); },
+							Desc: 	{
+								description: 'A semi-colon-separated list of {{Provider IDs}}', 
+								type: { List: "Number", Separator: ORS }, to: 'param', required: null, 
+								matches: { 'Service ID': 'Matches ANY of the {{Service ID}} Items (([0-9]+))' },
 							}
 						},
-						SvcCharge: 	{
-							Default: 	'',
-							Format 		(cls) { 
-								let val = ((cls.rate||'').match(/^\d+(?:[.]\d{1,2})$/)||[''])[0];
-								return (!!val ? `+ (s.provider_svc_charge   <= ${val})` : '');
-							},
-							Desc: 		{
-								description: "The provider's {{Rate}}", 
-								type: { Number: { min: 0.00, step: 0.10 } }, 
-								style: 'half', to: 'query', required: false, matches: {
-									'Rate': 'Matches the {{Charge}} of the {{Service}} (([0-9](?:[.][0-9]{1,2})))'
-								},
+						SvcDescr	(search = false) {
+							let desc = cls => (cls.svcdescr ? ftxts(cls.svcdescr) : '');
+							return {
+								Default: 	'',
+								Format:  	({
+									true: 	(cls) => { 
+										let val = desc(cls); return (!!val ? 
+											`+ (MATCH(s.provider_svc_name,s.provider_svc_descr) AGAINST ('${val}' IN BOOLEAN MODE))` : 
+											'');
+									},
+									false:	(cls) => desc(cls),
+								})[!!search],
+								Desc: 		{
+									type: "Text", to: 'query', style: 'full', required: false,
+									description: "A Service {{Description}}", matches: {
+										'Service Description': 'Matches the contents in a Service\'s {{Service Description}} (([^\\n]+))'
+									},
+								}
 							}
 						},
-						SvcRate: 	{
-							Default: 	'',
-							Format:		slect('svcrate','s.provider_svc_rate      ='),
-							Desc: 		{
-								description: "The provider's {{Rate}}", type: { Select: optns.SvcRate }, 
-								style: 'half', to: 'query', required: false, matches: {
-									'Rate': 'Matches the {{Rate}} of the {{Service}} (([\\w/ ]+))'
-								},
+						SvcType		(search = false) {	
+							return {
+								Default: 	'',
+								Format:  	({
+									true: 	() => slect('svctype','s.provider_svc_type      ='),
+									false:	() => slect('svctype'),
+								})[!!search](),
+								Desc: 		{
+									description: "The Provider's {{Service Type}}", type: { Select: optns.SvcType }, 
+									style: 'half', to: 'query', required: false, matches: {
+										'Service Type Code': 'Matches a valid {{Service Type Code}} (([0-9]+))'
+									},
+								}
+							}
+						},
+						SvcCharge	(search = false) {	
+							let chrg = cls => ((cls.rate||'').match(/^\d+(?:[.]\d{1,2})$/)||[''])[0];
+							return {
+								Default: 	'',
+								Format:  	({
+									true: 	(cls) => { 
+										let val = chrg(cls); return (!!val ? 
+											`+ (s.provider_svc_charge   <= ${val})` : 
+											'');
+									},
+									false:	(cls) => chrg(cls),
+								})[!!search],
+								Desc: 		{
+									description: "The provider's {{Rate}}", 
+									type: { Number: { min: 0.00, step: 0.10 } }, 
+									style: 'half', to: 'query', required: false, matches: {
+										'Rate': 'Matches the {{Charge}} of the {{Service}} (([0-9](?:[.][0-9]{1,2})))'
+									},
+								}
+							}
+						},
+						SvcRate		(search = false) {	
+							return {
+								Default: 	'',
+								Format:  	({
+									true: 	() => slect('svcrate','s.provider_svc_rate      ='),
+									false:	() => slect('svcrate'),
+								})[!!search](),
+								Desc: 		{
+									description: "The provider's {{Rate}}", type: { Select: optns.SvcRate }, 
+									style: 'half', to: 'query', required: false, matches: {
+										'Rate': 'Matches the {{Rate}} of the {{Service}} (([\\w/ ]+))'
+									},
+								}
+							}
+						},
+						DocSID:		{
+							Default: '@SID',
+							Format (cls) {return this.Default;},
+							Desc: {
+								description: "The service {{ID}}",
+								type: "Number", to: "param", required: true
+							}
+						},
+						DocID:		{
+							Default: '0',
+							Format (cls) {return Number(cls.scid)||this.Default;},
+							Desc: {
+								description: "The service credential {{ID}}",
+								type: "Number", to: "param", required: true
+							}
+						},
+						DocDescr:	{
+							Default: '',
+							Format (cls) { return cls.descr||this.Default; },
+							Desc: {
+								description: `The Service credential {{Description}}`,
+								type: "Text", to: "query", required: true
+							}
+						},
+						DocBucket:	{
+							Default: 'documents',
+							Format 	 (cls) { return this.Default; },
+							Desc: 	 {
+								description: `The valid {{Bucket}} location for the {{Service}} credential`, 
+								type: "Text", to: 'query', hidden: true, required: true, matches: {}
 							}
 						},
 				}
-
-		// console.log(
-			// scqry('MS', [
-				// "SELECT   m.misc_value       AS value,",
-				// "         m.misc_tag         AS tag,",
-				// "         m.misc_label       AS label,",
-				// "         m.misc_description AS description,",
-				// "         m.misc_verb        AS verb,",
-				// "         MATCH(m.misc_label) AGAINST",
-				// "         (':TERM:' IN BOOLEAN MODE) AS score,",
-				// "         m.len",
-				// "FROM     misc m",
-				// "WHERE    LENGTH(':TERM:') > 4",
-				// "AND      MATCH(m.misc_label) AGAINST",
-				// "         (':TERM:' IN BOOLEAN MODE)",
-				// "LIMIT    10",
-			// ], 'Is')
-		// )
 		
 		/////////////////////////////////////////////////////////////////////////////////////
 		return { 
@@ -710,7 +823,7 @@
 										"WHERE    MATCH(g.gender_name) AGAINST",
 										"         (':TERM:' IN BOOLEAN MODE)",
 										"LIMIT    10",
-									], 'Identifies as'),
+									], 'Identify as'),
 							Params: {
 								Term: sterm('Gender Name', 'param', true, {
 									'Gender Name':'Matches the name of the {{Gender}}, (([A-z0-9,.-]+))',
@@ -721,7 +834,7 @@
 						},
 						// ==================================================================
 						Orientations: {
-							Scheme: /:term([\\w\\d,;.-]+)/,
+							Scheme: '/:term([\\w\\d,;.-]+)/',
 							Limits: ["Constant/Second"],
 							Sub: 	['for'],
 							Routes: ['for'],
@@ -744,7 +857,7 @@
 										"WHERE    MATCH(o.orient_name) AGAINST",
 										"         (':TERM:' IN BOOLEAN MODE)",
 										"LIMIT    10",
-									], 'Is'),
+									], 'Are'),
 							Params: {
 								Term: sterm('Orientation Name', 'param', true, {
 									'Orientation Name':'Matches the name of the {{Orientation}}, (([A-z0-9,.-]+))',
@@ -778,7 +891,7 @@
 										"WHERE    MATCH(r.religion_name) AGAINST",
 										"         (':TERM:' IN BOOLEAN MODE)",
 										"LIMIT    10",
-									], 'Practices'),
+									], 'Practice'),
 							Params: {
 								Term: sterm('Religion Name', 'param', true, {
 									'Religion Name':'Matches the name of the {{Religion}}, (([A-z0-9,.-]+))',
@@ -812,7 +925,7 @@
 										"WHERE    MATCH(n.nationality_name) AGAINST",
 										"         (':TERM:' IN BOOLEAN MODE)",
 										"LIMIT    10",
-									], 'Is'),
+									], 'Are'),
 							Params: {
 								Term: sterm('Nationality Name', 'param', true, {
 									'Nationality Name':'Matches the name of the {{Nationality}}, (([A-z0-9,.-]+))',
@@ -847,7 +960,7 @@
 										"         (':TERM:' IN BOOLEAN MODE)",
 										"GROUP BY l.language_name",
 										"LIMIT    10",
-									], 'Speaks'),
+									], 'Speak'),
 							Params: {
 								Term: sterm('Language Name', 'param', true, {
 									'Language Name':'Matches the name of the {{Language}}, (([A-z0-9,.-]+))',
@@ -881,7 +994,7 @@
 										"WHERE    MATCH(h.hobby_name) AGAINST",
 										"         (':TERM:' IN BOOLEAN MODE)",
 										"LIMIT    10",
-									], 'Likes'),
+									], 'Are into'),
 							Params: {
 								Term: sterm('Hobby Name', 'param', true, {
 									'Hobby Name':'Matches the name of the {{Hobby}}, (([A-z0-9,.-]+))',
@@ -892,7 +1005,7 @@
 						},
 					// LOCALES   ============================================================
 						Country: {
-							Scheme: '/:term([\\w\\d,;.-]+)/',
+							Scheme: '/:term([\\w\\d% ,;.-]+)/',
 							Limits: ["Constant/Second"],
 							Sub: 	['for'],
 							Routes: ['for'],
@@ -945,7 +1058,7 @@
 						},
 						// ==================================================================
 						Region: {
-							Scheme: '/:term([\\w\\d,;.-]+)/',
+							Scheme: '/:term([\\w\\d% ,;.-]+)/',
 							Limits: ["Constant/Second"],
 							Sub: 	['for'],
 							Routes: ['for'],
@@ -998,7 +1111,7 @@
 						},
 						// ==================================================================
 						City: {
-							Scheme: '/:term([\\w\\d,;.-]+)/',
+							Scheme: '/:term([\\w\\d% ,;.-]+)/',
 							Limits: ["Constant/Second"],
 							Sub: 	['for'],
 							Routes: ['for'],
@@ -1052,7 +1165,7 @@
 						},
 						// ==================================================================
 						Locale: {
-							Scheme: '/(:term([\\w\\d,;.-]+)(?:/:in((?:(?:city|region|country)(?=;|$))*))?)/',
+							Scheme: '/(:term([\\w\\d% ,;.-]+)(?:/:in((?:(?:city|region|country)(?=;|$))*))?)/',
 							Limits: ["Constant/Second"],
 							Sub: 	['for'],
 							Routes: ['for'],
@@ -1073,7 +1186,7 @@
 										"WHERE    MATCH(s.city,s.region,s.country)",
 										"         AGAINST (':TERM:' IN BOOLEAN MODE)",
 										"LIMIT    10",
-									], 'Lives in'),
+									], 'Live in'),
 							Params: {
 								Term: sterm('Locale', 'param', true, {
 									'City': 	'Matches the {{City}}, unless omitted (([A-z0-9,.-]+))',
@@ -1086,7 +1199,7 @@
 						},
 					// SERVICES  ============================================================
 						Charge:   {
-							Scheme: '/:term([^\\s\\d]{0,3}(\\d+(,\\d{2,3})*([.]\\d{2})?)?)/',
+							Scheme: '/:term([^\\s\\d]{,3}(\\d+(,\\d{2,3})*([.]\\d{2})?)( [A-Z]{1,3}|))?/',
 							Limits: ["Constant/Second"],
 							Sub: 	['for'],
 							Routes: ['for'],
@@ -1098,32 +1211,41 @@
 									"?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Currencies}} results per {{Page}}",
 								},
 							},
-							Query:  /* scqry('VC',  */[
-								"SELECT   COALESCE(S.score/S.len,0) AS score,   S.idx,  'For' AS verb,",
-								"         CONCAT_WS(';', S.value, @CHARGE)     AS value, 'VC' AS tag,",
-								"         CONCAT('VC@', CONCAT_WS('',S.label,@CHFORM), ' ', S.code)  AS label,",
-								"         S.description",
+							Query:  [
+								"SELECT   S.score, S.idx,   S.verb, S.value,",
+								"         S.tag,   S.label, S.description",
 								"FROM     (",
-								"    SELECT   y.currency_id                 AS value,",
-								"             y.currency_symbol             AS label,",
-								"             y.currency_name               AS description,",
-								"             y.currency_code               AS code,",
-								"             @CHARGE                       AS charge,",
-								"             (y.currency_symbol = @SYMBOL) AS score,",
-								"             COALESCE(LENGTH(@SYMBOL),1)   AS len,",
-								"             @CNT_CHG:=@CNT_CHG+1          AS idx",
-								"    FROM     currencies y, (SELECT @CNT_CHG:=0,",
-								"                 @ISCHRG:=(':TERM:' REGEXP '^[^\\s\\d]{0,3}[\\\\d,.]*$'),",
-								"                 @SYMBOL:=REGEXP_REPLACE(':TERM:','[\\\\d,.]', ''),",
-								"                 @CHARGE:=NULLIF(REGEXP_REPLACE(':TERM:','[^\\\\d.]', ''),''),",
-								"                 @CHFORM:=NULLIF(REGEXP_REPLACE(':TERM:','[^\\\\d.,]',''),'')",
-								"             ) c",
-								"    WHERE    (@ISCHRG AND @SYMBOL = '')",
-								"    OR       y.currency_symbol = @SYMBOL",
-								"    LIMIT    10",
+								"    SELECT   Q.score,  @CNT_CHG:=@CNT_CHG+1   AS idx, 'Charge around' AS verb,",
+								"             CONCAT_WS(',', Q.value, @CHARGE) AS value,  'VC' AS tag,",
+								"             CONCAT(CONCAT_WS('',Q.label,@CHFORM),' ',Q.code) AS label,",
+								"             Q.description",
+								"    FROM     (",
+								"        SELECT   y.currency_id                 AS value,",
+								"                 y.currency_symbol             AS label,",
+								"                 y.currency_name               AS description,",
+								"                 y.currency_code               AS code,",
+								"                 @CHARGE                       AS charge,",
+								"                 ((y.currency_symbol  =  @SYMBOL) +",
+								"                  (y.currency_code  LIKE @ABBREV)",
+								"                 )/COALESCE(LENGTH(@SYMBOL),1) AS score",
+								"        FROM     currencies y, (SELECT @CNT_CHG:=0,",
+								"                     @ISCHRG:=(':TERM:' REGEXP '^[^\\\\s\\\\d]{0,3}[\\\\d,.]*( [A-Z]{1,3}|)$'),",
+								"                     @SYMBOL:=REGEXP_REPLACE(':TERM:','[\\\\w ,.]', ''),",
+								"                     @ABBREV:=CONCAT('%',REGEXP_REPLACE(':TERM:','[^A-Z]',''),'%'),",
+								"                     @CHARGE:=NULLIF(REGEXP_REPLACE(':TERM:','[^\\\\d.]', ''),''),",
+								"                     @CHFORM:=NULLIF(REGEXP_REPLACE(':TERM:','[^\\\\d.,]',''),'')",
+								"                 ) c",
+								"        WHERE    (",
+								"            (@ISCHRG AND @SYMBOL = '')   OR",
+								"            y.currency_symbol  = @SYMBOL",
+								"        ) AND (",
+								"            y.currency_code LIKE @ABBREV OR",
+								"            @ABBREV = '%%'",
+								"        )",
+								"        LIMIT    10",
+								"    ) Q ORDER BY Q.score DESC",
 								") AS S",
-								":LIMIT: :PAGE:",
-							]/* , 'For') */,
+							],
 							Params: {
 								Term: sterm('Currency Name', 'param', true, {
 									'Currency Name':'Matches the name of the {{Currency}}, (([^\\s\\d]{0,3}(\\d+(,\\d{2,3})*([.]\\d{2})?)?))',
@@ -1157,7 +1279,7 @@
 										"WHERE    MATCH(p.provider_svc_name,p.provider_svc_descr) AGAINST",
 										"         (':TERM:' IN BOOLEAN MODE)",
 										"LIMIT    10",
-									], 'Runs'),
+									], 'Run the Service,'),
 							Params: {
 								Term: sterm('Provider Service', 'param', true, {
 									'Service Name':'Matches the {{Name}} of the {{Provider Service}}, (([A-z0-9,/.-]+))',
@@ -1182,7 +1304,7 @@
 								},
 							},
 							Query: 	scqry('VT', [
-										"SELECT   t.service_id          AS value,",
+										"SELECT   t.service_cpc_code    AS value,",
 										"         t.service_description AS label,",
 										"                            '' AS description,",
 										"         MATCH(t.service_description) AGAINST",
@@ -1192,7 +1314,7 @@
 										"WHERE    MATCH(t.service_description) AGAINST",
 										"         (':TERM:' IN BOOLEAN MODE)",
 										"LIMIT    10",
-									], 'Provides'),
+									], 'Provide'),
 							Params: {
 								Term: sterm('Service Type', 'param', true, {
 									'Service Type':'Matches the name of the {{Gender}}, (([A-z0-9,.-]+))',
@@ -1207,6 +1329,7 @@
 					Suggest: {
 						Scheme: `/(:term([^\\n\\t]+)|:context((?:(?:${cntxt})@([^@;]|\\[;@])+(;|$))+)/:term([^\\n\\t]+))/`,
 						Limits: ["Constant/Second"],
+						Sub: 	null,
 						Doc: 	{
 							Methods: 	Docs.Kinds.GET,
 							Headers: 	{ token: Docs.Headers.Token },
@@ -1233,26 +1356,26 @@
 							"    ) V",
 							"    UNION",
 							"    SELECT A.* FROM (",
-							"        :/Search/Service:",
+							"        :/Search/For/Services:",
 							"        UNION",
-							"        :/Search/Locale:",
+							"        :/Search/For/Locale:",
 							"        UNION",
-							"        :/Search/Hobbies:",
+							"        :/Search/For/Hobbies:",
 							"        UNION",
-							"        :/Search/Languages:",
+							"        :/Search/For/Languages:",
 							"        UNION",
-							"        :/Search/Nationalities:",
+							"        :/Search/For/Nationalities:",
 							"        UNION",
-							"        :/Search/Religions:",
+							"        :/Search/For/Religions:",
 							"        UNION",
-							"        :/Search/Orientations:",
+							"        :/Search/For/Orientations:",
 							"        UNION",
-							"        :/Search/Genders:",
+							"        :/Search/For/Genders:",
 							"        UNION",
-							"        :/Search/Misc:",
+							"        :/Search/For/Misc:",
 							"    ) A WHERE @TLEN >= 3",
 							"    UNION",
-							"    :/Services/Charge:",
+							"    :/Search/For/Charge:",
 							")   R :CONTEXT:",
 							"ORDER BY R.idx, R.score DESC",
 							"LIMIT 10",
@@ -1291,7 +1414,7 @@
 									}
 								}
 							},
-							Term:  sterm('Search', 'param', true, {
+							Term:  sterm('Search Term', 'param', true, {
 								'Service Type': 		'Matches the {{Service Type}} (([A-z0-9,/.-]+))',
 								'Service Charge': 		'Matches the {{Service Charge}} ((\\w?\\d+(\\.\\d{2})?\\w?))',
 								'Service Rate': 		'Matches the {{Service Rate}} (([A-z0-9,/.-]+))',
@@ -1341,8 +1464,38 @@
 							"                   !ISNULL(g.gender_id) +",
 							"                   !ISNULL(o.orient_id)",
 							"               ) AS score,",
-							`               ${SQL.SOCKET({link:'/user/:uids:%s', columns:['u.user_id']})} AS user`,
-							"    FROM      (SELECT * FROM users WHERE user_id = :UID:) AS x",
+							// `               ${SQL.SOCKET({link:'/user/:uids:%s', columns:['u.user_id']})} AS user`,
+							"               JSON_MERGE(",
+							"                   CONCAT('[',GROUP_CONCAT(DISTINCT ",
+							"                       IF(h.hobby_id,JSON_OBJECT(",
+							"                           'tag','HB','kind','good','value',h.hobby_id,'label',h.hobby_name",
+							"                       ),  'null') SEPARATOR ','),']'),",
+							"                   CONCAT('[',GROUP_CONCAT(DISTINCT",
+							"                       IF(l.language_id,JSON_OBJECT(",
+							"                           'tag','LG','kind','info','value',l.language_id,'label',l.language_name",
+							"                       ),  'null') SEPARATOR ','),']'),",
+							"                   CONCAT('[',GROUP_CONCAT(DISTINCT",
+							"                       IF(n.nationality_id,JSON_OBJECT(",
+							"                           'tag','NL','kind','info','value',n.nationality_id,'label',n.nationality_name",
+							"                       ),  'null') SEPARATOR ','),']'),",
+							"                   CONCAT('[',CONCAT_WS(',',",
+							"                       JSON_COMPACT(IF(r.religion_id,JSON_OBJECT(",
+							"                           'tag','RL','kind','nope','value',r.religion_id,'label',r.religion_name",
+							"                       ),  NULL)),",
+							"                       JSON_COMPACT(IF(g.gender_id,JSON_OBJECT(",
+							"                           'tag','GD','kind','warn','value',g.gender_id,'label',g.gender_name",
+							"                       ),  NULL)),",
+							"                       JSON_COMPACT(IF(o.orient_id,JSON_OBJECT(",
+							"                           'tag','OR','kind','warn','value',o.orient_id,'label',o.orient_name",
+							"                       ),  NULL)),",
+							"                       JSON_COMPACT(IF(L.id,JSON_OBJECT(",
+							"                           'tag','LC','kind','norm','value',L.id,'label',L.label",
+							"                       ),  NULL)),",
+							"                       JSON_COMPACT(IF(z.service_cpc_code,JSON_OBJECT(",
+							"                           'tag','VT','kind','norm','value',z.service_cpc_code,'label',z.service_description",
+							"                       ),  NULL))",
+							"               ),  ']')) AS multi",
+							"    FROM      (SELECT u.* FROM users u WHERE user_id = :UID:) AS x",
 							"    INNER JOIN user_profile_details   d  ON x.user_id                = d.user_fk",
 							"    INNER JOIN users               AS u  ON x.user_id               <> u.user_id",
 							"                                        AND chkRadDist(u.location,x.user_id,:LID:,:RADIUS:)",
@@ -1351,6 +1504,7 @@
 							"                                        AND chkREGEXP('(M|F|I)',':SEX:',p.profile_sex)",
 							"                                        AND chkREGEXP('(M|R|S)',':MARITAL:',p.profile_marital_status)",
 							"    INNER JOIN user_settings          t  ON u.user_id                = t.user_fk",
+							"    INNER JOIN search_locale          L  ON u.location               = L.id",
 							"    LEFT  JOIN user_visibility_objs   v  ON u.user_id                = v.user_fk AND true",
 							"    LEFT  JOIN user_provider_details  i  ON u.user_id                = i.user_fk",
 							"    LEFT  JOIN user_provider_services s  ON t.is_provider            = 1",
@@ -1361,6 +1515,7 @@
 							"                                            :SVCRATE:",
 							"                                            :SVCDESCR:",
 							"                                            ) > 0",
+							"    LEFT  JOIN services               z  ON s.provider_svc_type      = z.service_cpc_code",
 							"    LEFT  JOIN hobbies                h  ON chkJSVIS(v.obj,'user_hobbies')",
 							"                                        :HIDS:",
 							"                                        AND chkJSOBJ(p.profile_hobbies,h.hobby_id)",
@@ -1386,10 +1541,10 @@
 						],
 						Params: {
 							LID: 		dflts.sLID,
-							SvcType:	dflts.SvcType,
-							SvcDescr:	dflts.SvcDescr,
-							SvcCharge:	dflts.SvcCharge,
-							SvcRate:	dflts.SvcRate,
+							SvcType:	dflts.SvcType(true),
+							SvcDescr:	dflts.SvcDescr(true),
+							SvcCharge:	dflts.SvcCharge(true),
+							SvcRate:	dflts.SvcRate(true),
 							HIDs: 		dflts.sHIDs,
 							LGIDs: 		dflts.sLGIDs,
 							NIDs: 		dflts.sNIDs,
@@ -1406,22 +1561,14 @@
 							Limit: 		true,
 							ID: 		true,
 						},
-						Parse   (res) {
-							var RQ = this.RQ, QY = this.QY, ret, avg, MAP, C;
-							ret = JSN.Objectify(res, RQ.Key, RQ.Columns, QY);
-							MAP = Imm.Map(ret); C = MAP.size;
-							avg = (MAP.reduce((s,v)=>s+v.score,0)/C);
-							return 	MAP	.filter(v=>(v.score>=avg))
-										.map(v=>v.user)
-										.toJS();
-						},
+						Parse:	 spars(),
 						Key: 	'user_id'
 					},
 					// ======================================================================
 					"/": {
-						Scheme: '/:terms(([A-Z]{2}@([^@;]|\\[;@])+(;|$))+)/',
+						Scheme: '/', 
 						Doc: 	{
-							Methods: 	Docs.Kinds.GET,
+							Methods: 	Docs.Kinds.POST,
 							Headers: 	{ token: Docs.Headers.Token },
 							Examples: 	{
 								"/:terms:LG@124;HB@32;LG@142;LC@2717431;VT@01120;SX@F?uid=14": [
@@ -1451,7 +1598,7 @@
 								Desc: 	{
 									description: '{{Search Terms}} for the {{Query}}',
 									type: { List: "Text", Separator: ORS }, 
-									to: 'param', required: true, matches: {
+									to: 'query', required: true, matches: {
 										'Locale': 				'Matches the {{Locale}}, unless omitted (([A-z0-9,/.-]+))',
 										'Service Type': 		'Matches the {{Service Type}}, unless omitted (([A-z0-9,/.-]+))',
 										'Service Description': 	'Matches the {{Service Description}}, unless omitted (([A-z0-9,/.-]+))',
@@ -1471,10 +1618,10 @@
 							LID: 		hdden(dflts.sLID),
 							Units: 		hdden(dflts.Units), 
 							Radius: 	hdden(dflts.Radius),
-							SvcType:	hdden(dflts.SvcType),
-							SvcDescr:	hdden(dflts.SvcDescr),
-							SvcCharge:	hdden(dflts.SvcCharge),
-							SvcRate:	hdden(dflts.SvcRate),
+							SvcType:	hdden(dflts.SvcType(true)),
+							SvcDescr:	hdden(dflts.SvcDescr(true)),
+							SvcCharge:	hdden(dflts.SvcCharge(true)),
+							SvcRate:	hdden(dflts.SvcRate(true)),
 							HIDs: 		hdden(dflts.sHIDs),
 							LGIDs: 		hdden(dflts.sLGIDs),
 							NIDs: 		hdden(dflts.sNIDs),
@@ -1484,20 +1631,16 @@
 							Marital: 	hdden(dflts.Marital),
 							OIDs: 		hdden(dflts.sOIDs),
 							Age: 		hdden(dflts.Age),
-							UID: 		hdden(scuid()),  
+							UID: 		scuid(),  
 							Page:		true,
 							Limit: 		true,
 							ID: 		true,
 						},
-						Parse   (res) {
-							var RQ = this.RQ, QY = this.QY, ret;
-							ret = JSN.Objectify(res, RQ.Key, RQ.Columns, QY);
-							return Imm.Map(ret).map(v=>v.user).toJS();
-						},
+						Parse:	 spars(),
 						Key: 	'user_id'
 					}
 				},
-				Errors: 	{ BAD_REQ: ['/'] }
+				Errors: 	{ /* BAD_REQ: ['/'] */ }
 			},
 			User: 			{
 				Actions: 	{
@@ -1523,12 +1666,13 @@
 								"                      'level',   f.level, 'value', f.value,",
 								"                      'follows', COALESCE(f.follows,''),",
 								"                      'status',  IF(v.value & f.value, 'true', 'false')",
-								"                  )   ) SEPARATOR ','),",
+								"                  )   ) ORDER BY f.order SEPARATOR ','),",
 								"          ']'))) As settings",
 								"FROM      user_visibilities   v",
 								"LEFT JOIN visibility_fields   f ON f.level > 1",
 								"WHERE     v.user_fk IN (:UIDS:)",
-								"GROUP BY  v.user_fk ORDER BY f.id"
+								"AND       f.order > -1",
+								"GROUP BY  v.user_fk"
 							],
 							Params: { UIDs: true, ID: true, Page: true, Limit: true },
 							Links: 	[],
@@ -1840,7 +1984,7 @@
 						},
 					// USER     =============================================================
 					"/": {
-						Scheme: '/(:uids([\\d;]+\\b)|:account(\\w[\\w\\d_;-]*\\b))/',
+						Scheme: '/:uids([\\d;]+\\b)|:account([A-z0-9;._-]+\\b)/',
 						Sub: 	null,
 						Doc: 	{
 							Methods: 	Docs.Kinds.GET,
@@ -1897,7 +2041,7 @@
 								Default: "",
 								Format 	(cls) {
 									return SQL.BRKT(SQL.LIST([cls.account],
-										[{ split: ORS, match: /^[A-Za-z0-9_-]+|$/, equals: true, join: '","' }]),
+										[{ split: ORS, match: /^[A-Za-z0-9._-]+|$/, equals: true, join: '","' }]),
 									['("','")'], PIP)||"('')";
 								},
 								Desc: 	{
@@ -1913,8 +2057,7 @@
 						Links: 	[],
 						Parse  	(res) {
 							var RQ  = this.RQ, QY = this.QY, IDs = [], 
-								rgx = { 'user_id': '\\\\d+' },
-								cat = Imm.Map({
+								rgx = {'user_id': '\\\\d+'}, cat = Imm.Map({
 									photos: 		'user/photos',
 									identity: 		'user/details/identity',
 									misc: 			'user/details/misc',
@@ -1923,19 +2066,24 @@
 									languages: 		'user/details/languages',
 									nationalities: 	'user/details/nationalities',
 									religion: 		'user/details/religion',
-								}), single = !!eval(QY.single);
-
+									settings: 		'user/details/settings',
+									visibility: 	'user/details/settings/visibility',
+								}), sgl = !!eval(QY.single);
 							if (IDs = res.map((v,i)=>v.user_id), IDs) { 
-								var qry = `?as=item&single=${single}&to=["payload","result`,
+								var qry = `?${[ 'to=["payload","result"]',
+												`single=${sgl}`,
+												'links=true',
+												'as=item',
+											].join('&')}`,
 									prm = `:uids:${IDs.join(';')}`;
 								cat.map((l,c)=>{
-									var toE = (single?'':'","'+rgx.user_id),
-										lnk = `/${l}/${prm}${qry}${toE}"]`;
+									var toE = (sgl?'':'","'+rgx.user_id),
+										lnk = `/${l}/${prm}${qry}`;
 									RQ.links[c]=SQL.SOCKET({ link: lnk });
 								});
 							};
-							return (single ? res[0] : JSN.Objectify(
-								res, RQ.Key, RQ.Columns, this.QY
+							return (sgl ? res[0] : JSN.Objectify(
+								res, RQ.Key, RQ.Columns, QY
 							)	);
 						},
 						Key: 	'user_id',
@@ -1947,181 +2095,183 @@
 				Actions: 	{
 					// ======================================================================
 					Documents: {
-						Scheme: '/(:pid(\\d+)(?:/:sid(\\d(?:[\\d;]+)))?)/',
+						Scheme: '/:sids([\\d;]+\\b)/',
 						Sub: 	['service'],
 						Routes: ['service'],
 						Doc: 	{
 							Methods: 	Docs.Kinds.GET,
 							Headers: 	{ token: Docs.Headers.Token },
 							Examples: 	{
-								"/:uid:14/:gid:1": "Returns the {{Users}} whose {{Genders}} match the {{GID}}, 1, in the same {{Locale}} as the {{User}} at the {{User ID}}, 14",
-								"?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Users}} results per {{Page}}",
+								"/:sids:1;3": "Returns the {{Service Documents}} for {{Services}} at the {{SIDs}}, 1 and 3",
+								"/:sids:1;3?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Services Documents}} results per {{Page}}",
 							},
 						},
 						Query: [
-							"SELECT 	id, file, description, location,",
-										"provider_detail_id 	AS provider_id,",
-										"provider_svc_id 	AS service_id",
-							"FROM 	service_documents",
-							"WHERE 	provider_detail_id = :PID:",
-							"AND provider_svc_id = :SID:",
+							"SELECT   d.user_fk AS user_id, getProviderFiles(",
+							"             'documents', CONCAT('[',GROUP_CONCAT(JSON_OBJECT(",
+							"                 'id', c.id, 'name', c.file,",
+							"                 'description', c.description,",
+							"                 'location', c.location ",
+							"         ) SEPARATOR ','),']')) services",
+							"FROM     user_provider_details d",
+							"JOIN     service_documents c ON d.provider_detail_id = c.provider_detail_id",
+							"WHERE    c.provider_svc_id IN (:SIDS:)",
+							"GROUP BY c.provider_svc_id",
 							":LIMIT: :PAGE:",
 						],
 						Params: {
-							PID: {
-								Default: '0',
-								Format (cls) {return cls.pid;},
-								Desc: {
-									type: "Number", to: 'param',
-									description: 'A valid {{Provider ID}}',
-									required: true, matches: {'Provider ID': 'Matches the {{Provider ID}} (([0-9]+))'}
-								}
-							}, 
-							SID: {
-								Default: '0',
-								Format 	(cls) {return cls.sid;},
-								Desc: 	{
-									type: "Number", to: 'param',
-									description: 'A valid {{Service ID}}',
-									required: true, matches: {'Service ID': 'Matches the {{Service ID}} (([0-9]+))'}
-								}
-							},
-							Page: true, Limit: true, ID: true
+							SIDs: true, Page: true, Limit: true, ID: true
 						},
 						Links: 	[]
 					},
 					// ======================================================================
 					Credentials: {
-						Scheme: '/(:pid(\\d+)(?:/:sid(\\d(?:[\\d;]+)))?)/',
+						Scheme: '/:sids([\\d;]+\\b)/',
 						Sub: 	['service'],
 						Routes: ['service'],
 						Doc: 	{
 							Methods: 	Docs.Kinds.GET,
 							Headers: 	{ token: Docs.Headers.Token },
 							Examples: 	{
-								"/:uid:14/:gid:1": "Returns the {{Users}} whose {{Genders}} match the {{GID}}, 1, in the same {{Locale}} as the {{User}} at the {{User ID}}, 14",
-								"?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Users}} results per {{Page}}",
+								"/:sids:1;3": "Returns the {{Service Credentials}} for {{Services}} at the {{SIDs}}, 1 and 3",
+								"/:sids:1;3?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Services Credentials}} results per {{Page}}",
 							},
 						},
 						Query: [
-							"SELECT 	id, file, description, location,",
-										"provider_detail_id 	AS provider_id,",
-										"provider_svc_id 	AS service_id",
-							"FROM 	service_credentials",
-							"WHERE 	provider_detail_id = :PID:",
-							"AND provider_svc_id = :SID:",
+							"SELECT   d.user_fk AS user_id, getProviderFiles(",
+							"             'credentials', CONCAT('[',GROUP_CONCAT(JSON_OBJECT(",
+							"                 'id', c.id, 'name', c.file,",
+							"                 'description', c.description,",
+							"                 'location', c.location ",
+							"         ) SEPARATOR ','),']')) services",
+							"FROM     user_provider_details d",
+							"JOIN     service_credentials c ON d.provider_detail_id = c.provider_detail_id",
+							"WHERE    c.provider_svc_id IN (:SIDS:)",
+							"GROUP BY c.provider_svc_id",
 							":LIMIT: :PAGE:",
 						],
 						Params: {
-							PID: {
-								Default: '0',
-								Format (cls) {return cls.pid;},
-								Desc: {
-									type: "Number", to: 'param',
-									description: 'A valid {{Provider ID}}',
-									required: true, matches: {'Provider ID': 'Matches the {{Provider ID}} (([0-9]+))'}
-								}
-							}, 
-							SID: {
-								Default: '0',
-								Format 	(cls) {return cls.sid;},
-								Desc: 	{
-									type: "Number", to: 'param',
-									description: 'A valid {{Service ID}}',
-									required: true, matches: {'Service ID': 'Matches the {{Service ID}} (([0-9]+))'}
-								}
-							},
-							Page: true, Limit: true, ID: true
+							SIDs: true, Page: true, Limit: true, ID: true
 						},
 						Links: 	[]
 					},
 					// ======================================================================
 					Images: {
-						Scheme: '/(:pid(\\d+)(?:/:sid(\\d(?:[\\d;]+)))?)/',
+						Scheme: '/:sids([\\d;]+\\b)/',
 						Sub: 	['service'],
 						Routes: ['service'],
 						Doc: 	{
 							Methods: 	Docs.Kinds.GET,
 							Headers: 	{ token: Docs.Headers.Token },
 							Examples: 	{
-								"/:uid:14/:gid:1": "Returns the {{Users}} whose {{Genders}} match the {{GID}}, 1, in the same {{Locale}} as the {{User}} at the {{User ID}}, 14",
-								"?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Users}} results per {{Page}}",
+								"/:sids:1;3": "Returns the {{Service Images}} for {{Services}} at the {{SIDs}}, 1 and 3",
+								"/:sids:1;3?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Services Images}} results per {{Page}}",
 							},
 						},
 						Query: [
-							"SELECT 	id, file, description, location,",
-										"provider_detail_id 	AS provider_id,",
-										"provider_svc_id 	AS service_id",
-							"FROM 	service_images",
-							"WHERE 	provider_detail_id = :PID:",
-							"AND provider_svc_id = :SID:",
+							"SELECT   d.user_fk AS user_id, getProviderFiles(",
+							"             'images', CONCAT('[',GROUP_CONCAT(JSON_OBJECT(",
+							"                 'id', c.id, 'name', c.file,",
+							"                 'description', c.description,",
+							"                 'location', c.location ",
+							"         ) SEPARATOR ','),']')) services",
+							"FROM     user_provider_details d",
+							"JOIN     service_images c ON d.provider_detail_id = c.provider_detail_id",
+							"WHERE    c.provider_svc_id IN (:SIDS:)",
+							"GROUP BY c.provider_svc_id",
 							":LIMIT: :PAGE:",
 						],
 						Params: {
-							PID: {
-								Default: '0',
-								Format (cls) {return cls.pid;},
-								Desc: {
-									type: "Number", to: 'param',
-									description: 'A valid {{Provider ID}}',
-									required: true, matches: {'Provider ID': 'Matches the {{Provider ID}} (([0-9]+))'}
-								}
-							}, 
-							SID: {
-								Default: '0',
-								Format 	(cls) {return cls.sid;},
-								Desc: 	{
-									type: "Number", to: 'param',
-									description: 'A valid {{Service ID}}',
-									required: true, matches: {'Service ID': 'Matches the {{Service ID}} (([0-9]+))'}
-								}
-							},
-							Page: true, Limit: true, ID: true
+							SIDs: true, Page: true, Limit: true, ID: true
 						},
 						Links: 	[]
 					},
 					// ======================================================================
 					URLs: {
-						Scheme: '/(:pid(\\d+)(?:/:sid(\\d(?:[\\d;]+)))?)/',
+						Scheme: '/:sids([\\d;]+\\b)/',
 						Sub: 	['service'],
 						Routes: ['service'],
 						Doc: 	{
 							Methods: 	Docs.Kinds.GET,
 							Headers: 	{ token: Docs.Headers.Token },
 							Examples: 	{
-								"/:uid:14/:gid:1": "Returns the {{Users}} whose {{Genders}} match the {{GID}}, 1, in the same {{Locale}} as the {{User}} at the {{User ID}}, 14",
-								"?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Users}} results per {{Page}}",
+								"/:sids:1;3": "Returns the {{Service URLs}} for {{Services}} at the {{SIDs}}, 1 and 3",
+								"/:sids:1;3?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Services URLs}} results per {{Page}}",
 							},
 						},
 						Query: [
-							"SELECT 	id, name, description,",
-										"provider_detail_id 	AS provider_id,",
-										"provider_svc_id 	AS service_id",
-							"FROM 	service_urls",
-							"WHERE 	provider_detail_id = :PID:",
-							"AND provider_svc_id = :SID:",
+							"SELECT   d.user_fk AS user_id, getProviderFiles(",
+							"             'urls', CONCAT('[',GROUP_CONCAT(JSON_OBJECT(",
+							"                 'id', c.id, 'name', c.name,",
+							"                 'description', c.description,",
+							"                 'location', c.location ",
+							"         ) SEPARATOR ','),']')) services",
+							"FROM     user_provider_details d",
+							"JOIN     service_urls c ON d.provider_detail_id = c.provider_detail_id",
+							"WHERE    c.provider_svc_id IN (:SIDS:)",
+							"GROUP BY c.provider_svc_id",
 							":LIMIT: :PAGE:",
 						],
 						Params: {
-							PID: {
-								Default: '0',
-								Format (cls) {return cls.pid;},
-								Desc: {
-									type: "Number", to: 'param',
-									description: 'A valid {{Provider ID}}',
-									required: true, matches: {'Provider ID': 'Matches the {{Provider ID}} (([0-9]+))'}
-								}
-							}, 
-							SID: {
-								Default: '0',
-								Format 	(cls) {return cls.sid;},
-								Desc: 	{
-									type: "Number", to: 'param',
-									description: 'A valid {{Service ID}}',
-									required: true, matches: {'Service ID': 'Matches the {{Service ID}} (([0-9]+))'}
-								}
+							SIDs: true, Page: true, Limit: true, ID: true
+						},
+						Links: 	[]
+					},
+					// ======================================================================
+					Files: {
+						Scheme: '/:sids([\\d;]+\\b)/',
+						Sub: 	['service'],
+						Routes: ['service'],
+						Doc: 	{
+							Methods: 	Docs.Kinds.GET,
+							Headers: 	{ token: Docs.Headers.Token },
+							Examples: 	{
+								"/:sids:1;3": "Returns the {{Service Files}} for {{Services}} at the {{SIDs}}, 1 and 3",
+								"/:sids:1;3?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Services Files}} results per {{Page}}",
 							},
-							Page: true, Limit: true, ID: true
+						},
+						Query: [
+							"SELECT   p.user_fk AS user_id, JSON_MERGE(",
+									"     getProviderFiles(",
+										"     'documents', CONCAT('[',",
+										"         GROUP_CONCAT(DISTINCT JSON_OBJECT(",
+										"             'id', d.id, 'name', d.file,",
+										"             'description', d.description,",
+										"             'location', d.location ",
+									"     ) SEPARATOR ','),']')),",
+									"     getProviderFiles(",
+										"      'credentials', CONCAT('[',",
+										"          GROUP_CONCAT(DISTINCT JSON_OBJECT(",
+										"              'id', c.id, 'name', c.file,",
+										"              'description', c.description,",
+										"              'location', c.location ",
+									"     ) SEPARATOR ','),']')),",
+									"     getProviderFiles(",
+										"      'images', CONCAT('[',",
+										"          GROUP_CONCAT(DISTINCT JSON_OBJECT(",
+										"              'id', i.id, 'name', i.file,",
+										"              'description', i.description,",
+										"              'location', i.location ",
+									"     ) SEPARATOR ','),']')),",
+									"     getProviderFiles(",
+										"      'urls', CONCAT('[',",
+										"          GROUP_CONCAT(DISTINCT JSON_OBJECT(",
+										"              'id', u.id, 'name', u.name,",
+										"              'description', u.description,",
+										"              'location', u.location ",
+									"     ) SEPARATOR ','),']'))",
+							"         ) services",
+							"FROM     user_provider_details p",
+							"JOIN     service_documents     d ON p.provider_detail_id = d.provider_detail_id",
+							"JOIN     service_credentials   c ON p.provider_detail_id = c.provider_detail_id",
+							"JOIN     service_images        i ON p.provider_detail_id = i.provider_detail_id",
+							"JOIN     service_urls          u ON p.provider_detail_id = u.provider_detail_id",
+							"WHERE    c.provider_svc_id IN (:SIDS:)",
+							"GROUP BY c.provider_detail_id",
+							":LIMIT: :PAGE:"
+						],
+						Params: {
+							SIDs: true, Page: true, Limit: true, ID: true
 						},
 						Links: 	[]
 					},
@@ -2138,7 +2288,9 @@
 							},
 						},
 						Query: [
-							"SELECT     pd.user_fk AS user_id, JSON_COMPACT(CONCAT('[',",
+							"SELECT     pd.user_fk AS user_id, ",
+							"           pd.provider_detail_id AS provider_id,",
+							"           JSON_COMPACT(CONCAT('[',",
 							"               GROUP_CONCAT(JSON_OBJECT(",
 							"                   'id',          ps.provider_svc_id,",
 							"                   'kind',        s.service_description,",
@@ -2146,7 +2298,7 @@
 							"                   'description', ps.provider_svc_descr,",
 							"                   'charge',      ps.provider_svc_charge,",
 							"                   'rate',        ps.provider_svc_rate",
-							"           )  SEPARATOR ','), ']')   ) AS services",
+							"           )  SEPARATOR ','), ']')) AS services",
 							"FROM       user_provider_services AS ps",
 							"INNER JOIN user_provider_details  AS pd ON pd.provider_detail_id = ps.user_provider_fk",
 							"INNER JOIN services               AS  s ON s.service_cpc_code    = ps.provider_svc_type",
@@ -2253,7 +2405,7 @@
 						},
 						// ======================================================================
 						Timezone: {
-							Scheme: '/:term(.+)/',
+							Scheme: '/:term(.+)?/',
 							Limits: ["Constant/Second"],
 							Sub: 	null,
 							Doc: 	{
@@ -2268,22 +2420,27 @@
 									pgx   = /[^\d]/g, tgx = /(\[|[.({/})?+]|\])/g,
 									term  = new RegExp(`^(.*)(${cls.Term.replace(tgx,'\\$1')})(.*)$`),
 									page  = Number(cls.Page .replace(pgx,'')),
-									limit = Number(cls.Limit.replace(pgx,''));
-								return [ null,
-									TZone	.filter(v=>!!v.match(term))
-											.map(v=>({ m: v.match(term), k: v }))
-											.map(v=>({ m: v.m[1]+v.m[3], k: v.k }))
-											.sort((a,b)=>{ switch (true) {
-												case a.m < b.m: return -1;
-												case a.m > b.m: return  1;
-												default:		return  0;
-											};	}).map(v=>v.k).slice(page,limit)
-								];
+									limit = Number(cls.Limit.replace(pgx,'')),
+									res   = [ null,
+										TZone	.filter(v=>!!v.match(term))
+												.map(v=>({ m: v.match(term), k: v }))
+												.map(v=>({ m: v.m[1]+v.m[3], k: v.k }))
+												.sort((a,b)=>{ 
+													switch (true) {
+														case a.m < b.m: return -1;
+														case a.m > b.m: return  1;
+														default:		return  0;
+													};	
+												})
+												.map(v=>v.k)
+												.slice(page,limit)
+												.map(v=>({label:v,value:v}))
+									]; 	return res;
 							},
 							Params: {
 								Term: {
 									Default: '',
-									Format 	(cls) { return cls.term; },
+									Format 	(cls) { return cls.term||''; },
 									Desc: 	{
 										description: "A {{Search Term}} for the {{Timezone}}",
 										type: "Text", to: 'param', required: true, matches: {
@@ -2558,14 +2715,14 @@
 						},
 						// ==================================================================	
 						Services: {
-							Scheme: '/((?:/:lid(\\d(?:[\\d;]+))/:sids(\\d(?:[\\d;]+))|/:sids(\\d(?:[\\d;]+)))?)/',
+							Scheme: '/((?:/:lid(\\d(?:[\\d;]+))/:vtids(\\d(?:[\\d;]+))|/:vtids(\\d(?:[\\d;]+)))?)/',
 							Sub: 	['with'],
 							Routes: ['with'],
 							Doc: 	{
 								Methods: 	Docs.Kinds.GET,
 								Headers: 	{ token: Docs.Headers.Token },
 								Examples: 	{
-									"/:sids:1?uid=14": "Returns the {{Providers}} whose {{Service Type}} match the {{SIDs}}, 1, in the same {{Locale}} as the {{User}} at the {{User ID}}, 14",
+									"/:vtids:1?uid=14": "Returns the {{Providers}} whose {{Service Type}} match the {{VTIDs}}, 1, in the same {{Locale}} as the {{User}} at the {{User ID}}, 14",
 									"?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Users}} results per {{Page}}",
 								},
 							},
@@ -2577,12 +2734,12 @@
 								"                                      AND chkRadDist(u.location, :UID:,:LID:,:RADIUS:)",
 								"INNER JOIN user_provider_details  AS d ON u.user_id            = d.user_fk",
 								"INNER JOIN user_provider_services AS s ON s.user_provider_fk   = d.provider_detail_id",
-								"                                      AND s.provider_svc_type IN (':SIDS:')",
+								"                                      AND s.provider_svc_type IN (':VTIDS:')",
 								"GROUP BY   u.user_id",
 								":LIMIT: :PAGE:",
 							],
 							Params: { 
-								SIDs:   true, LID:  true, UID:   scuid(), Units: true, 
+								VTIDs:   true, LID:  true, UID:   scuid(), Units: true, 
 								Radius: true, Page: true, Limit: true,    ID:    true 
 							},
 							Links: 	[],
@@ -2618,15 +2775,27 @@
 					}
 				},
 				Errors: 	{ BAD_REQ: [
-					'/',
-					'/search/',
-					'/search/city',
-					'/search/region',
-					'/search/country'
+					'/with/',
 				] }
 			},
 			Get: 			{
 				Actions: 	{
+					// ======================================================================
+					Rate: {
+						Scheme: '/',
+						Sub: 	null,
+						Doc: 	{
+							Methods: 	Docs.Kinds.GET,
+							Headers: 	{ token: Docs.Headers.Token },
+							Examples: 	{},
+						},
+						Query: [
+							"SELECT   m.misc_value value, m.misc_value label",
+							"FROM     misc m WHERE m.misc_tag = 'VR'",
+						],
+						Params: { ID: true },
+						Links: 	[]
+					},
 					// ======================================================================
 					Currencies: {
 						Scheme: '/:cids((?:\\d+)(?=;|$))?/',
@@ -2709,7 +2878,7 @@
 						Query: [
 							"SELECT   r.religion_id   AS value,",
 							"         r.religion_name AS label",
-							"FROM     r.religions",
+							"FROM     religions r",
 							"WHERE    true :RIDS:",
 							":LIMIT: :PAGE:",
 						],
@@ -2775,7 +2944,7 @@
 						Query: 	[
 							"SELECT   h.hobby_id   AS value,",
 							"         h.hobby_name AS label,",
-							"         h.hobby_type AS type",
+							"         h.hobby_type AS description",
 							"FROM     hobbies h",
 							"WHERE    true :HIDS:",
 							":LIMIT: :PAGE:",
@@ -2785,13 +2954,13 @@
 					},
 					// ======================================================================
 					Services: 		{
-						Scheme: '/:sids((?:\\d+)(?=;|$))?/',
+						Scheme: '/:vtids((?:\\d+)(?=;|$))?/',
 						Sub: 	null,
 						Doc: 	{
 							Methods: 	Docs.Kinds.GET,
 							Headers: 	{ token: Docs.Headers.Token },
 							Examples: 	{
-								"/:sids:3;4": "Returns the {{Service Type}} at the {{SIDs}}, 3 and 4",
+								"/:vtids:3;4": "Returns the {{Service Type}} at the {{VTIDs}}, 3 and 4",
 								"?page=3&limit=10": "Displays the 3rd {{Page}} at a {{Limit}} of 'ten' {{Service Types}} results per {{Page}}",
 							},
 						},
@@ -2799,10 +2968,10 @@
 							"SELECT   s.service_id AS value,",
 							"         s.service_description AS label",
 							"FROM     services s",
-							"WHERE    true :SIDS:",
+							"WHERE    true :VTIDS:",
 							":LIMIT: :PAGE:",
 						],
-						Params: { SIDs: true, Page: true, Limit: true, ID: true },
+						Params: { VTIDs: true, Page: true, Limit: true, ID: true },
 						Links: 	[]
 					},
 					// ======================================================================
@@ -2814,111 +2983,174 @@
 				Actions: {
 					// ======================================================================
 					Document: {
-						Scheme: '/',
+						Scheme: '/:sids([\\d;]+\\b)/',
 						Limits: ["Tries/Second"],
 						Sub: 	['service'],
 						Routes: ['service'],
 						Doc: 	{
 							Methods: 	Docs.Kinds.POST,
 							Headers: 	{ token: Docs.Headers.Token },
+							Files: 		{
+								field:	'file',
+								max:	1,
+								dest 	(prm, bdy, file) { return `${bdy.bucket}/${prm.uid}`; 	},
+								name	(prm, bdy, file) { return `${file.originalname}`; 		}
+							},
 							Examples: 	{
-								"/": "Add a {{Service Document}}",
+								"/:sid:3": [
+									"Uploads an {{Service Document}} for the {{Service ID}}, 3.",
+								].join(' '),
 							},
 						},
-						Query: [],
-						Params: {},
-						Links: [],
-						Key: '',
+						Query: 	[
+							"INSERT INTO service_documents (",
+							"    provider_detail_id, provider_svc_id, file, description, location, date_created",
+							") SELECT s.user_provider_fk, s.provider_svc_id, ':FILE:', ':DESCR:', ':LOCATION:', NOW()",
+							"  FROM   user_provider_services s",
+							"  JOIN   user_provider_details  p ON s.user_provider_fk = p.provider_detail_id",
+							"  WHERE  p.user_fk          =  :UID:",
+							"  AND    s.provider_svc_id IN (:SIDS:);",
+							":/Provider/Service/Documents:",
+						],
+						Params: {
+							UID: 	scuid(),
+							SIDs:	true,
+							File:	true,
+							Descr: 	dflts.DocDescr,
+							Bucket: dflts.DocBucket,
+						},
+						Links: 	[],
+						Key: 	'',
 					},
 					// ======================================================================
 					Credential: {
-						Scheme: '/',
+						Scheme: '/:sids([\\d;]+\\b)/',
 						Limits: ["Tries/Second"],
 						Sub: 	['service'],
 						Routes: ['service'],
 						Doc: 	{
 							Methods: 	Docs.Kinds.POST,
 							Headers: 	{ token: Docs.Headers.Token },
+							Files: 		{
+								field:	'file',
+								max:	1,
+								dest 	(prm, bdy, file) { return `${bdy.bucket}/${prm.uid}`; 	},
+								name	(prm, bdy, file) { return `${file.originalname}`; 		}
+							},
 							Examples: 	{
-								"/": "Add a {{Service Credential}}",
+								"/:sid:3": [
+									"Uploads an {{Service Document}} for the {{Service ID}}, 3.",
+								].join(' '),
 							},
 						},
-						Query: [],
-						Params: {},
-						Links: [],
-						Key: '',
+						Query: 	[
+							"INSERT INTO service_credentials (",
+							"    provider_detail_id, provider_svc_id, file, description, location, date_created",
+							") SELECT s.user_provider_fk, s.provider_svc_id, ':FILE:', ':DESCR:', ':LOCATION:', NOW()",
+							"  FROM   user_provider_services s",
+							"  JOIN   user_provider_details  p ON s.user_provider_fk = p.provider_detail_id",
+							"  WHERE  p.user_fk          =  :UID:",
+							"  AND    s.provider_svc_id IN (:SIDS:);",
+							":/Provider/Service/Credentials:",
+						],
+						Params: {
+							UID: 	scuid(),
+							SIDs:	true,
+							File:	true,
+							Descr:	dflts.DocDescr,
+							Bucket: dflts.DocBucket,
+						},
+						Links: 	[],
+						Key: 	'',
 					},
 					// ======================================================================
 					Image: {
-						Scheme: '/',
+						Scheme: '/:sids([\\d;]+\\b)/',
 						Limits: ["Tries/Second"],
 						Sub: 	['service'],
 						Routes: ['service'],
 						Doc: 	{
 							Methods: 	Docs.Kinds.POST,
 							Headers: 	{ token: Docs.Headers.Token },
+							Files: 		{
+								field:	'file',
+								max:	1,
+								dest 	(prm, bdy, file) { return `${bdy.bucket}/${prm.uid}`; 	},
+								name	(prm, bdy, file) { return `${file.originalname}`; 		}
+							},
 							Examples: 	{
-								"/": "Add a  {{Service image}}",
+								"/:sid:3": [
+									"Uploads an {{Service Document}} for the {{Service ID}}, 3.",
+								].join(' '),
 							},
 						},
-						Query: [],
-						Params: {},
-						Links: [],
-						Key: '',
-					},
-					// ======================================================================
-					Url: {
-						Scheme: '/',
-						Limits: ["Tries/Second"],
-						Sub: 	['service'],
-						Routes: ['service'],
-						Doc: 	{
-							Methods: 	Docs.Kinds.POST,
-							Headers: 	{ token: Docs.Headers.Token },
-							Examples: 	{
-								"/": "Add a {{Service url}}",
-							},
-						},
-						Query: [
-							"INSERT INTO service_urls(provider_detail_id, provider_svc_id, name, description, date_created)",
-							"VALUES	(:PID:, :SID:, :UNAME:, :UDESCR:, now());"
+						Query: 	[
+							"INSERT INTO service_images (",
+							"    provider_detail_id, provider_svc_id, file, description, location, date_created",
+							") SELECT s.user_provider_fk, s.provider_svc_id, ':FILE:', ':DESCR:', ':LOCATION:', NOW()",
+							"  FROM   user_provider_services s",
+							"  JOIN   user_provider_details  p ON s.user_provider_fk = p.provider_detail_id",
+							"  WHERE  p.user_fk          =  :UID:",
+							"  AND    s.provider_svc_id IN (:SIDS:);",
+							":/Provider/Service/Images:",
 						],
 						Params: {
-						  pId: {
-							Default: 0,
-							Format (cls) { return cls.pid; },
-							Desc: {
-								description: "The service provider {{ID}}",
-								type: "Number", to: "query", required: true
-							}
-							},
-						  sId: {
-							Default: 0,
-							Format	(cls) {return cls.sid;},
-							Desc: {
-								description: "The service {{ID}}",
-								type: "Number", to: "query", required: true
-							}
-						  },
-						  uName: {
-							Default: '',
-							Format (cls) {return cls.uname;},
-							Desc: {
-								description: "The service url name",
-								type: "Text", to: "query", required: true
-							}
-						  },
-						  uDescr: {
-							Default: '',
-							Format (cls) {return cls.udescr;},
-							Desc: {
-								description: "The service url description",
-								type: "Text", to: "query", required: true
-							}
-						  }
+							UID: 	scuid(),
+							SIDs:	true,
+							File:	true,
+							Descr:	dflts.DocDescr,
+							Bucket: dflts.DocBucket,
 						},
-						Links: [],
-						Key: '',
+						Links: 	[],
+						Key: 	'',
+					},
+					// ======================================================================
+					URL: {
+						Scheme: '/:sids([\\d;]+\\b)/',
+						Limits: ["Tries/Second"],
+						Sub: 	['service'],
+						Routes: ['service'],
+						Doc: 	{
+							Methods: 	Docs.Kinds.POST,
+							Headers: 	{ token: Docs.Headers.Token },
+							Examples: 	{
+								"/:pdid:2": "Add a {{Service url}}",
+							},
+						},
+						Query: 	[
+							"INSERT INTO service_urls (",
+							"    provider_detail_id, provider_svc_id, name, description, location, date_created",
+							") SELECT s.user_provider_fk, s.provider_svc_id, ':NAME:', ':DESCR:', ':LOCATION:', NOW()",
+							"  FROM   user_provider_services s",
+							"  JOIN   user_provider_details  p ON s.user_provider_fk = p.provider_detail_id",
+							"  WHERE  p.user_fk          =  :UID:",
+							"  AND    s.provider_svc_id IN (:SIDS:)",
+							"  AND    NULLIF(':LOCATION:','') IS NOT NULL;",
+							":/Provider/Service/URLs:",
+						],
+						Params: {
+							UID: 	  scuid(),
+							SIDs: 	  true,
+							Name:     {
+								Default: '',
+								Format (cls) {return cls.name;},
+								Desc: {
+									description: "The service url name",
+									type: "Text", to: "query", required: true
+								}
+							},
+							Descr:    dflts.DocDescr,
+							location: {
+								Default: '',
+								Format 	 (cls) { return cls.location; },
+								Desc: 	 {
+									description: 'A valid {{URL}}', 
+									type: "URL", to: 'query', hidden: true, required: true, matches: {}
+								}
+							},
+						},
+						Links: 	[],
+						Key: 	'',
 					},
 					// ======================================================================
 					Service: {
@@ -2934,59 +3166,26 @@
 						},
 						Query: [
 							"INSERT INTO user_provider_services (",
-							"    user_provider_fk, provider_svc_type, provider_svc_name, ",
+							"    user_provider_fk,   provider_svc_type,   provider_svc_name, ",
 							"    provider_svc_descr, provider_svc_charge, provider_svc_rate",
-							") VALUES (:PID:, :PTYPE:, :PNAME:, :PDESCR:, :PCHARGE:, :PRATE:);"
+							") SELECT p.user_provider_fk,:SVCTYPE:,':SVCNAME:',':SVCDESCR:',:SVCCHARGE:,:SVCRATE:",
+							"  FROM   user_provider_details p WHERE p.user_fk = :UID:;",
+							":/Provider/Service:",
 						],
 						Params: {
-							pId: {
-								Default: 0,
-								Format(cls) { return cls.pid; },
-								Desc: {
-									description: "The service provider {{ID}}",
-									type: "Number", to: "query", required: true
-								}
-							},
-							pType: {
+							SvcType: 	dflts.SvcType(),
+							SvcName: 	{
 								Default: '',
-								Format (cls) {return cls.ptype;},
-								Desc: {
-									description: "The service type",
-									type: "Text", to: "query", required: true
-								}
-							},
-							pName: {
-								Default: '',
-								Format(cls) {return cls.pname;},
+								Format(cls) {return cls.svcname.replace(/[\n]/g,' ');},
 								Desc: {
 									description: "The service {{NAME}}",
 									type: "Text", to: "query", required: true
 								}
 							},
-							PDescr: {
-								Default: '',
-								Format (cls) {return cls.pdescr;},
-								Desc: {
-									description: "The service {{DESCR}}",
-									type: "Text", to: "query", required: true
-								}	
-							},
-							pCharge: {
-								Default: 0,
-								Format (cls) {return cls.pcharge;},
-								Desc: {
-									description: "The service {{CHARGE}}",
-									type: "Number", to: "query", required: true
-								}
-							},
-							pRate: {
-								Default: '',
-								Format (cls) {return cls.prate;},
-								Desc: {
-									description: "The service {{RATE}}",
-									type: "Text", to: "query", required: true
-								}
-							}
+							SvcDescr: 	dflts.SvcDescr(),
+							SvcCharge: 	dflts.SvcCharge(),
+							SvcRate: 	dflts.SvcRate(),
+							UID: 		scuid(),
 						},
 						Links: [],
 						Key: '',
@@ -3000,190 +3199,150 @@
 				Actions: 	{
 					// SERVICES =============================================================
 						Documents: {
-							Scheme: '/:did(\\d*)/',
+							Scheme: '/:scid(\\d+)/',
 							Limits: ["Tries/Second"],
-							Sub: 	['services'],
-							Routes: ['services'],
+							Sub: 	['service'],
+							Routes: ['service'],
 							Doc: 	{
-								Methods: 	Docs.Kinds.POST,
+								Methods: 	Docs.Kinds.PUT,
 								Headers: 	{ token: Docs.Headers.Token },
 								Examples: 	{
 									"/:did:14": "Updates the {{Service Document}} at the {{Document ID}}, 14",
 								},
 							},
 							Query: [
-								"UPDATE 	service_documents",
-								"SET 		description 	= COALESCE(NULLIF(':DDESCR:', ''), description)",
-								"WHERE 		id				= :DID;"
+								"UPDATE service_documents dc",
+								"JOIN   user_provider_details p ON dc.provider_detail_id = p.provider_detail_id",
+								"SET    dc.description     = COALESCE(NULLIF(':DESCR:', ''), dc.description),",
+								"       dc.provider_svc_id = @SID := dc.provider_svc_id",
+								"WHERE  p.user_fk = :UID:",
+								"AND    dc.id     = :SCID:;",
+								":/Provider/Service/Documents:",
 							],
 							Params: {
-								dId: {
-									Default: 0,
-									Format (cls) {return cls.did;},
-									Desc: {
-										description: "The service document {{ID}}",
-										type: "Number", to: "param", required: true
-									}
-								},
-								dDescr: {
-									Default: '',
-									Format (cls) {return cls.ddescr;},
-									Desc: {
-										description: "The service document {{DESCR}}",
-										type: "Text", to: "query", required: false
-									}
-								}
+								SCID: 	dflts.DocID,
+								Descr: 	dflts.DocDescr,
+								SIDS:   dflts.DocSID,
+								UID: 	scuid(true,true,'query'),
 							},
-							Links: [],
-							Key: '',
+							Links: 	[],
 						},
 						// ==================================================================
 						Credentials: {
-							Scheme: '/:cid(\\d*)/',
+							Scheme: '/:scid(\\d+)/',
 							Limits: ["Tries/Second"],
-							Sub: 	['services'],
-							Routes: ['services'],
+							Sub: 	['service'],
+							Routes: ['service'],
 							Doc: 	{
-								Methods: 	Docs.Kinds.POST,
+								Methods: 	Docs.Kinds.PUT,
 								Headers: 	{ token: Docs.Headers.Token },
 								Examples: 	{
 									"/:did:14": "Updates the {{Service Credential}} at the {{Credential ID}}, 14",
 								},
 							},
-							Query: [
-								"UPDATE 	service_credentials",
-								"SET 		description 	= COALESCE(NULLIF(':CDESCR:', ''), description)",
-								"WHERE 		id				= :CID;"
+							Query: 	[
+								"UPDATE service_credentials cd",
+								"JOIN   user_provider_details p ON cd.provider_detail_id = p.provider_detail_id",
+								"SET    cd.description     = COALESCE(NULLIF(':DESCR:', ''), cd.description),",
+								"       cd.provider_svc_id = @SID := cd.provider_svc_id",
+								"WHERE  p.user_fk = :UID:",
+								"AND    cd.id     = :SCID:;",
+								":/Provider/Service/Credentials:",
 							],
 							Params: {
-								cId: {
-									Default: 0,
-									Format (cls) {return cls.cid;},
-									Desc: {
-										description: "The service credentials {{ID}}",
-										type: "Number", to: "param", required: true
-									}
-								},
-								cDescr: {
-									Default: '',
-									Format (cls) {return cls.cdescr;},
-									Desc: {
-										description: "The service credentials {{DESCR}}",
-										type: "Text", to: "query", required: false
-									}
-								}
+								SCID: 	dflts.DocID,
+								Descr: 	dflts.DocDescr,
+								SIDS:   dflts.DocSID,
+								UID: 	scuid(true,true,'query'),
 							},
-							Links: [],
-							Key: '',
+							Links: 	[],
 						},
 						// ==================================================================
 						Images: {
-							Scheme: '/:iid(\\d*)/',
+							Scheme: '/:scid(\\d+)/',
 							Limits: ["Tries/Second"],
-							Sub: 	['services'],
-							Routes: ['services'],
+							Sub: 	['service'],
+							Routes: ['service'],
 							Doc: 	{
-								Methods: 	Docs.Kinds.POST,
+								Methods: 	Docs.Kinds.PUT,
 								Headers: 	{ token: Docs.Headers.Token },
 								Examples: 	{
 									"/:iid:14": "Updates the {{Service image}} at the {{image ID}}, 14",
 								},
 							},
-							Query: [
-								"UPDATE 	service_images",
-								"SET 		description 	= COALESCE(NULLIF(':IDESCR:', ''), description)",
-								"WHERE 		id				= :IID;"
+							Query: 	[
+								"UPDATE service_images im",
+								"JOIN   user_provider_details p ON im.provider_detail_id = p.provider_detail_id",
+								"SET    im.description     = COALESCE(NULLIF(':IMDESCR:', ''), im.description),",
+								"       im.provider_svc_id = @SID := im.provider_svc_id",
+								"WHERE  p.user_fk = :UID:",
+								"AND    im.id     = :SCID:;",
+								":/Provider/Service/Images:",
 							],
 							Params: {
-								iId: {
-									Default: 0,
-									Format (cls) {return cls.iid;},
-									Desc: {
-										description: "The service image {{ID}}",
-										type: "Number", to: "param", required: true
-									}
-								},
-								iDescr: {
-									Default: '',
-									Format (cls) {return cls.idescr;},
-									Desc: {
-										description: "The service image {{DESCR}}",
-										type: "Text", to: "query", required: false
-									}
-								}
+								SCID: 	dflts.DocID,
+								Descr: 	dflts.DocDescr,
+								SIDS:   dflts.DocSID,
+								UID: 	scuid(true,true,'query'),
 							},
-							Links: [],
-							Key: '',
+							Links: 	[],
 						},
 						// ==================================================================
-						Urls: {
-							Scheme: '/:uid(\\d*)/',
+						URLs: {
+							Scheme: '/:scid(\\d+)/',
 							Limits: ["Tries/Second"],
-							Sub: 	['services'],
-							Routes: ['services'],
+							Sub: 	['service'],
+							Routes: ['service'],
 							Doc: 	{
-								Methods: 	Docs.Kinds.POST,
+								Methods: 	Docs.Kinds.PUT,
 								Headers: 	{ token: Docs.Headers.Token },
 								Examples: 	{
 									"/:did:14": "Updates the {{Service url}} at the {{Url ID}}, 14",
 								},
 							},
-							Query: [
-								"UPDATE 	service_urls",
-								"SET 		description 	= COALESCE(NULLIF(':UDESCR:', ''), description)",
-								"WHERE 		id				= :UID;"
+							Query: 	[
+								"UPDATE service_urls ul",
+								"JOIN   user_provider_details p ON ul.provider_detail_id = p.provider_detail_id",
+								"SET    ul.description     = COALESCE(NULLIF(':ULDESCR:', ''), ul.description),",
+								"       ul.provider_svc_id = @SID := ul.provider_svc_id",
+								"WHERE  p.user_fk = :UID:",
+								"AND    ul.id     = :SCID:;",
+								":/Provider/Service/URLs:",
 							],
 							Params: {
-								uId: {
-									Default: 0,
-									Format (cls) {return cls.uid;},
-									Desc: {
-										description: "The service url {{ID}}",
-										type: "Number", to: "param", required: true
-									}
-								},
-								uDescr: {
-									Default: '',
-									Format (cls) {return cls.udescr;},
-									Desc: {
-										description: "The service url {{DESCR}}",
-										type: "Text", to: "query", required: false
-									}
-								}
+								SCID: 	dflts.DocID,
+								Descr: 	dflts.DocDescr,
+								SIDS:   dflts.DocSID,
+								UID: 	scuid(true,true,'query'),
 							},
-							Links: [],
-							Key: '',
+							Links: 	[],
 						},
 						// ==================================================================
-						Services: {
+						Service: {
 							Scheme: '/:sid(\\d*)/',
 							Limits: ["Tries/Second"],
 							Sub: 	null,
 							Doc: 	{
-								Methods: 	Docs.Kinds.POST,
+								Methods: 	Docs.Kinds.PUT,
 								Headers: 	{ token: Docs.Headers.Token },
 								Examples: 	{
 									"/:sid:14": "Updates the {{Service}} at the {{Service ID}}, 14",
 								},
 							},
 							Query: [
-							"UPDATE 	user_provider_services",
-							"SET 	provider_svc_name 	= COALESCE(NULLIF(':PNAME:', ''), provider_svc_name),",
-							"		provider_svc_descr 	= COALESCE(NULLIF(':PDESC:', ''), provider_svc_descr),",
-							"		provider_svc_charge = COALESCE(NULLIF(':PCHARGE:', ''), provider_svc_charge),",
-							"		provider_svc_rate 	= COALESCE(NULLIF(':PRATE:', ''), provider_svc_rate)",
-							"WHERE 	provider_svc_id 	= :sid;"
+								"UPDATE  user_provider_services s",
+								"JOIN    user_provider_details  p ON s.user_provider_fk = p.provider_detail_id",
+								"SET     s.provider_svc_name    = COALESCE(NULLIF(':PNAME:',  ''), s.provider_svc_name),",
+								"        s.provider_svc_descr   = COALESCE(NULLIF(':PDESC:',  ''), s.provider_svc_descr),",
+								"        s.provider_svc_charge  = COALESCE(NULLIF(':PCHARGE:',''), s.provider_svc_charge),",
+								"        s.provider_svc_rate    = COALESCE(NULLIF(':PRATE:',  ''), s.provider_svc_rate)",
+								"WHERE   p.user_fk              = :UID:",
+								"AND     s.provider_svc_id      = :SID:;",
+								":/Provider/Service:",
 							],
 							Params: {
-								sId: {
-									Default: 0,
-									Format(cls) { return cls.sid; },
-									Desc: {
-										description: "The service {{ID}}",
-										type: "Number", to: "param", required: true
-									}
-								},
-								pName: {
+								SID: 	 true,
+								pName: 	 {
 									Default: '',
 									Format(cls) {return cls.pname;},
 									Desc: {
@@ -3191,7 +3350,7 @@
 										type: "Text", to: "query", required: false
 									}
 								},
-								PDescr: {
+								PDescr:  {
 									Default: '',
 									Format (cls) {return cls.pdescr},
 									Desc: {
@@ -3207,26 +3366,92 @@
 										type: "Number", to: "query", required: false
 									}
 								},
-								pRate: {
+								pRate: 	 {
 									Default: '',
 									Format (cls) {return cls.prate;},
 									Desc: {
 										description: "The service {{RATE}}",
 										type: "Text", to: "query", required: false
 									}
-								}
+								},
+								UID: 	 scuid(),
 							},
 							Links: [],
 							Key: '',
 						},
 					// SETTINGS =============================================================
+						email: {
+							Scheme: '/:uid(\\d*)/',
+							Limits: ["Tries/Second"],
+							Sub: 	['settings'],
+							Routes: ['settings'],
+							Doc: 	{
+								Methods: 	Docs.Kinds.PUT,
+								Headers: 	{ token: Docs.Headers.Token },
+								Examples: 	{
+									"/:uids:14": "Updates the {{Email}} of the {{User}} at the {{User ID}}, 14",
+								},
+							},
+							Query: [
+								"UPDATE     users u",
+								"SET        u.email_address = COALESCE(",
+								"               NULLIF(':EEMAIL:',''),",
+								"               u.email_address",
+								"           )",
+								"WHERE      u.user_id  IN (:UIDS:)",
+								"AND NOT    ':EEMAIL:' IN (",
+								"    SELECT email_address FROM users",
+								");",
+								":/Exists/Email:",
+							],
+							Params: { eEmail: true, UIDs: true, Single: true },
+							Links: 	[],
+							Key: 	'user_id',
+						},
+						password: {
+							Scheme: '/:uids(\\d*)/',
+							Limits: ["Tries/Second"],
+							Sub: 	['settings'],
+							Routes: ['settings'],
+							Doc: 	{
+								Methods: 	Docs.Kinds.PUT,
+								Headers: 	{ token: Docs.Headers.Token },
+								Examples: 	{
+									"/:uids:14": "Updates the {{Password}} of the {{User}} at the {{User ID}}, 14",
+								},
+							},
+							Query: [
+								"SET character_set_client  = latin1;",
+								"SET character_set_results = latin1;",
+								"SET collation_connection  = @@collation_database;",
+								"SET @PASS := MD5(NULLIF( ':CURRENT:',''));",
+								"SET @PNEW := MD5(NULLIF(':PASSWORD:',''));",
+								"SET @CONF := MD5(NULLIF(':CONFPASS:',''));",
+								"UPDATE  users u",
+								"SET     u.user_pass  = @PNEW",
+								"WHERE   u.user_id   IN (:UIDS:)",
+								"AND     u.user_pass  = @PASS",
+								"AND     @PNEW        = @CONF",
+								"AND     @PNEW IS NOT NULL",
+								"AND     @CONF IS NOT NULL;",
+							],
+							Params: { 
+								Current:  pword(true, 'current'), 
+								Password: pword(true, 'password'), 
+								ConfPass: pword(true, 'confpass'), 
+								UIDs: true, 
+								Single: true 
+							},
+							Links: 	[],
+							Key: 	'user_id',
+						},
 						Visibility: {
 							Scheme: '/:uids(\\d*)/',
 							Limits: ["Tries/Second"],
 							Sub: 	['settings'],
 							Routes: ['settings'],
 							Doc: 	{
-								Methods: 	Docs.Kinds.POST,
+								Methods: 	Docs.Kinds.PUT,
 								Headers: 	{ token: Docs.Headers.Token },
 								Examples: 	{
 									"/:uids:14": "Updates the {{Visibility}} of the {{User}} at the {{User ID}}, 14",
@@ -3261,7 +3486,7 @@
 							Scheme: '/:uids(\\d*)/',
 							Limits: ["Tries/Second"],
 							Doc: 	{
-								Methods: 	Docs.Kinds.POST,
+								Methods: 	Docs.Kinds.PUT,
 								Headers: 	{ token: Docs.Headers.Token },
 								Examples: 	{
 									"/:uids:14": "Updates the {{Settings}} of the {{User}} at the {{User ID}}, 14",
@@ -3270,16 +3495,13 @@
 							Query: [
 								"UPDATE     user_settings s",
 								"INNER JOIN users         u ON s.user_fk = u.user_id",
-								"SET        u.email_address    = COALESCE(NULLIF(':EEMAIL:',  ''), u.email_address),",
-								"           s.timezone         = COALESCE(NULLIF(':ETZONE:',  ''), s.timezone),",
+								"SET        s.timezone         = COALESCE(NULLIF(':ETZONE:',  ''), s.timezone),",
 								"           s.language_id      = COALESCE(NULLIF( :ELANG:,    -1), s.language_id),",
 								"           s.is_provider      = COALESCE(NULLIF( :EPROVIDER:,-1), s.is_provider),",
 								"           s.is_transactional = COALESCE(NULLIF( :ETRANSACT:,-1), s.is_transactional)",
 								"WHERE      s.user_fk IN (:UIDS:);",
-								":/User/Settings:"
 							],
 							Params: { 
-								eEmail: true,
 								eTZone: {
 									Default: '',
 									Format 	(cls) { 
@@ -3334,7 +3556,7 @@
 							Sub: 	['details'],
 							Routes: ['details'],
 							Doc: 	{
-								Methods: 	Docs.Kinds.POST,
+								Methods: 	Docs.Kinds.PUT,
 								Headers: 	{ token: Docs.Headers.Token },
 								Examples: 	{
 									"/:uids:14": "Updates the {{Misc}} of the {{User}} at the {{User ID}}, 14",
@@ -3362,7 +3584,7 @@
 							Sub: 	['details'],
 							Routes: ['details'],
 							Doc: 	{
-								Methods: 	Docs.Kinds.POST,
+								Methods: 	Docs.Kinds.PUT,
 								Headers: 	{ token: Docs.Headers.Token },
 								Examples: 	{
 									"/:uids:14": "Updates the {{Misc}} of the {{User}} at the {{User ID}}, 14",
@@ -3399,7 +3621,7 @@
 							Sub: 	['details'],
 							Routes: ['details'],
 							Doc: 	{
-								Methods: 	Docs.Kinds.POST,
+								Methods: 	Docs.Kinds.PUT,
 								Headers: 	{ token: Docs.Headers.Token },
 								Examples: 	{
 									"/:uids:14": "Updates the {{Identity}} of the {{User}} at the {{User ID}}, 14",
@@ -3424,7 +3646,7 @@
 							Sub: 	['details'],
 							Routes: ['details'],
 							Doc: 	{
-								Methods: 	Docs.Kinds.POST,
+								Methods: 	Docs.Kinds.PUT,
 								Headers: 	{ token: Docs.Headers.Token },
 								Examples: 	{
 									"/:uids:14": "Updates the {{Identity}} of the {{User}} at the {{User ID}}, 14",
@@ -3447,7 +3669,7 @@
 							Sub: 	['details'],
 							Routes: ['details'],
 							Doc: 	{
-								Methods: 	Docs.Kinds.POST,
+								Methods: 	Docs.Kinds.PUT,
 								Headers: 	{ token: Docs.Headers.Token },
 								Examples: 	{
 									"/:uids:14": "Updates the {{Identity}} of the {{User}} at the {{User ID}}, 14",
@@ -3473,7 +3695,7 @@
 							Sub: 	['details'],
 							Routes: ['details'],
 							Doc: 	{
-								Methods: 	Docs.Kinds.POST,
+								Methods: 	Docs.Kinds.PUT,
 								Headers: 	{ token: Docs.Headers.Token },
 								Examples: 	{
 									"/:uids:14": "Updates the {{Religion}} of the {{User}} at the {{User ID}}, 14",
@@ -3497,7 +3719,7 @@
 							Sub: 	['details'],
 							Routes: ['details'],
 							Doc: 	{
-								Methods: 	Docs.Kinds.POST,
+								Methods: 	Docs.Kinds.PUT,
 								Headers: 	{ token: Docs.Headers.Token },
 								Examples: 	{
 									"/:uid:14": "Returns the {{Nationalities}} of the {{User}} at the {{User ID}}, 14",
@@ -3536,7 +3758,7 @@
 							Sub: 	['details'],
 							Routes: ['details'],
 							Doc: 	{
-								Methods: 	Docs.Kinds.POST,
+								Methods: 	Docs.Kinds.PUT,
 								Headers: 	{ token: Docs.Headers.Token },
 								Examples: 	{
 									"/:uid:14": "Returns the {{Languages}} of the {{User}} at the {{User ID}}, 14",
@@ -3579,7 +3801,7 @@
 							Sub: 	['details'],
 							Routes: ['details'],
 							Doc: 	{
-								Methods: 	Docs.Kinds.POST,
+								Methods: 	Docs.Kinds.PUT,
 								Headers: 	{ token: Docs.Headers.Token },
 								Examples: 	{
 									"/:uid:14": "Returns the {{Hobbies}} of the {{User}} at the {{User ID}}, 14",
@@ -3620,7 +3842,7 @@
 							Scheme: '/:uids(\\d*)/',
 							Limits: ["Tries/Second"],
 							Doc: 	{
-								Methods: 	Docs.Kinds.POST,
+								Methods: 	Docs.Kinds.PUT,
 								Headers: 	{ token: Docs.Headers.Token },
 								Examples: 	{
 									"/:uid:14": "Returns the {{Details}} of the {{User}} at the {{User ID}}, 14",
@@ -3675,7 +3897,7 @@
 							Links: 	[],
 							Key: 	'user_id',
 						},
-						// ======================================================================
+						// ==================================================================
 						Picture: {
 							Scheme: '/:uids(\\d*)/',
 							Limits: ["Tries/Second"],
@@ -3700,7 +3922,7 @@
 							Links: 	[],
 							Key: 	'user_id',
 						},
-						// ======================================================================
+						// ==================================================================
 						Photos: {
 							Scheme: '/:uids(\\d*)/',
 							Limits: ["Tries/Second"],
@@ -3723,7 +3945,7 @@
 						Limits: ["Tries/Second"],
 						Sub: 	null,
 						Doc: 	{
-							Methods: 	Docs.Kinds.POST,
+							Methods: 	Docs.Kinds.PUT,
 							Headers: 	{ token: Docs.Headers.Token },
 							Examples: 	{
 								"/:uids:14": "Updates the {{User Info}} of the {{User}} at the {{User ID}}, 14",
@@ -3775,12 +3997,15 @@
 							eBirthDate: {
 								Default: 'NULL',
 								Format 	(cls) { 
-									let fyr = (new Date()).getFullYear(), mn = fyr-13, mx = fyr+120;
-										rgx = RegExp('^(0\d|1[0-2])-([0-2]\d|3[0-1])-(\d{4})$'),
-										dts = ((cls.elastname||'').match(rgx)||['']), yr;
-									if (!!dts && dts.length == 4) {
-										if (yr=Number(dts[3]), yr>=mn && yr<=mx) dts.shift();
-										else dts = []; }; return dts.join('-'); 
+									let fyr = new Date().getFullYear(), mn  = fyr-13, mx = fyr+120;
+										rgx = RegExp('^(0\d|1[0-2])\/([0-2]\d|3[0-1])\/(\d{4})$'),
+										hbd = (cls.ebirthdate||'').replace(/\//g,'/'),
+										dts = (hbd.match(rgx)||['']), 
+										dte = (!!dts?new Date(dte):new Date()), 
+										yrs = dte.getFullYear();
+									if (!!dts && dts.length==4) {
+										(yrs>=mn&&yrs<=mx)&&dts.shift()||(dts=[]); 
+									}; return dts.join('-'); 
 								},
 								Desc: 	{
 									type: "Text", to: 'query', required: false,
@@ -4055,6 +4280,9 @@
 						Limits: ['New/Day'],
 						Doc: 	{ Methods: Docs.Kinds.POST, Examples: {} },
 						Query: [
+							"SET character_set_client  = latin1;",
+							"SET character_set_results = latin1;",
+							"SET collation_connection  = @@collation_database;",
 							"INSERT INTO users (",
 							"    email_address, user_pass",
 							") SELECT i.email, MD5(i.pass) FROM (",
@@ -4094,11 +4322,12 @@
 						},
 						Query: [
 							"SELECT (CASE WHEN EXISTS(",
-							"	SELECT email_address FROM users",
-							"	WHERE email_address = ':EMAIL:'",
+							"    SELECT email_address FROM users",
+							"    WHERE  email_address = ':EEMAIL:'",
+							"    OR     email_address = ':EMAIL:'",
 							") THEN 'true' ELSE 'false' END) AS `exists`;"
 						],
-						Params: { ID: true, Email: true },
+						Params: { ID: true, Email: true, eEmail: true },
 						Parse  	(res) { return res[0].exists; }
 					},
 					// ======================================================================
@@ -4114,8 +4343,8 @@
 						},
 						Query: [
 							"SELECT (CASE WHEN EXISTS(",
-							"	 SELECT display_name FROM users",
-							"	 WHERE display_name = ':USERNAME:'",
+							"    SELECT display_name FROM users",
+							"    WHERE  display_name = ':USERNAME:'",
 							") THEN 'true' ELSE 'false' END) AS `exists`;"
 						],
 						Params: { ID: true, Username: true },
@@ -4139,6 +4368,52 @@
 						],
 						Params: { ID: true, Username: true, Email: true },
 						Parse  	(res) { return (!!res.filter(v=>JSON.parse(v.exists)).length).toString(); }
+					}
+				},
+				Errors: 	{ BAD_REQ: ['/'] }
+			},
+			Static: 		{
+				Actions: 	{
+					// ======================================================================
+					"/": {
+						Scheme: '/:name(\\b[\\w-]+\\b)/',
+						Limits: ["Constant/Second"],
+						Doc: 	{
+							Methods: 	Docs.Kinds.GET,
+							Headers: 	{},
+							Examples: 	{
+								"/:name:about": "Gets the {{Content}} for the, 'About Us', {{Page Name}}",
+							},
+						},
+						Query: [
+							"SELECT     s.static_id AS id, s.static_page AS page,",
+							"                    NULLIF(s.static_sidebar, '')       AS sidebar,",
+							"           COALESCE(NULLIF(s.static_copy,    ''),'[]') AS copy,",
+							"           COALESCE(NULLIF(s.static_other,   ''),'[]') AS other",
+							"FROM       statics s",
+							"WHERE      s.static_page = ':NAME:'",
+						],
+						Params: { 
+							Name: {
+								Default: '',
+								Format 	(cls) { return cls.name; },
+								Desc: 	{
+									description: "The content's {{Page Name}}", 
+									type: "Text", to: 'param', required: true, matches: {
+										'Page Name': 'Matches the name of the {{Page Name}} ((\\b[\\w-]+\\b))',
+									}
+								}
+							}, ID: true
+						},
+						Parse  	(res) { 
+							let ctn = res[0]||{}, ret = { 
+								id: 		ctn.id||-1, 
+								page: 		ctn.page||'none', 
+								sidebar: 	ctn.sidebar||null,
+								copy: 		ctn.copy||[],
+								other: 		ctn.other||[],
+							};	return ret;
+						}
 					}
 				},
 				Errors: 	{ BAD_REQ: ['/'] }

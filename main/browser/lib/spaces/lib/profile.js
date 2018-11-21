@@ -43,26 +43,16 @@ module.exports = {
 			};
 		},
 	],
-	Call: function(path, params, query, body, files) {
+	Call: function(path, params, query, body, files, user) {
+		var acc = path.replace(/^\//,''),
+			dsp = user.Scopes.display_name;
 		return {
-			Request: {
-				method:	'GET',
-				path: 	'/user',
-				params: { account: path.replace(/^\//,'') },
-				query:	Assign({},{single:true,links:true},query||{}),
-				body:	body||{},
-				files:	files||[]
-			}, 
-			Recursions: [
-				['links','photos'		],
-				['links','misc'			],
-				['links','services'		],
-				['links','hobbies'		],
-				['links','languages'	],
-				['links','nationalities'],
-				['links','religion'		],
-				['links','identity'		],
-			],
+			method:	'GET',
+			path: 	'/user',
+			params: { account: (acc!='profile'?acc:dsp) },
+			query:	Assign({},{single:true,links:true},query||{}),
+			body:	body||{},
+			files:	files||[]
 		};
 	},
 	Build: function (Actions, Stores) {
@@ -106,6 +96,7 @@ module.exports = {
 					title: 	{
 						cover: 	photos.cover,
 						user:	{
+							mode:	'show',
 							photo: 	photos.profile,
 							uname: 	res.display_name,
 							name: 	res.name,
@@ -124,7 +115,6 @@ module.exports = {
 				},
 				content: 	{
 					built: 		true,
-					nav: 		{},
 					segments: 	{
 						copy: [
 							{	 // ABOUT ME
@@ -158,7 +148,7 @@ module.exports = {
 										} : null,
 									].filter(fnull),		
 								}
-							}, { // MY SERVICES
+							}, !!services.length ? { // MY SERVICES
 								tag:	{ 
 									from: 'Evectr', name: ['Content','Panel'] 
 								},
@@ -167,11 +157,10 @@ module.exports = {
 									accordian: 	true,
 									header: 	{ label: 'My Services', icon: 'handshake' },
 									body:		services.map(function(s) { return {
-										tag: { from: 'Evectr', name: ['Content','Slab'] },
-										props: s,
+										tag: { from: 'Evectr', name: ['Service'] }, props: s,
 									};	}	)
 								}
-							}, { // OTHER INFO
+							} : null, { // OTHER INFO
 								tag:	{ 
 									from: 'Evectr', name: ['Content','Panel'] 
 								},

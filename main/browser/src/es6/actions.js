@@ -21,6 +21,8 @@ module.exports = function (Reflux) {
 			"auth",
 			"send",
 			"receive",
+			"clear",
+			"place",
 		]),
 	};
 

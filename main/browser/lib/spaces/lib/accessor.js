@@ -7,16 +7,13 @@ module.exports = {
 	],
 	Build: function (Actions, Stores) {
 		return function (res, title) {
-			res = res || {
-				Profile: 	{},
-				Scopes: 	{},
-			}
-			// -----
+			var fnull = function(v) { return !!v; };
 			return Stores.App.singleton.updateStore({
-				header:		{
+				header:		Assign({
 					checked: 	true,
-					identified: true,
+					identified: !!res,
 					title: 		title||'',
+				}, !!res ? {
 					user: 		res,
 					messages:	{
 						kind:	'MSG',
@@ -76,21 +73,32 @@ module.exports = {
 						igroup: 'navAdmin',
 						items: [
 							{
-								label: 	'Profile',
+								label: 	' Profile',
 								href:	'/'+res.Scopes.display_name,
 								icon:	'user',
 							}, {
-								label: 	'Settings',
+								label: 	' Update',
+								href:	'/update',
+								icon:	'edit',
+							}, !!res.Scopes.modes.provider ? {
+								label: 	' Services',
+								href:	'/services',
+								icon:	'handshake',
+							} : null, {
+								label: 	' Settings',
 								href:	'/settings',
 								icon:	'cog',
 							}, {
-								label: 	'Logout',
-								href:	'/logout',
+								label: 	' Logout',
 								icon:	'sign-out-alt',
+								kind:	'submit',
+								wrap: 	{ tag: { 
+									from: 'Evectr', name: ['App','Logout'] 
+								}	}
 							}, 
-						],
+						].filter(fnull),
 					},
-				},
+				} : {}),
 			}, true);
 		}
 	}

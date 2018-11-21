@@ -22,7 +22,10 @@ module.exports = {
 	},
 	Session: 	{
 		Secret: "jy24xsFDWU5jYnZ2MNFmtCvJOhcDoxlL",
-		Age: 	(((1000*60*60)*24)*30),
+		Age: 	{
+			Out: (1000*300),
+			In:  (((1000*60*60)*24)*30),
+		},
 		REDIS: 	{
 			Config: {
 				Host: 		'localhost',
@@ -58,9 +61,20 @@ module.exports = {
 					"           'City',    l.city,",
 					"           'Region',  l.region,",
 					"           'Country', l.country",
-					"       ) AS Location",
+					"       ) AS Location,",
+					"       JSON_OBJECT(",
+					"           'admin',         s.is_admin,",
+					"           'transactional', s.is_transactional,",
+					"           'provider',      s.is_provider",
+					"       ) AS modes,",
+					"       JSON_OBJECT(",
+					"           'verified',  u.verified, ",
+					"           'status',    u.status, ",
+					"           'tour_done', u.tour_done",
+					"       ) AS checks",
 					"FROM       users                 u",
 					"INNER JOIN user_profile_details  d ON u.user_id = d.user_fk",
+					"INNER JOIN user_settings         s ON u.user_id = s.user_fk",
 					"LEFT  JOIN search_locale         l ON d.location = l.id",
 					"LEFT  JOIN regions               r ON r.id = l.region_id",
 					"LEFT  JOIN countries             f ON f.id = r.country_id",
@@ -77,6 +91,8 @@ module.exports = {
 					'display_name',
 					'email_address',
 					'user_pass',
+					'checks',
+					'modes',
 				]
 			}
 		},

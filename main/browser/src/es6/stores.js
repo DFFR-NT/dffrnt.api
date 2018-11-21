@@ -53,7 +53,11 @@ module.exports = function (Reflux, Actions, Spaces, IOs) {
 		
 		const 	RError 	 = '/error';
 		const 	RLogin 	 = '/auth/login';
+		const 	RCheck 	 = '/auth/check';
 		const 	RLogout  = '/auth/logout';
+		const 	RReload  = '/auth/reload';
+		const 	RRenew   = '/auth/renew';
+		const 	RSave    = '/auth/save';
 		const 	RRegen 	 = '/auth/regenerate';
 		const 	Build 	 = {};
 
@@ -135,14 +139,15 @@ module.exports = function (Reflux, Actions, Spaces, IOs) {
 										City: 	'--{{LOCATION.CITY}}--', 
 										Region: '--{{LOCATION.REGION}}--', 
 										Country:'--{{LOCATION.COUNTRY}}--' 
-									},
-									Scopes:  {}
+									}
 								},
+								Scopes:  {},
 								Token: 	 null
 							},
 							messages:	{},
 							alerts:		{},
 							admin:		{},
+							searches: 	[],
 						},
 						content: 	{ built: false, nav: {}, buttons: {}, forms: {} },
 						footer: 	{
@@ -182,33 +187,33 @@ module.exports = function (Reflux, Actions, Spaces, IOs) {
 										};
 					}; 	this.updateStore(Assign(config, extra));
 				}
-				onIdentify	 	(res) {
-					var THS = this, pay = res.payload, usr = {};
-					switch (pay.options.query.path) {
-						case RLogin: 	IOs.Access.emit('reload');
-										usr = (pay.result.user||{});
-										this.updateStore({
+				onIdentify	 	(ret) {
+					var THS = this, 
+						loc = window.location,
+						pay = ret.payload, 
+						opt = pay.options, usr = {},
+						qry = opt.query||opt.body,
+						res = pay.result,
+						nxt = res.next,
+						rdr = null, dsp;
+					IOs.Access.emit(nxt[0], nxt[1]);
+					switch (qry.path) {
+						case RLogin: 	usr = (pay.result.user||{});
+										dsp = usr.Scopes.display_name;
+										rdr = `/${dsp.toLowerCase()}`;
+						case RCheck:	THS.updateStore({
 											status: 1, paused: false, 
 											header: {
 												identified: true, 
 												checked: true,
 												user: usr
 										} 	}); 
+										(!!rdr)&&(loc.href = rdr);
 										break;;
-						case RLogout: 	IOs.Access.emit('reload');
-										this.onDisconnect(pay);
-										break;;
-						case RRegen: 	IOs.Access.emit('regenerate');
-										this.onDisconnect();
+						case RLogout: 	THS.onDisconnect(pay);
+										loc.href = '/login';
 										break;;
 					};
-					requestAnimationFrame(function () {
-						var accss =  Spaces['api-accessor'],
-							space = (Spaces[NMESPC.name]||Spaces['dft-page']);
-						// accss.Build(Actions, Stores)(usr, TITLE);
-						// space.Build(Actions, Stores)(Build);
-						Stores.Content.render();
-					});
 				}
 				onDisconnect 	(pay) {
 					var code 	= (pay.result||{}).code,
@@ -283,6 +288,13 @@ module.exports = function (Reflux, Actions, Spaces, IOs) {
 				onBuild 		(res) { 
 					console.log('Build', res);
 					Stores.App.singleton.updateStore(res)
+					requestAnimationFrame(function () {
+						// var accss =  Spaces['accessor'],
+						// 	space = (Spaces[NMESPC.name]||Spaces['default']);
+						// accss.Build(Actions, Stores)(usr, TITLE);
+						// space.Build(Actions, Stores)(Build);
+						Stores.Content.render();
+					});
 					runAccess(); 
 				}
 
@@ -291,24 +303,25 @@ module.exports = function (Reflux, Actions, Spaces, IOs) {
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// STORE.DATA    ////////////////////////////////////////////////////////////////////////////////////////
 			Stores.Data 	= class extends Reflux.Store {
-
 				constructor		() {
 					super();
 					this.prefix   	 = ["payload","result"];
-					this.sendTime 	 = null;
-					this.stats 	  	 = {
+					this.statDef 	 = FromJS({
 						Request: {
 							Emmitted: 	{},
 							Received: 	{},
 							State: 		{},
 						},
 						Time: {
+							Start: 		 null,
 							Calling: 	'0s',
 							Iterating: 	'0s',
 							Rendering: 	'0s',
 							Total:  	'0s',
+							End: 		 null,
 						},
-					};
+					});
+					this.stats		 = {};
 					this.defaults 	 = { store: { status: 200, payload: {} } };
 					this.temps 		 = Imm.fromJS({});
 					this.state 		 = {};
@@ -317,192 +330,125 @@ module.exports = function (Reflux, Actions, Spaces, IOs) {
 				}
 				
 				onAuth  		(point, data, noProg) {
-					console.log('HELLO')
-					this.sendTime = NOW();
-					this.stats.Request.Emmitted = data;
+					this.time(data);
 					!!!noProg && Actions.App.progress(99, { paused:true });
 					requestAnimationFrame((function () {
 						IOs.Access.emit(point, data);
 					}).bind(this));
 				}
 				onSend  		(point, data, noProg) {
-					this.sendTime = NOW();
-					this.stats.Request.Emmitted = data;
+					this.time(data);
 					requestAnimationFrame((function () {
 						!!!noProg && Actions.App.progress(99);
 						IOs.Socket.emit(point, data);
 					}).bind(this));
 				}
 				onReceive 		(data) {
-					var qry = data.payload.options.query, pth = qry.path,
-						tme = ((NOW() - this.sendTime) / 1000);
+					var opt = data.payload.options, 
+						qry = opt.query||opt.body,
+						pth = qry.path, id = qry.id, 
+						str, tme;
 					switch (pth) {
 						case RError: 	console.log("Error:", data);
 										alert(data.payload.result.message);
 										Actions.App.progress(100);
 										break;;
-						case RLogin: 	case RLogout:  case RRegen:
+						case RLogin: 	case RCheck: case RLogout: case RRegen:
 										console.log("Identify:", data);
 										Actions.App.identify(data);
 										break;;
-						default: 		this.stats.Time.Calling = (tme.toFixed(3)+'s');
-										this.stats.Request.Received = data.payload;
+						default: 		str = this.stats[id].Time.Start;
+										tme = ((NOW() - str) / 1000);
+										this.stats[id].Time.Calling = (tme.toFixed(3)+'s');
+										this.stats[id].Request.Received = data.payload;
 										setTimeout((function () {
 											this.updateStoreIn(qry, data, tme);
 										}).bind(this), 0);
 					}
 				}
-				
-				getPath  		(path) {
-					var ids = path[0], pth = path.slice(1),
-						itm = this.state, sze = Object.keys(itm).length,
-						res = (sze > 0 ? [ids].concat(
-							pth.filter(function (v,i,a) {
-								return itm[ids].hasIn(a.slice(0,i+1));
-							})) : path); return res;
-				}
-				setPath  	 	(id) {
-					var itms = this.state, itm, jid, 
-						def  = this.defaults.store;
-					if (!!!itms[id]) {
-						jid  = 'jsonp-'+Object.keys(itms).length;
-						itm = ITEMS.getItems(def, null, id);
-						itm.payload = new ITEM(
-							'payload', {}, itm, null, jid
-						);
-						this.setState({ [id]: itm });
-						this.jids[id] = itm.payload.id;
-					}; return this.jids[id];
-				}
-				getID 			(path) {
-					// --------------------------------
-					return this.jids[id];
-				}
-				getAt   		(obj, at) {
-					// -------------------------------------------------
-					return Imm.fromJS(obj, FJS).getIn(at)||Imm.Map({});
-				}
 
 				is  			(old, nxt) {
 					// ----------------------------------------------------
-					return Imm.is(Imm.fromJS(old), Imm.fromJS(nxt))===true;
+					return Imm.is(FromJS(old), FromJS(nxt))===true;
 				}
-				has  			(id, data, pfx) {
-					try { return this.state[id].getIn(pfx||[]).Child.iterHas(data); }
-					catch (e) {  console.log(e); return false; }
+				has  			(id) {
+					try { return !!(this.state[id]||{}).stamp; }
+					catch (e) { console.log(e); return false; }
 				}
-				larger  		(old, nxt) { try {
-					// -------------------------------------------------
-					if (typeof(old)==typeof(nxt)) return true;
-					// -------------------------------------------------
-					var mxr = 	function (v,k) { try { 
-									return v.size||0; } catch (e) { return 0; 
-								}; },
-						oln = 	mxr(old.maxBy(mxr)), nln = mxr(nxt.maxBy(mxr)),
-						res = 	oln <= nln; return res;
-					} catch (e) { return true; }
+
+				poll 			(id) {
+					if (this.has(id)) this.setState({ 
+						[id]: this.state[id] 
+					});
+				}
+				place			(id, data = {}) {
+					let THS = this, state = THS.state[id]||{};
+					this.setState({ [id]: Assign(
+						state, data, { stamp: new Date() }
+					) 	});
+				}
+				clear 			(id) {
+					this.setState({ [id]: { 
+						stamp: new Date(), items: [] 
+					} 	});
+				}
+				time			(data) {
+					let {query,body} = data, id = (query||body).id;
+					this.stats[id] = this.statDef.toJS();
+					this.stats[id].Time.Start = NOW();
+					this.stats[id].Request.Emmitted = data;
 				}
 
 				setIn  			(qry, data) {
-					var ths = this,
-						pfx = ths.prefix,
-						emp = Imm.Map({}),
-						isc = ['object','array'],
-						id  = qry.id,
-						to  = qry.to,
-						at  = qry.at,
-						pth = [id].concat(to),
-						itm = ths.state[id],
-						raw = ths.getAt(data,at).toJS(),
-						wth = function (o,n) { return (
-							!!Imm.fromJS(n).size&&!!!Imm.fromJS(o).size?n:o
-						); 	}, 
-						str, dtr, dta, mrg, dff, dfm, 
-						add, rem, state, sis, dis, lrg;
+					let THS = this, { id, to, at } = qry,
+						dta = FromJS(data).getIn(to||THS.prefix), 
+						def = { 'object': Map({}), 'array': List([]) }, 
+						ste = FromJS(THS.state), typ = IS(dta.toJS()), 
+						nvl = def[typ], res = {};
 					// -------------------------------------------------
 					try { 
-						dtr = data.payload.result,
-						str = (itm.store.getIn(pfx)||emp);
-						dta = Imm.fromJS(dtr,FJS);
-						sis = IS(str); dis = IS(dta);
 						// ---------------------------------------------
-						if (isc.has(sis)&&isc.has(dis)) {
-							// -----------------------------------------
-							lrg = ths.larger(str, dta);
-							dff = Dff(str, dta);
-							rem = dff.filter(function (v,i) { return v.get('op')=='remove'&&v.get('path').split('/').length == 2; })
-									 .map(function (v,i) { return v.get('path').split('/')[1]; }).toArray();
-							dff.filter(function (v,i) {
-									return 	v.get('op')=='remove';
-								}).map(function (v,k) {
-									var p = v.get('path').split('/').slice(1);
-									str = str.deleteIn(p);
-								});
-							mrg = (lrg?dta.mergeDeepWith(wth,str):str.mergeDeepWith(wth,dta));
-							dfm = Dff(str, mrg);
-							add = dfm.filter(function (v,i) { return v.get('op')=='add';    }).size;
-							// console.log('MERG ('+mrg.size+'):',{
-								// STRE: str.toJS(),
-								// DATA: dta.toJS(),
-								// MERG: mrg.toJS(),
-								// DIFM: dfm.toJS(),
-								// DIFF: dff.toJS(),
-								// HAS:  this.has(id,dta,pfx),
-								// ADD:  add,
-								// REM:  rem,
-								// QRY:  qry,
+							// console.log({ 
+								// DATA: 	dta.toJS(),
+								// STRE: 	ste.getIn([id],nvl).toJS(),
+								// MRGE: 	ste.getIn([id],nvl)
+								// 			.mergeDeep(dta)
+								// 			.toJS(),
 							// });
-							// -----------------------------------------
-							if (dfm.size == 1 || str.size == 0) {
-								console.log('\t\t\tSET-ITM', raw)
-								state = itm.setIn(to,raw)
-							} else {
-								console.log(at, data, pfx, mrg.toJS())
-								var obj = Imm.fromJS(data,FJS).setIn(pfx,mrg).getIn(at).toJS()
-								console.log('\t\t\tSET-PAY', obj)
-								state = itm.setIn(to,obj);
-							};
-							// -----------------------------------------
-						} else { 
-							console.log(data.payload)
-							data.payload.result = data.payload.result.toString();
-							state = itm.setIn(to,data.payload); 
-						}
+							// res = 	ste.setIn([id], 
+										// ste	.getIn([id],nvl)
+											// .mergeDeep(dta)
+									// ).toJS();
+							res = ste.setIn([id], Map({
+								stamp: new Date(), 
+								items: dta
+							}	)	).toJS();
 						// ---------------------------------------------
-						console.log('STATE:', { id: state.Child.id, path: pth, state: state });
-						// ---------------------------------------------
-						return { id: state.Child.id, path: pth, state: state };
+							return res;
 					} catch (e) { console.log(e); return null; }
 				}
 				updateStoreIn  	(qry, data, dur) {
-					var THS = this, STR = this.state, res = {}, 
-						ret = {}, iT, rT, fT, sT = NOW();
+					var THS = this, res = {}, iT, rT, fT, sT = NOW();
 					// -------------------------------------------------
 						res = this.setIn(qry, data);
-						if (!!!res) { Actions.App.progress(100); return; }
-						ret = res.state.Child.toObject();
+							// if (!!!res) { Actions.App.progress(100); return; }
 						iT  = NOW(-sT, 1000);
 					// -------------------------------------------------
-
-							console.log('RECIEVED:', ret)
-
-						sT = NOW(); 
-						
-							THS.setState(this.state);
-
-						rT = NOW(-sT, 1000); fT = (dur+iT+rT);
+						sT  = NOW(); THS.setState(res);
+						rT  = NOW(-sT, 1000); fT = (dur+iT+rT);
 					// --------------------------------------------------
-						THS.setStats(res.path, iT, rT, fT, ret);
+						THS.setStats(qry.id, qry.path, iT, rT, fT, res);
 					// -------------------------------------------------
 				}
-				setStats 		(path, iterTime, rendTime, fullTime, state) {
-					var stats = this.stats, lg = this.logStore;
+				setStats 		(id, path, iterTime, rendTime, fullTime, state) {
+					var stats = this.stats[id], lg = this.logStore;
 					setTimeout(function () {
 						stats.Time.Iterating 	= iterTime.toFixed(3)+'s';
 						stats.Time.Rendering 	= rendTime.toFixed(3)+'s';
 						stats.Time.Total 		= fullTime.toFixed(3)+'s';
-						stats.Request.State 	= state;
-						lg(path.join('/'), Object(stats));
+						stats.Time.End 			= NOW();
+						stats.Request.State 	= FromJS(state).toJS();
+						lg(path, stats);
 					}, 	0);
 				}
 				

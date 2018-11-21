@@ -5,189 +5,77 @@ module.exports = {
 	Data:  [
 		function (path, req) { return {}; },
 	],
+	Call: function(path, params, query, body, files, user) {
+		return {
+			method:	'POST',
+			path: 	'/search',
+			params: params||{},
+			body:	Assign({links:true},body||{}),
+			files:	files||[]
+		};
+	},
 	Build: function (Actions, Stores) {
 		return function (res) {
+			var USR = Map(res).filter(function(v,k){return k!='terms';}),
+				FLT = function (v) { return !!v && !['LC','SX'].has(v.tag); },
+				SRT = function (v) { return v.score; },
+				STB = { from: 'Evectr', name: ['Plaque','Stub'] },
+				BDG = {
+					provider: { kind: 'norm', icon: 'handshake'  },
+					verified: { kind: 'good', icon: 'shield-alt' },
+				};
+
+				// console.log('RESULTS:', USR.toList())
+
 			// -----
 			return Stores.App.singleton.updateStore({
+				header: 	{
+					searches: 	res.terms.map(function(m) {
+						return {
+							'value': [m.tag,m.value].join('@'),
+							'kind': m.kind, 'label': m.label,
+						};
+					})
+				},
 				content: 	{
 					built: 		true,
-					nav: 		{},
 					segments: 	{
 						copy: 	[
 							{	 // SEARCH RESULTS
 								tag:	{ from: 'Evectr', name: ['Content','Panel'] },
 								props:	{ 
 									name:	'results',
-									header: { label: '4 People Found',  icon: 'search' },
-									body: 	[
-										{
-											tag:	{ 
-												from: 'Evectr', name: ['Plaque','Stub'] 
-											},
-											props:	{
-												Account: 'dsun',
-												Photo: 	  'public/images/profile.jpg',
-												Name: 	  { First: 'Darren', Last: 'Sun' },
-												Badges:	  [
-													{ kind: 'norm', icon: 'handshake' 	},
-													{ kind: 'good', icon: 'shield-alt' 	},
-												],
-												Age: 	   32,
-												Sex: 	  'M',
-												Location: { City: 'Calgary', Region: 'Alberta', Country:'Canada' },
-												Multis: 	[
-													{ 
-														kind:	'nope',
-														label:	'Catholic',
-														value:	 5,
-													}, { 
-														kind:	'warn',
-														label:	'Single',
-														value:	'S',
-													}, { 
-														kind:	'good',
-														label:	'Digital arts',
-														value:	 10,
-													}, { 
-														kind:	'info',
-														label:	'Canadian',
-														value:	 40,
-													}, { 
-														kind:	'info',
-														label:	'Cambodian',
-														value:	 78,
-													}, 
-												],
-											},
-										}, {
-											tag:	{ 
-												from: 'Evectr', name: ['Plaque','Stub'] 
-											},
-											props:	{
-												Account: 'mdjoudi',
-												Photo: 	  'public/images/profile.jpg',
-												Name: 	  { First: 'Marc', Last: 'Djoudi' },
-												Badges:	  [
-													{ kind: 'norm', icon: 'handshake' 	},
-													{ kind: 'good', icon: 'shield-alt' 	},
-												],
-												Age: 	   32,
-												Sex: 	  'M',
-												Location: { City: 'Calgary', Region: 'Alberta', Country:'Canada' },
-												Multis: 	[
-													{ 
-														kind:	'good',
-														label:	'Computer programming',
-														value:	 5,
-													}, { 
-														kind:	'good',
-														label:	'Acting',
-														value:	 1,
-													}, { 
-														kind:	'info',
-														label:	'Canadian',
-														value:	 40,
-													}, { 
-														kind:	'info',
-														label:	'Algerian',
-														value:	 78,
-													}, 
-												],
-											},
-										}, {
-											tag:	{ 
-												from: 'Evectr', name: ['Plaque','Stub'] 
-											},
-											props:	{
-												Account: 'LeShaunJ',
-												Photo: 	  'public/images/profile.jpg',
-												Name: 	  { First: 'Arian', Last: 'Johnson' },
-												Badges:	  [
-													{ kind: 'norm', icon: 'handshake' 	},
-													{ kind: 'good', icon: 'shield-alt' 	},
-												],
-												Age: 	   32,
-												Sex: 	  'M',
-												Location: { City: 'Calgary', Region: 'Alberta', Country:'Canada' },
-												Multis: 	[
-													{ 
-														kind:	'info',
-														label:	'Canadian',
-														value:	 40,
-													}, { 
-														kind:	'info',
-														label:	'Vincentian',
-														value:	 78,
-													}, { 
-														kind:	'nope',
-														label:	'Agnostic',
-														value:	 5,
-													}, { 
-														kind:	'warn',
-														label:	'Married',
-														value:	'M',
-													},  {
-														kind:	'good',
-														label:	'Digital arts',
-														level:	 { label: 8 },
-														value:	 10,
-													}, { 
-														kind:	'good',
-														label:	'Basketball',
-														more:	'spectative',
-														value:	 20,
-													}, { 
-														kind:	'good',
-														label:	'Acting',
-														value:	 1,
-													}, { 
-														kind:	'good',
-														label:	'Computer programming',
-														value:	 5,
-													}, 
-												],
-											},
-										}, {
-											tag:	{ 
-												from: 'Evectr', name: ['Plaque','Stub'] 
-											},
-											props:	{
-												Account: 'theBigBen',
-												Photo: 	  'public/images/profile.jpg',
-												Name: 	  { First: 'Ben', Last: 'Ashton' },
-												Badges:	  [
-													{ kind: 'norm', icon: 'handshake' 	},
-													{ kind: 'good', icon: 'shield-alt' 	},
-												],
-												Age: 	   33,
-												Sex: 	  'M',
-												Location: { City: 'Calgary', Region: 'Alberta', Country:'Canada' },
-												Multis: 	[
-													{ 
-														kind:	'good',
-														label:	'Digital arts',
-														value:	 10,
-													}, { 
-														kind:	'good',
-														label:	'Basketball',
-														value:	 20,
-													}, { 
-														kind:	'info',
-														label:	'Canadian',
-														value:	 40,
-													}, { 
-														kind:	'info',
-														label:	'Vincentian',
-														value:	 78,
-													}, { 
-														kind:	'nope',
-														label:	'Agnostic',
-														value:	 5,
-													}, 
-												],
-											},
-										}, 
-									],
+									header: { label: USR.size+' People Found',  icon: 'search' },
+									body: 	USR.toList().sortBy(SRT).reverse().map(function (user,uid,i) {
+										var fullnm = (user.name||{first:'',last:''}),
+											locale = (user.location||{label:''}).label.split(', '),
+											smodes = (user.settings||{modes:{}}).modes,
+											checks = (user.checks||{checks:{}}),
+											photos = (user.photos||{}),
+											detail = (user.details||{}),
+											identi = (detail.identity||{}),
+											brdate = user.birth_date;
+										return { tag: STB, props:	{
+											href:	   '/'+user.display_name,
+											Account:   user.display_name,
+											Photo: 	   photos.profile||'',
+											Name: 	  { First: fullnm.first, Last: fullnm.last },
+											Badges:	  [
+												!!smodes.provider ? BDG.provider : null,
+												!!checks.verified ? BDG.verified : null,
+											].filter(FLT),
+											Age: 	   (
+													brdate ? Math.abs(new Date(
+														new Date().getTime() - 
+														new Date(brdate)
+															.getTime()
+													).getUTCFullYear() - 1970): 0
+												),
+											Sex: 	   (identi.sex||''),
+											Location: { City: locale[0], Region: locale[1], Country: locale[2] },
+											Multis: 	(user.multi||[]).filter(FLT),
+										} 	}; 
+									}).toArray(),
 								},
 							},
 						],

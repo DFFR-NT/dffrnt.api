@@ -289,6 +289,8 @@ module.exports = function (global) {
 			return Object.keys(RET).filter(function (v) { return RET[v]; })[0];
 		}
 		global.NIL 		= function (val) { return [undefined,null].indexOf(val) > -1; }
+		global.UoN 		= function (val, def, log) { var is = NIL(val); return (!!def ? (is?def:val) : is); }
+		global.IaN 		= function (val) { return !NIL(val) && !isNaN(val); }
 		global.dateFrm 	= function (date) {
 			try {
 				if (!!date) {

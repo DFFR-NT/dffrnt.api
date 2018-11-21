@@ -37,6 +37,40 @@ module.exports = {
             },
         },
     },
+    error:      {
+        config:     {
+            name:        'error',
+            scheme:      '/404/',
+            title:       'Error Page',
+            description: 'Displaying Errors',
+            accessor:     false,
+            restrict:    { true: null, false: null },
+            page:        {
+                title:      (path) => '404 Error',
+                CSS:        ['style'],
+                styles:      false,
+                main:       'evectr',
+                type:       'jumbo',
+            },
+        },
+    },
+    main:       {
+        config:     {
+            name:        'main',
+            scheme:      '/\\b(home|log(in|out))\\b/',
+            title:       'Main Page',
+            description: 'Default Functionality',
+            accessor:     false,
+            restrict:    { true: 'profile', false: null },
+            page:        {
+                title:      (path) => ('Powered by People.'),
+                CSS:        ['style'],
+                styles:      false,
+                main:       'evectr',
+                type:       'jumbo',
+            },
+        },
+    },
     Static:     {
         config:     {
             name:        'static',
@@ -44,6 +78,7 @@ module.exports = {
             title:       'Static Page',
             description: 'Displaying Static Pages',
             accessor:     false,
+            restrict:    { true: null, false: null },
             page:        {
                 title:      (path) => ({
                       '/about': 'About Us',
@@ -66,6 +101,7 @@ module.exports = {
             title:       'Search Results',
             description: 'Searching User & Providers',
             accessor:     false,
+            restrict:    { true: null, false: 'login' },
             page:        {
                 title:      (path) => 'Search Results',
                 CSS:        ['style'],
@@ -75,15 +111,67 @@ module.exports = {
             },
         },
     },
+    Settings:   {
+        config:     {
+            name:        'settings',
+            scheme:      '/settings/',
+            title:       'Settings Page',
+            description: 'User Settings Access',
+            accessor:     false,
+            restrict:    { true: null, false: 'login' },
+            page:        {
+                title:      (path, usr) => `Settings | ${Object.values(((usr||{}).Profile||{}).Name||{}).join(' ')}`,
+                CSS:        ['style'],
+                styles:      false,
+                main:       'evectr',
+                type:       'cover',
+            },
+        },
+    },
+    Update:   {
+        config:     {
+            name:        'update',
+            scheme:      '/update/',
+            title:       'Update Page',
+            description: 'User Update Access',
+            accessor:     false,
+            restrict:    { true: null, false: 'login' },
+            page:        {
+                title:      (path, usr) => `Update | ${Object.values(((usr||{}).Profile||{}).Name||{}).join(' ')}`,
+                CSS:        ['style'],
+                styles:      false,
+                main:       'evectr',
+                type:       'cover',
+            },
+        },
+    },
+    Services:   {
+        config:     {
+            name:        'services',
+            scheme:      '/services/',
+            title:       'Services Page',
+            description: 'Service Provide Access',
+            accessor:     false,
+            restrict:    { true: null, false: 'login' },
+            page:        {
+                title:      (path, usr) => `Services | ${Object.values(((usr||{}).Profile||{}).Name||{}).join(' ')}`,
+                CSS:        ['style'],
+                styles:      false,
+                main:       'evectr',
+                type:       'cover',
+            },
+        },
+    },
     Profile:    {
         config:     {
             name:        'profile',
-            scheme:      '/\\b(([\\w_-]|\.(?!html?|je?pg|png|pdf))+)\\b/',
+            scheme:      '/\\b(([\\w_-]|\.(?!html?|je?pg|png|pdf))+|profile)\\b/',
             title:       'Profile Page',
             description: 'Displaying User Profiles',
             accessor:     false,
+            restrict:    { true: null, false: 'login' },
             page:        {
-                title:      (path, usr) => `Profile | ${Object.values(((usr||{}).Profile||{}).Name||[]).join(' ')}`,
+                title:      (path,usr,pay) => `Profile | ${Object.values((pay||{}).name||[]).join(' ')}`,
                 CSS:        ['style'],
                 styles:      false,
                 main:       'evectr',

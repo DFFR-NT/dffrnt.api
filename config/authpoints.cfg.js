@@ -20,7 +20,10 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 // EXPORT
-	module.exports = function () { return { // DO NOT CHANGE/REMOVE!!!
+	module.exports = function () { 
+		let OUT  = { path: '/auth/logout' },
+			IN   = { path: '/auth/login'  };
+		return { // DO NOT CHANGE/REMOVE!!!
 		// ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		Auth: 		{
 			Actions: 	{
@@ -42,84 +45,70 @@
 						Decrypt: 	 true,
 						Error: 		 'ERROR',
 						async NoData (req) {
-							let THS  = this, user,
-								sess = req.session,
-								sid  = req.sessionID, 
-								body = req.body,
-								acct = body.username;
+							let THS  = this, acct, SSD = {};
 							// ----------------------------------------------------------
-								function LogUserIn(THS, req) {
-									return new Promise((resolve, reject) => {
-										THS.Passer.authenticate('local-login', (err, user, info) => {
-											let error = err || info;
-											switch (true) {
-												case !!error: reject([MSG.ERROR, error, null]);
-												case !!!user: reject([MSG.EXISTS,   {}, acct]);
-												default: resolve(user);
-											};
-										})(req);
-									});
-								}
-							// ----------------------------------------------------------
-							try { 
-								user = await LogUserIn(THS, req);
-
-								acct = user.email_address;
-								user = await THS.Profile(acct, true);
-
-								sess.user  = { 
-									id:		user.Scopes.user_id, 
-									acct:	user.Account, 
-									token:	user.Token, 
-								};	sess.touch(); sess.save();
-								
-								LG.Server(sid, 'Loaded', acct, 'green');
-
-								delete body.username; delete body.password;
-
-								return [
-									MSG.LOADED.temp, 
-									user, null, body
-								]; 
-							// Handle Errors --------------------------------------------
-							} catch (err) { throw err; }
-						},
-						async Main   (req) {
-							let THS  = this, 
-								sess = req.session,
-								sid  = req.sessionID,
-								user = sess.user,
-								acct = user.acct,
-								body = req.body;
+							function LogUserIn(THS, req) {
+								return new Promise((resolve, reject) => {
+									THS.Passer.authenticate('local-login', (err, user, info) => {
+										let error = err || info;
+										switch (true) {
+											case !!error: reject([MSG.ERROR, error, null]);
+											case !!!user: reject([MSG.EXISTS,   {}, acct]);
+											default: resolve(user);
+										};
+									})(req);
+								});
+							}
 							// ----------------------------------------------------------
 							try {
-								if (acct == body.username) {
-									user = await THS.Profile(acct, true);
-
-									THS.Renew(req); 
-									delete user.Scopes.user_pass;
-									delete body.username;
-									delete body.password;
+								let sess = req.session,
+									sid  = req.sessionID,
+									bdy  = req.body, user,
+									acct = bdy.username;
+								// ------------------------------------------------------
+								SSD  = { sessionID: sid };
+								user = await LogUserIn(THS, req);
+								acct = user.email_address;
+								user = await THS.Profile(acct, true);
+								LG.Server(sid, 'Loaded', acct, 'green');
+								return {
+									send: [
+										MSG.LOADED.temp, 
+										user, null, Assign(IN, bdy)
+									],
+									next: ['Save', { 
+										id:		user.Scopes.user_id, 
+										acct:	user.Account, 
+										token:	user.Token, 
+									}],
+								}; 
+							// Handle Errors --------------------------------------------
+							} catch (err) { 
+								throw [MSG.LOGIN, SSD, (acct||''), Assign(OUT, bdy)]; 
+							}
+						},
+						async Main   (req) {
+							let THS  = this, SSD = {}; try {
+								let sess = req.session,
+									sid  = req.sessionID,
+									user = sess.user,
+									acct = user.acct,
+									bdy  = req.body, ret;
+								// ----------------------------------------------------------
+								SSD  = { sessionID: sid };
+								ret = [MSG.RESTORED.temp, user, null, Assign(IN, bdy)];
+								if (acct == bdy.username) {
+									ret[1] = await THS.Profile(acct, true);
 									LG.Server(sid, 'Restored', acct, 'green');
-
-									return [
-										MSG.RESTORED.temp, 
-										user, null, body
-									];
+									return { send: ret, next: ['Renew'] };
 								} else {
-									return await new Promise(resolve => {
-										req.session.regenerate(err => {
-											LG.Server(sid, 'Regenerated', acct, 'red');
-											if (!!err) resolve(THS.Login(req));
-											resolve([
-												MSG.RESTORED.temp, 
-												user, null, body
-											]);
-										});
-									});
+									return { send: ret, next: ['Regenerate'] };
 								}
 							// Handle Errors --------------------------------------------
-							} catch (err) { throw err; }
+							} catch (err) { 
+								console.log(err)
+								throw [MSG.LOGIN, SSD, (acct||''), Assign(OUT, bdy)]; 
+							}
 						}
 					}
 				},
@@ -135,32 +124,38 @@
 						Error: 		'NO_DELETE',
 						NoData: 	'INVALID',
 						async Main  (req) {
-							let THS  = this,
-								sess = req.session,
-								sid  = req.sessionID,
-								user = sess.user,
-								uid  = user.id,
-								acct = user.acct,
-								head = req.headers,
-								spc  = req.originalUrl,
-								bdy  = req.body||{},
-								prm  = req.params||{},
-								SSD  = { sessionID: sid }, ERR;
-							// ----------------------------------------------------------
-							try {
+							let THS  = this; try {
+								let sess = req.session,
+									sid  = req.sessionID,
+									user = sess.user,
+									uid  = user.id,
+									acct = user.acct,
+									head = req.headers,
+									spc  = req.originalUrl,
+									bdy  = req.body||{},
+									prm  = req.params||{},
+									SSD  = { sessionID: sid };
+								// ----------------------------------------------------------
 								switch (true) {
 									case head.token!==user.token: 
 										throw [MSG.TOKEN, SSD, (acct||''), bdy];
-									case !!spc.match(/^\/update/): 
+									case !!spc.match(/^\/(?:add|edit|dump)/): 
 										prm.uids = uid; bdy.single = 'true';
 									case !!!prm.uid && !!!bdy.uid: 
 										bdy.uid  = uid;
 									default: 
-										THS.Renew(req);
-										return true;
+										return { 
+											send: [
+												MSG.VALID.temp, 
+												{}, acct, bdy,
+											], 
+											next: ['Renew', {
+												params: prm, body: bdy,
+											}] 
+										};
 								}
 							// Handle Errors --------------------------------------------
-							} catch (err) { throw err; }
+							} catch (err) { console.log(err); throw err; }
 						}
 					}
 				},
@@ -173,38 +168,32 @@
 						Error: 		'ERROR',
 						NoData: 	'INVALID',
 						async Main  (req) {
-							let THS  = this,
-								sess = req.session,
-								sid  = req.sessionID,
-								user = sess.user,
-								acct = user.acct,
-								head = req.headers,
-								bdy  = req.body,
-								OUT  = { path: '/auth/logout' },
-								IN   = { path: '/auth/login'  },
-								SSD  = { sessionID: sid },
-								ERR, CDE, MES, ITM;
-							// ----------------------------------------------------------
-							try {
+							let THS  = this; try {
+								let sess = req.session,
+									sid  = req.sessionID,
+									user = sess.user,
+									acct = user.acct,
+									head = req.headers,
+									bdy  = req.body,
+									SSD  = { sessionID: sid };
+								// ----------------------------------------------------------
 								switch (true) {
 									case !!!sess.user.token:
 										throw [MSG.EXISTS, SSD, (acct||''), OUT];
 									default:
 										THS.sid = req.sessionID;
 										user = await THS.Profile(acct, true);
-
-										THS.Renew(req); 
-										head.token = user.Token;
-										delete user.Scopes.user_pass;
-
-										return [
-											MSG.PROFILE.temp, 
-											user, acct, 
-											Assign(IN, bdy),
-										];
+										return {
+											send: [
+												MSG.PROFILE.temp, 
+												user, acct, 
+												Assign(IN, bdy),
+											],
+											next: ['Renew'],
+										};
 								};	
 							// Handle Errors --------------------------------------------
-							} catch (err) { throw err; }
+							} catch (err) { console.log(err); throw err; }
 						}
 					}
 				},
@@ -222,22 +211,18 @@
 						Error: 		 'ERROR',
 						NoData: 	 'LOGIN',
 						async Main   (req) {
-							let THS  = this, 
-								sess = req.session,
-								sid  = req.sessionID, 
-								bdy  = req.body,
-								acct = sess.user.acct;
-
-							try {
-								// Remove Session Data
-								delete req.session.user; req.session.save();
+							let THS  = this; try {
+								let sess = req.session,
+									sid  = req.sessionID, 
+									bdy  = req.body,
+									acct = sess.user.acct;
 								// Notify client
 								LG.Server(sid, 'Ending', acct, 'green');
-								return [
-									MSG.ENDED.temp, 
-									{ Account: acct }, 
-									null, bdy
-								];
+								// Return
+								return {
+									send: [MSG.ENDED.temp,{Account:acct},null,bdy],
+									next: ['Destroy'],
+								};
 							// Handle Errors --------------------------------------------
 							} catch (err) { throw [MSG.ERROR, {}, {}, bdy]; }
 						}

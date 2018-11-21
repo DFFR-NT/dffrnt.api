@@ -32,7 +32,6 @@ module.exports = function Comps(COMPS) {
 		}
 		function onProps 	(nextProps) {
 			this.componentLog("{} Receiving");
-			// console.log('Setting State!!!!!!!')
 			this.setState(nextProps);
 		}
 		function onShouldP 	(nextProps, nextState) {
@@ -59,7 +58,13 @@ module.exports = function Comps(COMPS) {
 		COMPS.ExLinks 	= {};
 		COMPS.qryOmit 	= Imm.List(['id','as','at','to','path','offset','kind']);
 
+		COMPS.Tag 		= (tag) => {
+			if (IS(tag)==='string') return tag;
+			let From = [tag.from].concat(tag.name);
+			return eval(`COMPS.Elements.${From.join('.')}`);
+		};
 		COMPS.Agnostic 	= (config, key) => {
+			if (!!!config) return config;
 			let tag    = config.tag,
 				xerox  = !!config.xerox,
 				props  = Assign({},config.props||{},{key:key}),
@@ -81,12 +86,16 @@ module.exports = function Comps(COMPS) {
 						);
 					}
 				} else {
-					let From = [tag.from].concat(tag.name),
-						TagName = eval(`COMPS.Elements.${From.join('.')}`);
+					let TagName = COMPS.Tag(tag);
 					return (<TagName {...props} />);
 				}
 			} else { return config; }
 		};
+		COMPS.Agnolist 	= (list = []) => {
+			let items = list.filter(i=>!!i),
+				agnos = COMPS.Agnostic;
+			return items.map((v,i)=>agnos(v, i));
+		},
 
 		COMPS.FA 		= (icon, theme = 'fas') => {
 			if (!!icon && !!theme) {
@@ -797,16 +806,19 @@ module.exports = function Comps(COMPS) {
 			}
 		};
 
-		COMPS.Mix 		= (kind, ...mixes) => class extends MixBase[kind] {
-			constructor(props) {
-				super(props); let THS = this;
-				this.state = props; 
-				mixes.map(x=>{
-					Imm.Map(x).map((m,n)=>{
-						THS[n] = (!!m.bind?m.bind(THS):m);
-					})
-				});
-			}
+		COMPS.Mix 		= (kind, ...mixes) => {
+			let Mixed = mixes.reduce((E,C) => {
+					let CLS = class extends E {
+							constructor(props) { super(props); }
+						};
+					Imm.Map(C).map((m,n)=>(CLS.prototype[n]=m));
+					Object.setPrototypeOf(CLS.prototype,E.prototype);
+					return CLS;
+				},	class extends MixBase[kind] {
+					constructor(props) {
+						super(props); this.state = props; 
+				}	}	);
+			return Mixed;
 		};
 
 	////////////////////////////////////////////////////////////////////////

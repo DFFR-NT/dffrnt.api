@@ -41,7 +41,7 @@ module.exports = function Comps(global, Reflux, Actions, IOs) {
 		const App = COMPS.Elements[TC(PAGE.main)].App;
 
 		Stores.Content.render = function () {
-			RDOM.hydrate(<App />, document.getElementById('app'));
+			RDOM.hydrate(<App />, document.getElementById('app-root'));
 		}
 		
 		return COMPS;

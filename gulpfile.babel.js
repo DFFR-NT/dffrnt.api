@@ -306,7 +306,8 @@
 	// StartUp ----------------------------------------------------------------------------------
 
 		gulp.task('development', SERIES('init','convert','system'));
-		gulp.task('production',  SERIES('init','system'));
+		// gulp.task('production',  SERIES('init','system'));
+			gulp.task('production', SERIES('init','convert','system'));
 
 		switch (process.env.NODE_ENV) {
 			case 'production': 	gulp.task('default', SERIES('production' ));
