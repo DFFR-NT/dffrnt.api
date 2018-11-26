@@ -178,7 +178,7 @@
 
 		// Install Bower Components
 			gulp.task( 'bower', (done) => {
-				exec('bower install', (err, stdo, stde) => {
+				exec('bower --allow-root install', (err, stdo, stde) => {
 					if (!!err) LOG(`Bower.ERR: ${JSNS(err)}`);
 					else LOG(stdo||stde);
 					done();

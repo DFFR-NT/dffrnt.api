@@ -2228,7 +2228,7 @@
 			.gridMain, .gridContent {
 				display:  grid;
 				grid-gap: 0 1rem;
-				grid-template-columns: 9vmin .75fr 45vw 1fr 10vmin;
+				grid-template-columns: auto 15rem 40rem 20rem auto;
 			}
 
 			.gridItemHeader, .gridItemChat {
@@ -2405,7 +2405,10 @@
 		.heading.reveal.nope:hover,
 		.heading.reveal.nope:hover+.heading { background-color: #e4baba !important; border-color: #d69aa4 !important; }
 
-		.swap>label.reveal.heading { display: inline-block; }
+		.swap>label.reveal.heading { 
+			display: inline-block; 
+			height: 2.23rem;
+		}
 		.swap>label.reveal.heading:nth-of-type(1) { 
 			width: 95%; 
 			border-radius: .15em 0 0 .15em; 
@@ -2418,7 +2421,7 @@
 		}
 		.swap>label.reveal.heading:nth-of-type(2) > * { 
 			font-size: .75rem;
-			line-height: 1.65;
+			line-height: 1.5;
 			padding: .5rem 0;
 		}
 		.swap>label.reveal.heading:nth-of-type(2)>* { text-align: center; }
@@ -2523,7 +2526,7 @@
 			border-width: .5em !important;
 		}
 
-		.bubble.small.er{ width:     5vh;  height:     5vh;  background-size:     5vh;  }
+		.bubble.small.er{ width:  2.75rem; height:  2.75rem; background-size:  2.75rem; }
 		.bubble.small	{ width:     6vh;  height:     6vh;  background-size:     6vh;  }
 		.bubble.medium 	{ width:   5.5rem; height:   5.5rem; background-size:   5.5rem; }
 		.bubble.large 	{ width:     7rem; height:     7rem; background-size:     7rem; }

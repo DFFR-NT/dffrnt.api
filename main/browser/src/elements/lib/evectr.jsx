@@ -1230,7 +1230,7 @@ module.exports = function Comps(COMPS) {
 							<div key={`${id}-c${n}`} className={classN("column",f?"nowrap":null,h?"head":null)} style={c.style}>
 								<div className={classN(f?"trunc":null)}>{!!!c.link ? 
 									(IS(c.text)!='object'?<span>{c.text}</span>:c.text) :
-									(<a {...c.link}>{c.text}</a>)
+									(<a key={c.key||null} {...c.link}>{c.text}</a>)
 								}</div>
 							</div>
 						))}
@@ -1425,17 +1425,11 @@ module.exports = function Comps(COMPS) {
 					super(props); let THS = this; THS.name = 'FILES'; THS.state = props;
 					// ---------------------------------------------------
 						THS.dtid = `svc-${props.svid}`;
-						THS.name = {
-							documents:	'Document',
-							credentials:'Credential',
-							images:		'Image',
-							urls:		'URL',
-						};
-						THS.attr = {
-							documents:	{ kind:'file', icon:'file',  placeholder:null,      id:'file'     },
-							credentials:{ kind:'file', icon:'file',  placeholder:null,      id:'file'     },
-							images:		{ kind:'file', icon:'file',  placeholder:null,      id:'file'     },
-							urls:		{ kind:'url',  icon:'globe', placeholder:'http://', id:'location' },
+						THS.kind = {
+							documents:	'file',
+							credentials:'file',
+							images:		'file',
+							urls:		'link',
 						};
 						THS.dflt =  FromJS([
 							{ 	name:  'documents',  icon: 'file', 
@@ -1472,56 +1466,13 @@ module.exports = function Comps(COMPS) {
 							}	),	0);	}
 					}
 
-				// FUNCTIONS /////////////////////////////////////////////////////////
-
-					getAdder(tab) {
-						let THS   =   this,
-							props =   THS.state,
-							svid  =   props.svid, 
-							edit  = !!props.editable,
-							{ name, attr } = THS,
-							tnme  =   tab.get('name'),
-							fnme  =   name[tnme],
-							edid  = `${THS.dtid}-${tnme}`,
-							adid  = `${edid}-add`;
-						return edit ? tab.setIn(['body',1], (
-							<Content.Table key={adid} id={adid} {...{ 
-								cols:  ['100%'], 
-								form:  {
-									'id':			 adid,
-									'rid':			 edid,
-									'method':		'POST',
-									'data-action': 	`/add/service/${fnme}`.toLowerCase(),
-									'params':		{ sids: svid },
-									'query':		{ uid: COMPS.UID },
-									'stamp':		 props.stamp,
-									'status':		 props.status,
-									'buttons':		[{ 
-										kind: 'submit', label: `Add New ${fnme}`,
-										style:'good',   icon:  'save' 
-									},	]
-								},
-								items: [
-									{ text: `Add a ${fnme}` }, 
-									{ text: (<div key="add" className="gridSlice PTB">
-										<input key="sid" type="hidden" name="sid" value={svid} data-param/>
-											{ tnme == 'urls' ? 
-										<div key="nme" className="some"><Form.Xput icon="signature" kind="text" placeholder="URL Name" id="name" data-rel="*"/></div>
-											: null }
-										<div key="itm" className={tnme=='urls'?"more":"spread"}><Form.Xput {...attr[tnme]} data-rel="*"/></div>
-										<div key="dsc" className="spread"><Form.Area icon="newspaper" placeholder="Description" id="descr" rows="2" data-rel="*"/></div>
-									</div>) },
-								] 
-							}}/>
-						)) : tab;
-					}
-
 				// MAIN      /////////////////////////////////////////////////////////
 
 					render() {
 						let THS		= this,
 							props 	= THS.state,
 							dflt	= THS.dflt,
+							kind	= THS.kind,
 							edit  	= !!props.editable,
 							id    	= THS.dtid,
 							stamp 	= props.stamp||100,
@@ -1530,16 +1481,23 @@ module.exports = function Comps(COMPS) {
 						return (
 							<Content.Tabs key={id} id={id} 
 								tabs={dflt.map((t,i)=>(
-									THS.getAdder(t.setIn(
-										['body',0], 
+									t.set('body',[ 
 										<Service.Bucket 
 											key={t.get('name')} 
 											which={t.get('name')} 
 											dtid={id} svid={svid}
 											files={tabs[t.get('name')]} 
+											kind={kind[t.get('name')]} 
+											stamp={stamp}
+											editable={edit}/>,
+										<Service.Uploader
+											key={`${t.get('name')}-add`} 
+											dtid={id} svid={svid}
+											which={t.get('name')} 
 											stamp={stamp}
 											editable={edit}/>
-								)).filter(v=>!!v))).toJS()}/>
+									].filter(v=>!!v))
+								)).toJS()}/>
 						);
 					}
 			};
@@ -1590,6 +1548,12 @@ module.exports = function Comps(COMPS) {
 
 				// FUNCTION  /////////////////////////////////////////////////////////
 
+					getLink(item) {
+						let THS = this, kind = THS.props.kind, i = item;
+						return `${i.location}${kind=='file'?i.name:''}`
+								.replace(/^(?!http)(.+)$/,'http://$1');
+					}
+
 					showBucket(svid, files, editable = false) {
 						let THS  = 	this,
 							fid  =  THS.fid,
@@ -1608,9 +1572,8 @@ module.exports = function Comps(COMPS) {
 								items: 	(edit?[null,null,null]:[null,null]).concat(
 									...files.map(c=>[
 										{ text: c.name, link: {
-											href: `${c.location}${c.name}`,
-											target: '_blank'
-										} 	}
+											href: THS.getLink(c), target: '_blank'
+										},	key: `text@${c.id}` }
 									].concat(edit ? [{ text: (<Frag>
 										<input key="1" type="hidden" name={`scid@${c.id}`} value={c.id} data-param/>
 										<Form.Area 	key={`Descr@${c.id}`} id={`Descr@${c.id}`} value={c.description} 
@@ -1638,10 +1601,12 @@ module.exports = function Comps(COMPS) {
 						// -----------------------------------------------------------
 							rslt = 	dflt.mergeDeepWith((o,n)=>n||o,data).toJS();
 						// -----------------------------------------------------------
-							return 	<Content.Table 
-										key={THS.fid} 
-										id={`${THS.fid}-form`} 
-										{...rslt} />;
+							return 	(<Frag>
+								<Content.Table 
+									key={THS.fid} 
+									id={`${THS.fid}-form`} 
+									{...rslt} />
+							</Frag>);
 					}
 
 					editBucket(svid, files) {
@@ -1659,6 +1624,118 @@ module.exports = function Comps(COMPS) {
 							svid 	= props.svid,
 							files 	= props.files;
 						return Buck(svid,files||[]);
+					}
+			};
+
+			EV.Service.Uploader = class Uploader 	extends Mix('Reflux',MX.Static) {
+				constructor(props) {
+					super(props); let THS = this; THS.name = 'UPLOADER';
+					// ---------------------------------------------------
+						THS.dtid = props.dtid;
+						THS.mode = {true:'edit',false:'show'};
+						THS.buck = {
+							documents:	'Document',
+							credentials:'Credential',
+							images:		'Image',
+							urls:		'URL',
+						};
+						THS.attr = {
+							documents:	{ kind:'file', icon:'file',  placeholder:null,      id:'file'     },
+							credentials:{ kind:'file', icon:'file',  placeholder:null,      id:'file'     },
+							images:		{ kind:'file', icon:'file',  placeholder:null,      id:'file'     },
+							urls:		{ kind:'url',  icon:'globe', placeholder:'http://', id:'location' },
+						};
+					// ---------------------------------------------------
+						this.showUploader = this.showUploader.bind(this);
+						this.editUploader = this.editUploader.bind(this);
+					// ---------------------------------------------------
+						THS.mapStoreToState(COMPS.Stores.Data, store => {
+							let id = THS.fid, {stamp,items=[]} = (store[id]||{});
+							if (!!stamp&&stamp!==THS.state.stamp) return { 
+								stamp:  stamp,  loaded: true, status: 'done', 
+							}; 	else return null;	
+						}	);
+				}
+
+				// CYCLE     /////////////////////////////////////////////////////////
+
+					static getDerivedStateFromProps(props, state) {
+						if (props.stamp !== state.stamp) {
+							let { stamp, status } = ( 
+								props.stamp>state.stamp?props:state
+							);  return {
+								stamp:	stamp, 
+								status:	status, 
+							}
+						};	return null;
+					}
+
+				// GETTERS   /////////////////////////////////////////////////////////
+
+					get fid  	() { return `${this.dtid}-${this.which}`; }
+					get which 	() { return this.props.which; }
+
+				// FUNCTION  /////////////////////////////////////////////////////////
+
+					showUploader(svid, which, editable = false) {
+						let THS   =   this,
+							props =   THS.state,
+							{ buck, attr } = THS,
+							tnme  =   which,
+							fnme  =   buck[tnme],
+							edid  = `${THS.dtid}-${tnme}`,
+							adid  = `${edid}-add`;
+						if (!!editable) {
+							if (!!!THS.adder) THS.adder = (
+								<div key="add" className="gridSlice PTB">
+									<input key="sid" type="hidden" name="sid" value={svid} data-param/>
+										{ tnme == 'urls' ? 
+									<div key="nme" className="some"><Form.Xput icon="signature" kind="text" placeholder="URL Name" id="name" data-rel="*"/></div>
+										: null }
+									<div key="itm" className={tnme=='urls'?"more":"spread"}><Form.Xput {...attr[tnme]} data-rel="*"/></div>
+									<div key="dsc" className="spread"><Form.Area icon="newspaper" placeholder="Description" id="descr" rows="2" data-rel="*"/></div>
+								</div>);
+							return (
+								<Content.Table key={adid} id={adid} {...{ 
+									cols:  ['100%'], 
+									form:  {
+										'id':			 adid,
+										'rid':			 edid,
+										'method':		'POST',
+										'data-action': 	`/add/service/${fnme}`.toLowerCase(),
+										'params':		{ sids: svid },
+										'query':		{ uid: COMPS.UID },
+										'stamp':		 props.stamp,
+										'status':		 props.status,
+										'buttons':		[{ 
+											kind: 'submit', label: `Add New ${fnme}`,
+											style:'good',   icon:  'save' 
+										},	]
+									},
+									items: [
+										{ text: `Add a ${fnme}` }, 
+										{ text: THS.adder },
+									] 
+								}}/>
+							);
+						} else return null;
+					}
+
+					editUploader(svid, which) {
+						return this.showUploader(svid, which, true);
+					}
+
+				// MAIN      /////////////////////////////////////////////////////////
+
+					render() {
+						let THS		= this,
+							mode  	= THS.mode,
+							props 	= THS.state,
+							edit  	= !!props.editable,
+							Upload	= THS[`${mode[edit]}Uploader`], 
+							svid 	= props.svid,
+							which 	= props.which;
+						return Upload(svid,which);
 					}
 			};
 

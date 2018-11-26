@@ -37,7 +37,7 @@ module.exports = {
             },
         },
     },
-    error:      {
+    Error:      {
         config:     {
             name:        'error',
             scheme:      '/404/',
@@ -54,7 +54,7 @@ module.exports = {
             },
         },
     },
-    main:       {
+    Main:       {
         config:     {
             name:        'main',
             scheme:      '/\\b(home|log(in|out))\\b/',

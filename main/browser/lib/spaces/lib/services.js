@@ -146,7 +146,7 @@ module.exports = {
 													icon:		'newspaper',
 													rows:		 3,
 													priority:	'*',
-													placeholder:'Use this to provide as many details as possible regarding your Service. This can contain any Rules or Restrictions, Hours of Pperation, etc.',
+													placeholder:'Use this to provide as many details as possible regarding your Service. This can contain any Rules or Restrictions, Hours of Preparation, etc.',
 												}
 										}]	}, 
 									],	

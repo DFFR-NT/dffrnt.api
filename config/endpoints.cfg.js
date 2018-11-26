@@ -1455,7 +1455,7 @@
 						Query: [
 							"SELECT     S.*",
 							"FROM       (",
-							"    SELECT     u.user_id, (",
+							"    SELECT     u.user_id, ( 1 + ",
 							"                   COUNT(DISTINCT s.provider_svc_id)*10 +",
 							"                   COUNT(DISTINCT h.hobby_id) +",
 							"                   COUNT(DISTINCT l.language_id) +",
@@ -2231,49 +2231,28 @@
 							},
 						},
 						Query: [
-							"SELECT   p.user_fk AS user_id, JSON_MERGE(",
-									"     getProviderFiles(",
-										"     'documents', CONCAT('[',",
-										"         GROUP_CONCAT(DISTINCT JSON_OBJECT(",
-										"             'id', d.id, 'name', d.file,",
-										"             'description', d.description,",
-										"             'location', d.location ",
-									"     ) SEPARATOR ','),']')),",
-									"     getProviderFiles(",
-										"      'credentials', CONCAT('[',",
-										"          GROUP_CONCAT(DISTINCT JSON_OBJECT(",
-										"              'id', c.id, 'name', c.file,",
-										"              'description', c.description,",
-										"              'location', c.location ",
-									"     ) SEPARATOR ','),']')),",
-									"     getProviderFiles(",
-										"      'images', CONCAT('[',",
-										"          GROUP_CONCAT(DISTINCT JSON_OBJECT(",
-										"              'id', i.id, 'name', i.file,",
-										"              'description', i.description,",
-										"              'location', i.location ",
-									"     ) SEPARATOR ','),']')),",
-									"     getProviderFiles(",
-										"      'urls', CONCAT('[',",
-										"          GROUP_CONCAT(DISTINCT JSON_OBJECT(",
-										"              'id', u.id, 'name', u.name,",
-										"              'description', u.description,",
-										"              'location', u.location ",
-									"     ) SEPARATOR ','),']'))",
-							"         ) services",
-							"FROM     user_provider_details p",
-							"JOIN     service_documents     d ON p.provider_detail_id = d.provider_detail_id",
-							"JOIN     service_credentials   c ON p.provider_detail_id = c.provider_detail_id",
-							"JOIN     service_images        i ON p.provider_detail_id = i.provider_detail_id",
-							"JOIN     service_urls          u ON p.provider_detail_id = u.provider_detail_id",
-							"WHERE    c.provider_svc_id IN (:SIDS:)",
-							"GROUP BY c.provider_detail_id",
-							":LIMIT: :PAGE:"
+							"SELECT   F.user_id, F.services",
+							"FROM     ((",
+							"    :/Provider/Service/Documents:",
+							") UNION (",
+							"    :/Provider/Service/Credentials:",
+							") UNION (",
+							"    :/Provider/Service/Images:",
+							") UNION (",
+							"    :/Provider/Service/URLs:",
+							")) F",
 						],
 						Params: {
 							SIDs: true, Page: true, Limit: true, ID: true
 						},
-						Links: 	[]
+						Links: 	[],
+						Parse	(res) {
+							let ret = FromJS(res), key = 'services';
+							return 	ret	.groupBy(u=>u.get('user_id'))
+										.map(u=>u.reduce((a,c)=>a.mergeIn(
+											[key],c.get(key)),Map()
+										)).toList().toJS();
+						},
 					},
 					// ======================================================================
 					Service: {
