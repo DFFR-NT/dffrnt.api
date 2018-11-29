@@ -75,9 +75,14 @@
 					location: 	`${pubFld}/js`,
 				};
 		const 	jsx 	= {
-					source: `${libFld}/src/*.jsx`,
-					location: libFld,
-					presets: ['react','env']
+					source: `${brwFld}/src/**/*.jsx`,
+					location:  libFld,
+					presets:  ['react','env']
+				};
+		const 	es6 	= {
+					source: `${brwFld}/src/es6/*.js`,
+					location:  jsx.location,
+					presets:   jsx.presets
 				};
 		const 	style 	= {
 					css: 	{ src: [
@@ -92,7 +97,7 @@
 					location: `${pubFld}/css`
 				};
 		const 	redfl 	= {
-					cwd: '../REDIS',
+					cwd: '/opt/REDIS',
 					cmd: 'redis-server',
 					cfg: 'redis.conf'
 				};
@@ -173,7 +178,7 @@
 
 		// Install Bower Components
 			gulp.task( 'bower', (done) => {
-				exec('bower install', (err, stdo, stde) => {
+				exec('bower --allow-root install', (err, stdo, stde) => {
 					if (!!err) LOG(`Bower.ERR: ${JSNS(err)}`);
 					else LOG(stdo||stde);
 					done();
@@ -183,6 +188,17 @@
 		gulp.task('setup', SERIES('npm','bower','init'));
 
 	// Convert ----------------------------------------------------------------------------------
+	
+		//  ES6 to ES5 Conversion/Watch
+			gulp.task('es6-make',	(done) => {
+				gulp.src(es6.source)
+					.pipe( babel({ presets: es6.presets, compact: false }))
+					.on( 'error', (e) => { LOG('>>> ERROR', e); this.emit('end'); })
+					.pipe(gulp.dest(es6.location));
+				done();
+			});
+			gulp.task('es6-watch',	WATCH( 'ES6', es6.source, ['es6-make']));
+			gulp.task('es6', 		PARALLEL('es6-make','es6-watch'));
 
 		//  JSX to  JS Conversion/Watch
 			gulp.task('jsx-make',	(done) => {
@@ -219,7 +235,7 @@
 				doBundle();
 			});
 
-		gulp.task('bundle', SERIES('jsx', 'brow'));
+		gulp.task('bundle', SERIES('es6', 'jsx', 'brow'));
 
 		// LESS to CSS Conversion/Watch
 			gulp.task('css-make',	(done) => {
@@ -290,7 +306,8 @@
 	// StartUp ----------------------------------------------------------------------------------
 
 		gulp.task('development', SERIES('init','convert','system'));
-		gulp.task('production',  SERIES('init','system'));
+		// gulp.task('production',  SERIES('init','system'));
+			gulp.task('production', SERIES('init','convert','system'));
 
 		switch (process.env.NODE_ENV) {
 			case 'production': 	gulp.task('default', SERIES('production' ));
