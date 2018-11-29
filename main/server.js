@@ -17,13 +17,16 @@
 		const 	express 		  = require('express');
 		const { Routes, Session } = require('dffrnt.route');
 		const { Settings 		} = require('dffrnt.confs');
-		const { createServer 	} = require('http');
+		const { SSL, Port 		} = Settings;
+		const { createServer 	} = require(!!SSL?'https':'http');
 
 	// Setup Requires
-		let api 	= express(),
-			server 	= createServer(api),
-			sess 	= Session(server, api),
-			port 	= Settings.Port;
+		let api 	= 	express(),
+			server 	= 	createServer(...[!!SSL ? {
+							key:  fs.readFileSync(`${ROOTD}/${SSL.Key}`,  'utf8'),
+							cert: fs.readFileSync(`${ROOTD}/${SSL.Cert}`, 'utf8'),
+						} : null].concat([api]).filter(v=>!!v)),
+			sess 	= 	Session(server, api);
 
 // ----------------------------------------------------------------------------------------------
 // Setup Server ---------------------------------------------------------------------------------
@@ -42,8 +45,8 @@
 			}
 		});
 		server.timeout = 0;
-		server.listen(port, function (err) {
-			if (err) throw err; LG.Server(port, 'Listen', 'initialized', 'yellow');
+		server.listen(Port, function (err) {
+			if (err) throw err; LG.Server(Port, 'Listen', 'initialized', 'yellow');
 		});
 
 // ----------------------------------------------------------------------------------------------
