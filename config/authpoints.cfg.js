@@ -45,7 +45,11 @@
 						Decrypt: 	 true,
 						Error: 		 'ERROR',
 						async NoData (req) {
-							let THS  = this, acct, SSD = {};
+							let THS  = this, SSD = {},
+								sess = req.session,
+								sid  = req.sessionID,
+								bdy  = (req.body||{}), user,
+								acct = bdy.username;
 							// ----------------------------------------------------------
 							function LogUserIn(THS, req) {
 								return new Promise((resolve, reject) => {
@@ -61,10 +65,6 @@
 							}
 							// ----------------------------------------------------------
 							try {
-								let sess = req.session,
-									sid  = req.sessionID,
-									bdy  = req.body, user,
-									acct = bdy.username;
 								// ------------------------------------------------------
 								SSD  = { sessionID: sid };
 								user = await LogUserIn(THS, req);

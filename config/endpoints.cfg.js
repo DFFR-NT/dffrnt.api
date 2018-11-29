@@ -191,16 +191,16 @@
 								}
 							};
 						},
-				multi = function multi(param, name, edit, column, required = false, dflt = '', kind = 'param') { 
+				multi = function multi(param, name, edit, column, required = false, dflt = '', kind = 'param', quote = false) { 
 							return (!!edit ?
 								function Format(cls) {
 									let regx = [/^[A-Z]?\d+@\d+$/,/^\d+$/], 
-										json = `d.profile_${name}`,
+										json = `d.profile_${name}`, q = !!quote?"'":"",
 										rslt = '', k = "'$.", d = `\n${'    '.dup(6)}`,
 										edts = SQL.BRKT(SQL.LIST([cls[param]],
-												[{ split: ORS, equals:  true, join: `,${k}`,  match: regx[0] }],
-												[],[(m=>(s=m.split('@'),`${s[1]}',${s[0]}`))]
-											),[`${k}`,""], ","), 
+												[{ split: ORS, equals:  true, join: `${q},${k}`,  match: regx[0] }],
+												[],[(m=>(s=m.split('@'),`${s[1]}',${q}${s[0]}`))]
+											),	[k, q], ","), 
 										rems = SQL.BRKT(SQL.LIST([cls[param]],
 												[{ split: ORS, equals:  true, join: `',${k}`, match: regx[1] }],
 												[],[]),[`${k}`,"'"], ",");
@@ -307,7 +307,7 @@
 									trm = QY.terms.split(';'),
 									mlt = Imm.List([]);
 								// ------------------------------------------------------------
-									obj = 	FromJS(res).groupBy(v=>v.get('user_id'));
+									obj = 	Imm.fromJS(res).groupBy(v=>v.get('user_id'));
 									MAP = 	obj.map(v=>v.get(0));
 											C = MAP.size;
 									avg =  (MAP .reduce((s,v)=>s+v.get('score'),0)/C);
@@ -415,7 +415,7 @@
 						OIDs: 		multi( 'oids', 'Orientation', false,       'o.orient_id', false),
 						Sex: 		{
 							Default: '',
-							Format 	(cls) { return (cls.sex||'').match(/^(?:M|F|I|)$/)[0]; },
+							Format 	(cls) { let val = (cls.sex||''); return (val=='none'?val.match(/^(?:M|F|I|)$/)[0]:''); },
 							Desc: 	{
 								description: "The user's {{Sex}}", type: { Select: optns.Sex }, 
 								style: 'half', to: 'query', required: false, matches: {
@@ -425,7 +425,7 @@
 						},
 						Marital: 	{
 							Default: '',
-							Format 	(cls) { return (cls.marital||'').match(/^(?:M|R|S|)$/)[0]; },
+							Format 	(cls) { let val = (cls.marital||''); return (val=='none'?val.match(/^(?:M|R|S|)$/)[0]:''); },
 							Desc: 	{
 								description: "The user's {{Marital Status}}", type: { Select: optns.Marital }, 
 								style: 'half', to: 'query', required: false, matches: {
@@ -479,7 +479,7 @@
 						},
 						eLGIDs: 	{
 							Default: '',
-							Format:  multi('elgids','languages', true),
+							Format:  multi('elgids','languages', true, null, false, '', null, true),
 							Desc: 	 {
 								type: { List: "Number", Separator: ORS }, 
 								description: "The user's {{Languages Edits}}", 
@@ -489,22 +489,10 @@
 							}
 						},
 						eNIDs: 		{
-							Default: '',
+							Default: 'd.profile_nationalities',
 							Format(cls) {
-								var regx = [/^\d+@[0-1]$/,/^\d+$/,/('\$\[[0-1]\]'(?:,\d+|(?=,|$)))/g], 
-									prms = (cls.enids||'').match(/^((?:[\d@]+(?:;|$)){0,2})/)[1],
-									json = `d.profile_nationalities`, k = "'$[", 
-									rslt = '', d = `\n${'    '.dup(6)}`, t = ' '.dup(8), e = ' '.dup(4)
-									edts = (SQL.BRKT(SQL.LIST([prms],
-											[{ split: ORS, equals: true, join: `,${k}`,  match: regx[0] }],
-											[],[(m=>(s=m.split('@'),`${s[1]}]',${s[0]}`))]
-											),[`${k}`,""], ",").match(regx[2])||[]).join(','),
-									rems = (SQL.BRKT(SQL.LIST([prms],
-											[{ split: ORS, equals: true, join: `',${k}`, match: regx[1] }],
-											[],[]),[`${k}`,"]'"], ",").match(regx[2])||[]).join(',');
-								rslt = (!!edts ? `JSON_SET(${d}${t}${json},${d}${e.dup(3)} ${edts}${d}${e})`: json);
-								if (!!rems) rslt = `JSON_REMOVE(${rslt},  ${rems})`;				
-								return rslt;
+								var prms = (cls.enids||'').match(/^((?:\d+(?:;|$)){0,2})/)[1];			
+								return !!prms ? `'[${prms.replace(/;/g,',')}]'` : this.Default;
 							},
 							Desc: 	{
 								type: { List: "Number", Separator: ORS }, 
@@ -1455,10 +1443,10 @@
 						Query: [
 							"SELECT     S.*",
 							"FROM       (",
-							"    SELECT     u.user_id, ( 1 + ",
-							"                   COUNT(DISTINCT s.provider_svc_id)*10 +",
-							"                   COUNT(DISTINCT h.hobby_id) +",
-							"                   COUNT(DISTINCT l.language_id) +",
+							"    SELECT     u.user_id, ( 0.5 + ",
+							"                   COUNT(DISTINCT s.provider_svc_id)*3 +",
+							"                   COUNT(DISTINCT h.hobby_id)*2 +",
+							"                   COUNT(DISTINCT l.language_id)*2 +",
 							"                   COUNT(DISTINCT n.nationality_id) +",
 							"                   !ISNULL(r.religion_id) +",
 							"                   !ISNULL(g.gender_id) +",
@@ -1866,14 +1854,10 @@
 								"           IF(l.language_id, GROUP_CONCAT(JSON_OBJECT(",
 								"               'value', CAST(l.language_id AS INT),",
 								"               'label', l.language_name,",
-								"               'level', (",
-								"                    SELECT language_level_code ",
-								"                    FROM   language_levels ",
-								"                    WHERE  language_level_id = CAST(",
-								"                        JSON_VALUE(",
-								"                            u.profile_languages, ",
-								"                            CONCAT('$.',l.language_id)",
-								"               ) AS INT)    )",
+								"               'level', CAST(JSON_VALUE(",
+								"                   u.profile_languages, ",
+								"                   CONCAT('$.',l.language_id)",
+								"               ) AS INT)",
 								"           ) SEPARATOR ','),''),']}') as details",
 								"FROM       user_profile_details AS u",
 								"LEFT  JOIN user_visibilities    AS v ON u.user_fk  = v.user_fk AND true",
@@ -2108,11 +2092,11 @@
 						},
 						Query: [
 							"SELECT   d.user_fk AS user_id, getProviderFiles(",
-							"             'documents', CONCAT('[',GROUP_CONCAT(JSON_OBJECT(",
+							"             'documents', GROUP_CONCAT(JSON_OBJECT(",
 							"                 'id', c.id, 'name', c.file,",
 							"                 'description', c.description,",
 							"                 'location', c.location ",
-							"         ) SEPARATOR ','),']')) services",
+							"         ) SEPARATOR ',')) services",
 							"FROM     user_provider_details d",
 							"JOIN     service_documents c ON d.provider_detail_id = c.provider_detail_id",
 							"WHERE    c.provider_svc_id IN (:SIDS:)",
@@ -2139,11 +2123,11 @@
 						},
 						Query: [
 							"SELECT   d.user_fk AS user_id, getProviderFiles(",
-							"             'credentials', CONCAT('[',GROUP_CONCAT(JSON_OBJECT(",
+							"             'credentials', GROUP_CONCAT(JSON_OBJECT(",
 							"                 'id', c.id, 'name', c.file,",
 							"                 'description', c.description,",
 							"                 'location', c.location ",
-							"         ) SEPARATOR ','),']')) services",
+							"         ) SEPARATOR ',')) services",
 							"FROM     user_provider_details d",
 							"JOIN     service_credentials c ON d.provider_detail_id = c.provider_detail_id",
 							"WHERE    c.provider_svc_id IN (:SIDS:)",
@@ -2170,11 +2154,11 @@
 						},
 						Query: [
 							"SELECT   d.user_fk AS user_id, getProviderFiles(",
-							"             'images', CONCAT('[',GROUP_CONCAT(JSON_OBJECT(",
+							"             'images', GROUP_CONCAT(JSON_OBJECT(",
 							"                 'id', c.id, 'name', c.file,",
 							"                 'description', c.description,",
 							"                 'location', c.location ",
-							"         ) SEPARATOR ','),']')) services",
+							"         ) SEPARATOR ',')) services",
 							"FROM     user_provider_details d",
 							"JOIN     service_images c ON d.provider_detail_id = c.provider_detail_id",
 							"WHERE    c.provider_svc_id IN (:SIDS:)",
@@ -2201,11 +2185,11 @@
 						},
 						Query: [
 							"SELECT   d.user_fk AS user_id, getProviderFiles(",
-							"             'urls', CONCAT('[',GROUP_CONCAT(JSON_OBJECT(",
+							"             'urls', GROUP_CONCAT(JSON_OBJECT(",
 							"                 'id', c.id, 'name', c.name,",
 							"                 'description', c.description,",
 							"                 'location', c.location ",
-							"         ) SEPARATOR ','),']')) services",
+							"         ) SEPARATOR ',')) services",
 							"FROM     user_provider_details d",
 							"JOIN     service_urls c ON d.provider_detail_id = c.provider_detail_id",
 							"WHERE    c.provider_svc_id IN (:SIDS:)",
@@ -2247,10 +2231,10 @@
 						},
 						Links: 	[],
 						Parse	(res) {
-							let ret = FromJS(res), key = 'services';
+							let ret = Imm.fromJS(res), key = 'services';
 							return 	ret	.groupBy(u=>u.get('user_id'))
 										.map(u=>u.reduce((a,c)=>a.mergeIn(
-											[key],c.get(key)),Map()
+											[key],c.get(key)),Imm.Map()
 										)).toList().toJS();
 						},
 					},
@@ -3828,11 +3812,10 @@
 								},
 							},
 							Query: [
-								":/Update/Hobbies:", 		":/Update/Languages:",
-								":/Update/Nationalities:",	":/Update/Religion:",
-								":/Update/Sex:",			":/Update/Marital:",
-								":/Update/Gender:",			":/Update/Description:",
-								":/Update/Education:"
+								":/Edit/Hobbies:", 		 ":/Edit/Languages:",
+								":/Edit/Nationalities:", ":/Edit/Religion:",
+								":/Edit/Sex:",			 ":/Edit/Marital:", 	//":/Edit/Gender:",		 
+								":/Edit/Description:",	 ":/Edit/Education:"
 							],
 							Params: {
 								eHIDs:		true, eLGIDs:	true,

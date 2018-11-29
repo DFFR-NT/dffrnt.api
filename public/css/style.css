@@ -498,6 +498,10 @@
 			.gridItemSearchBox .suggest > label:last-of-type {
 				border: none;
 			}
+			label.input .suggest > label > *,
+			.gridItemSearchBox .suggest > label > * {
+				pointer-events: none !important;
+			}
 			label.input .suggest > label:hover,
 			label.input .suggest > input:checked + label,
 			.gridItemSearchBox .suggest > label:hover,

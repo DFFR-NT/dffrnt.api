@@ -1,6 +1,6 @@
 
 module.exports = {
-	Debug: 		true,
+	Debug: 		false,
 	Port: 		3001,
 	Services: 	[
 		'http://localhost:3001/gbl-accessor',
