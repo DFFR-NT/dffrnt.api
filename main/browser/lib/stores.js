@@ -51,7 +51,6 @@ module.exports = function (Reflux, Actions, Spaces, IOs) {
 		if (!!IOs && !!IOs.IO) {
 			IOs.Socket = IOs.IO(NMESPC.host + '/' + NMESPC.name);
 			if (!!IOs.Socket) {
-
 				Reflux.initStore(Stores.App);
 				Reflux.initStore(Stores.Nav);
 				Reflux.initStore(Stores.Content);

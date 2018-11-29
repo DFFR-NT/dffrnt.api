@@ -2041,6 +2041,7 @@ module.exports = function Comps(COMPS) {
 							className:		classN(...(props.classes||[]).
 												concat(['fill','grow'])),
 							autoComplete:	autoc,
+							autoFocus:		props.autoFocus,
 							required:		props.required||props.priority=='*',
 							disabled:		props.disabled,
 							pattern:		(valid.pattern||{}).source,
@@ -2252,7 +2253,7 @@ module.exports = function Comps(COMPS) {
 								},
 							},
 							func  = {
-								typd:   () => (THS.previous=text,THS.setTyped(text)),
+								typd:   () => (THS.previous=text),
 								list: 	() => (func.typd(),Actions.Data.send(list, req, true)),
 								data: 	() => (func.typd(),Actions.Data.send(data.url, 
 												Assign(req ,{params:{term:text}}), 
@@ -2266,6 +2267,7 @@ module.exports = function Comps(COMPS) {
 								shortL: !!list&&shrt,
 							};
 						// --------------------------------------------
+						THS.setTyped(text)
 						switch (true) {
 							case stat.equals: return Actions.Data.place(data.id,{open:true});
 							case stat.shortN: return THS.clrList(THS.state.tokens);
@@ -2284,6 +2286,7 @@ module.exports = function Comps(COMPS) {
 					clrList(omits = []) {
 						if (this.suggest) {
 							let id = this.state.data.id;
+							this.previous = '';
 							Actions.Data.place(id, Assign({ 
 								omit: (omits||[]).map(t=>t.value)
 							}, !!this.typed?{items:[]}:{}));
@@ -2364,6 +2367,7 @@ module.exports = function Comps(COMPS) {
 						this.attrLabel   = { className:cls };
 					// ----------------------------------------------------
 						this.levels 	 = this.state.levels||[];
+						this.level_dflt  = this.levels[0]||{K:undefined,V:null};
 						this.verbs 	 	 = !!this.state.verbs;
 				}
 
@@ -2447,18 +2451,26 @@ module.exports = function Comps(COMPS) {
 						} catch(e) { return -1; }
 					}
 					getValue(tokens) {
-						let e = (t)=>this.getLevel(t.value,t.level),
-							r = (v,t)=>`${v}${!!v?';':''}${e(t)}`;
-						return tokens.reduce(r,'');
+						let origin = this.props.tokens,
+							k = List(tokens),
+							e = (t)=>this.getLevel(t.value,t.level),
+							r = [
+								(v,t)=>`${v}${!!v?';':''}${
+									k.find(o=>o.value==t.value)?'':t.value
+								}`,
+								(v,t)=>`${v}${!!v?';':''}${e(t)}`,
+							],
+							d = origin.reduce(r[0],''),
+							v = tokens.reduce(r[1],'');
+						return `${v}${!!d?`;${d}`:''}`;
 					}
 					getLevel(value, level) {
 						let THS  = this,
-							lvlq = THS.leveled,
-							lvls = THS.levels,
-							lvlv = lvls.indexOf(level),
-							lvld = [null,lvls[0]],
+							lvls = List(THS.levels),
+							lvld = THS.level_dflt,
+							lvlv = lvls.find(l=>l.V==level),
 							filt = v=>!!v, res = [];
-						res.push(lvls[lvlv]||lvld[lvlq], value);
+						res.push((lvlv||lvld).V, value);
 						return res.filter(filt).join('@');
 					}
 					getMore(adjct) {
@@ -2541,6 +2553,11 @@ module.exports = function Comps(COMPS) {
 
 					doTokens(props,nxt) {
 						let tokens = props.tokens;
+
+							console.log({
+								PROPS: this.props.tokens
+							})
+
 						tokens = tokens.map(
 							(t,i)=>(t.checked=(i==nxt),t)
 						);	this.setState(props);
@@ -2570,7 +2587,7 @@ module.exports = function Comps(COMPS) {
 							let tokens = props.tokens;
 							switch (code) {
 								case  8: nxt = idx-Number(idx>0); 
-									console.log('BACKSPACE'); break;;
+									console.log('BACKSPACE', nxt); break;;
 								case 46: nxt = idx; 
 									console.log('DELETE'); break;;
 							}
@@ -2640,9 +2657,11 @@ module.exports = function Comps(COMPS) {
 											</label> 
 										</Frag>
 									) : null ) )}{(
-										tattr = THS.attrs.token(group,{value:''},length),
+										tattr = THS.attrs.token(group,{
+													value: '', checked: !!!length
+												},length),
 										<input ref={length} {...tattr.rad}/> )}
-									<Form.Input    {...props} {...iattr}/>
+									<Form.Input    {...props} {...iattr} autoFocus={!!!length}/>
 									<input         {...hattr} ref={this.hidden}/>
 										{ !!data ?
 									<Form.Complete {...THS.attrs.compl(tokens)}/> 
@@ -2716,6 +2735,7 @@ module.exports = function Comps(COMPS) {
 							// THS.clrSuggest();
 							THS.handleClose({target:target});
 							THS.setState({ open: false });
+							THS.input.dataset.typed = '';
 						},  10);
 						!!item && state.click(Infinity, { 
 							value:		item.value,
@@ -2724,7 +2744,8 @@ module.exports = function Comps(COMPS) {
 						}); 
 					}
 					setSuggest(targ) {
-						this.input.value = this.getItem(targ).label;
+						let THS = this, NPT = THS.input;
+						NPT.value = THS.getItem(targ).label;
 					}
 
 					clrSuggest() {
@@ -2880,14 +2901,14 @@ module.exports = function Comps(COMPS) {
 							rev 	= !!props.reverse,
 							styles 	= [kind].concat(rev?['rev']:[]),
 							attrs 	= {  
-								id: 			id, 
-								name: 			name, 
-								title: 			props.title, 
-								tabIndex: 		props.tab,
-								className:		classN('fill',!!input?'':'grow'),
-								defaultValue:	props.value,
-								options:		props.options,
-								data:			props.data,
+								id: 		id, 
+								name: 		name, 
+								title: 		props.title, 
+								tabIndex: 	props.tab,
+								className:	classN('fill',!!input?'':'grow'),
+								value:		props.value,
+								options:	props.options,
+								data:		props.data,
 							};
 						return (
 							<Form.Xput {...props} id={!!input?input.id:id} styles={styles} name={!!input?input.name:name}>

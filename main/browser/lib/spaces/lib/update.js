@@ -145,7 +145,7 @@ module.exports = {
 									header: { label: 'Basic Info', icon: 'user' },
 									form: 	{
 										'id':			'form-user-info',
-										'data-action': 	'/edit/'+res.user_id,
+										'data-action': 	'/edit',
 										'method':		'PUT',
 									},
 									body:	[
@@ -271,11 +271,11 @@ module.exports = {
 									]	},
 									form: 	{
 										'id':			'form-user-details',
-										'data-action': 	'/edit/details/'+res.user_id,
+										'data-action': 	'/edit/details',
 										'method':		'PUT',
 									},
 									body:	[
-										{
+										{		 // USER INTRO
 											tag:	BLK, props:  { 
 												name: 	'user-about', 
 												header: { fixed: true, label: 'About Me' },
@@ -305,7 +305,12 @@ module.exports = {
 																placeholder:'Add some Hobbies',
 																tokens:		 hobbies,
 																strict: 	 true,
-																levels:		[1,2,3,4,5,6,7,8,9,10],
+																levels:		[
+																	{K: 1,V: 1}, {K: 2,V: 2}, {K: 3,V: 3},
+																	{K: 4,V: 4}, {K: 5,V: 5}, {K: 6,V: 6},
+																	{K: 7,V: 7}, {K: 8,V: 8}, {K: 9,V: 9},
+																	{K:10,V:10}
+																],
 																more: 		['Casual'],
 																data:		{
 																	id:   'user-hobbies-sgst', 
@@ -319,7 +324,7 @@ module.exports = {
 													}]	},
 												],
 											}
-										}, BR, {
+										}, BR, { // USER DISTINCTIONS
 											tag:	BLK, props:  { 
 												name: 	'user-distinct', 
 												header: { fixed: true, label: 'Distinctions' },
@@ -336,7 +341,11 @@ module.exports = {
 																placeholder:'Add your Language(s)',
 																tokens:		 languages,
 																strict: 	 true,
-																levels:		['A1','A2','B1','B2','C1','C2'],
+																levels:		[
+																	{K:'A1',V:1}, {K:'A2',V:2}, 
+																	{K:'B1',V:3}, {K:'B2',V:4}, 
+																	{K:'C1',V:5}, {K:'C2',V:6}
+																],
 																data:		{
 																	id:   'user-lang-sgst', 
 																	url:  '/search/for/languages',

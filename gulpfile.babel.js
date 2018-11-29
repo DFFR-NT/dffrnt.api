@@ -97,7 +97,7 @@
 					location: `${pubFld}/css`
 				};
 		const 	redfl 	= {
-					cwd: '../REDIS',
+					cwd: '/opt/REDIS',
 					cmd: 'redis-server',
 					cfg: 'redis.conf'
 				};
