@@ -1,6 +1,6 @@
 {
 	"name": "dffrnt.api",
-	"version": "2.5.0",
+	"version": "3.0.0",
 	"description": "A project for easy-ish API creation and configuration.",
 	"keywords": [
 		"api",
@@ -9,6 +9,7 @@
 		"api-rest",
 		"dffrnt"
 	],
+	"engines" : { "node" : ">=8.94 <10.16.3" },
 	"main": "main/server.js",
 	"author": {
 		"name": "Arian Johnson",
@@ -27,10 +28,10 @@
 	"dependencies": {
 		"bower": "1.8.2",
 		"classnames": "2.2.5",
-		"dffrnt.confs": "2.5.0",
-		"dffrnt.model": "2.5.0",
-		"dffrnt.route": "2.5.0",
-		"dffrnt.utils": "2.5.0",
+		"dffrnt.confs": "3.0.0",
+		"dffrnt.model": "3.0.0",
+		"dffrnt.route": "3.0.0",
+		"dffrnt.utils": "3.0.0",
 		"gulp": "4.0.0",
 		"gulp-nodemon": "2.2.1",
 		"keymirror": "0.1.1",

@@ -1,6 +1,7 @@
 /.docs/*
 /config
 /framework
+/spaces
 /main/browser/lib/*/lib/*.js
 /main/browser/lib/*.js
 /main/browser/src/elements/lib/*.jsx
