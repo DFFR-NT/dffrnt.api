@@ -16,17 +16,17 @@ module.exports = {
 		info: {
 			title: "eVectr.API",
 			description: "The official eVectr™ API.",
-			termsOfService: "https://arian.evectr.com:9443/terms",
+			termsOfService: "https://evectr.com/terms",
 			contact: { 
 				name: "eVectr™ Support",
 				email: "support@evectr.com",
-				url: "https://arian.evectr.com:9443/help",
+				url: "https://evectr.com/help",
 			},
 			version: "1.0.0"
 		},
 		externalDocs: {},
 		servers: [
-			{ url: "https://arian.evectr.com:8443" }
+			{ url: "https://evectr.com" }
 		],
 	},
 	Folders: 	{
