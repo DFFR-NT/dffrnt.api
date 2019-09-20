@@ -15,6 +15,7 @@
 /public/js/*
 /public/js/bundle.js
 /public/less/*
+/public/guide.*.html
 /spaces
 /spaces/*
 /storage
