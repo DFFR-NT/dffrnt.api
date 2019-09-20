@@ -1,7 +1,7 @@
-# dffrnt.api
-A project for easy-_ish_ **API** creation and configuration.
+# evectr.api
+The official **eVectr™** `API`.
 
-![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/latest-v3.0.1-blue.svg?longCache=true)
+![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/latest-v3.0.2-blue.svg?longCache=true)
 ![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/node-%3E=v10.16.2-lightgrey.svg?longCache=true)
 ![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/npm-%3E=v6.9.0-lightgrey.svg?longCache=true)
 ![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/mysql-%3E=v5.6.0-lightgrey.svg?longCache=true)
@@ -97,11 +97,18 @@ Parent_Folder/ (Name NOT important)
    // ./config/settings.js 
    export default {
        Debug: true, // Debug‑Mode will display verbose Logs
-       Port: 3001, // This is the Server's listening Port
-       Public: {
-           // Cache‑Age for Browser files
-           Age: 365*86400, 
-           // ...
+       // This is the Server's listening Port
+       Port: 3001, 
+       // If using as a separate Frontend...
+       API:	'http://localhost:3001',
+       // Setup Folders for Static Content 
+       Folders: 
+           Uploads: { 
+               Folder:  'storage',
+               // Cache‑Age for Browser files
+               Age: 365*86400, 
+               // ...
+           }
        },
        Session: {
            // This should be something hard to guess, like a phrase
@@ -151,7 +158,7 @@ Parent_Folder/ (Name NOT important)
    
    * If there are no _glaring_ `errors`, you're done!
    * Otherwise... Sh!t..? ¯\\_(ツ)\_/¯
-1. In your `browser`, navigate to [localhost:3001/api-explorer](http://localhost:3001/api-explorer) (_or whatever `port` you chose_) and you'll see the **API Exploration UI**. Use this to test your `endpoints` and/or `signle sign-on` functionality.
+1. In your `browser`, navigate to [localhost:3001/api-explorer](http://localhost:3001/api-explorer) (_or whatever `port` you chose_) and you'll see the **API Exploration UI**. Use this to test your `endpoints` and/or `single sign-on` functionality.
 1. Hit <kbd>CTRL</kbd>+<kbd>C</kbd> to `stop` the server.
 
 ---
