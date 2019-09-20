@@ -1,6 +1,6 @@
 {
 	"name": "dffrnt.api",
-	"version": "3.0.6",
+	"version": "3.0.7",
 	"description": "A project for easy-ish API creation and configuration.",
 	"keywords": [
 		"api",
@@ -28,10 +28,10 @@
 	"dependencies": {
 		"bower": "1.8.2",
 		"classnames": "2.2.5",
-		"dffrnt.confs": "3.0.6",
-		"dffrnt.model": "3.0.6",
-		"dffrnt.route": "3.0.6",
-		"dffrnt.utils": "3.0.6",
+		"dffrnt.confs": "3.0.7",
+		"dffrnt.model": "3.0.7",
+		"dffrnt.route": "3.0.7",
+		"dffrnt.utils": "3.0.7",
 		"gulp": "4.0.0",
 		"gulp-nodemon": "2.2.1",
 		"keymirror": "0.1.1",
