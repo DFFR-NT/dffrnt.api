@@ -1,7 +1,7 @@
-# evectr.api
-The official **eVectr™** `API`.
+# dffrnt.api
+A project for easy-_ish_ **API** creation and configuration.
 
-![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/latest-v3.0.2-blue.svg?longCache=true)
+![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/latest-v3.0.1-blue.svg?longCache=true)
 ![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/node-%3E=v10.16.2-lightgrey.svg?longCache=true)
 ![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/npm-%3E=v6.9.0-lightgrey.svg?longCache=true)
 ![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/mysql-%3E=v5.6.0-lightgrey.svg?longCache=true)
@@ -56,12 +56,12 @@ Parent_Folder/ (Name NOT important)
    ```apacheconf
    # ../REDIS/redis.conf
 
-   ################################## SECURITY ###################################
-   # Require clients to issue AUTH <PASSWORD> before processing any other
-   # ...
-   # use a very strong password otherwise it will be very easy to break.
+   ################################## SECURITY ###################################
+   # Require clients to issue AUTH <PASSWORD> before processing any other
+   # ...
+   # use a very strong password otherwise it will be very easy to break.
    #
-   requirepass p@ssw0rd_h3r3!
+   requirepass p@ssw0rd_h3r3!
    ```
 
 ### Installing
@@ -94,53 +94,46 @@ Parent_Folder/ (Name NOT important)
 1. In the `./config/` folder, configure the `settings.js` file:
 
    ```javascript
-   // ./config/settings.js 
-   export default {
-       Debug: true, // Debug‑Mode will display verbose Logs
-       // This is the Server's listening Port
-       Port: 3001, 
-       // If using as a separate Frontend...
-       API:	'http://localhost:3001',
-       // Setup Folders for Static Content 
-       Folders: 
-           Uploads: { 
-               Folder:  'storage',
-               // Cache‑Age for Browser files
-               Age: 365*86400, 
-               // ...
-           }
-       },
-       Session: {
-           // This should be something hard to guess, like a phrase
-           Secret: '¿mYd0GiS!nmYeyE&shEs4yS@uE?',
-           Age:    (((3600*1000)*4)*1),  // TTL for User Sessions
-           REDIS:  {
-               Host: 'localhost', // Or whereever you keep it
-               Port: 6379, // Listening Port
-               // The password you configured earlier
-               Password: 'p@ssw0rd!',
-           },
-           Auth: { /* ... */ }
-       }
+   // ./config/settings.js 
+   export default {
+       Debug: true, // Debug‑Mode will display verbose Logs
+       Port: 3001, // This is the Server's listening Port
+       Public: {
+           // Cache‑Age for Browser files
+           Age: 365*86400, 
+           // ...
+       },
+       Session: {
+           // This should be something hard to guess, like a phrase
+           Secret: '¿mYd0GiS!nmYeyE&shEs4yS@uE?',
+           Age:    (((3600*1000)*4)*1),  // TTL for User Sessions
+           REDIS:  {
+               Host: 'localhost', // Or whereever you keep it
+               Port: 6379, // Listening Port
+               // The password you configured earlier
+               Password: 'p@ssw0rd!',
+           },
+           Auth: { /* ... */ }
+       }
    };
    ```
 1. Still in the `./config/` folder, configure the `database.js` file:
    
    ```javascript
-   // ./config/database.js
-   export default {
-       Config: {
-           user:     'user', // The one you created in MySQL
-           database: 'mydatabase', // The DB
-           // ...
-       },
-       Pool: {
-           HeadEx1: {
-               host: 'XXX.XXX.XXX.XXX', // The eVectr IP
-               // The one you created in MySQL 
-               password: 'p@ssw0rd_h3r3!' 
-           },
-       }
+   // ./config/database.js
+   export default {
+       Config: {
+           user:     'user', // The one you created in MySQL
+           database: 'mydatabase', // The DB
+           // ...
+       },
+       Pool: {
+           HeadEx1: {
+               host: 'XXX.XXX.XXX.XXX', // The eVectr IP
+               // The one you created in MySQL 
+               password: 'p@ssw0rd_h3r3!' 
+           },
+       }
    };
    ```
 
@@ -158,7 +151,7 @@ Parent_Folder/ (Name NOT important)
    
    * If there are no _glaring_ `errors`, you're done!
    * Otherwise... Sh!t..? ¯\\_(ツ)\_/¯
-1. In your `browser`, navigate to [localhost:3001/api-explorer](http://localhost:3001/api-explorer) (_or whatever `port` you chose_) and you'll see the **API Exploration UI**. Use this to test your `endpoints` and/or `single sign-on` functionality.
+1. In your `browser`, navigate to [localhost:3001/api-explorer](http://localhost:3001/api-explorer) (_or whatever `port` you chose_) and you'll see the **API Exploration UI**. Use this to test your `endpoints` and/or `signle sign-on` functionality.
 1. Hit <kbd>CTRL</kbd>+<kbd>C</kbd> to `stop` the server.
 
 ---
@@ -180,4 +173,3 @@ Parent_Folder/ (Name NOT important)
 ## License 
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
