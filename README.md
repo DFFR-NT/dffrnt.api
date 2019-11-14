@@ -6,7 +6,7 @@ A project for easy-_ish_ **API** creation and configuration.
 ![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/npm-%3E=v6.9.0-lightgrey.svg?longCache=true)
 ![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/mysql-%3E=v5.6.0-lightgrey.svg?longCache=true)
 
-![DFFRNT Logo](https://dffr-nt.github.io/dffrnt.api/media/DffrntLogoSocial.png?raw=true)
+![DFFRNT Logo](https://dffr-nt.github.io/dffrnt.api/media/DffrntLogoReadMe.png)
 
 ## Contents
 
