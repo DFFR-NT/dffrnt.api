@@ -140,13 +140,13 @@ Parent_Folder/ (Name NOT important)
 ### Launching
 1. Lastly, still in the **project root**, type `gulp` and hit <kbd>ENTER</kbd> to run, and watch the `logs` as the `server` starts up:
 
-   > ![Initial Gulp-Tasks being completed](.docs/images/2.4.1_gulp-tasks.png?raw=true)
+   > ![Initial Gulp-Tasks being completed](https://dffr-nt.github.io/dffrnt.api/media/2.4.1_gulp-tasks.png?raw=true)
    > _Initial `gulp` tasks being completed._
    
-   > ![Nodemon Monitoring Startup](.docs/images/2.4.2_nmon-start.png?raw=true)
+   > ![Nodemon Monitoring Startup](https://dffr-nt.github.io/dffrnt.api/media/2.4.2_nmon-start.png?raw=true)
    > _File monitoring, courtesy of `nodemon`._
    
-   > ![Node Server Startup](.docs/images/2.4.3_node-start.png?raw=true)
+   > ![Node Server Startup](https://dffr-nt.github.io/dffrnt.api/media/2.4.3_node-start.png?raw=true)
    > _The `node` server starting up._
    
    * If there are no _glaring_ `errors`, you're done!
@@ -157,16 +157,16 @@ Parent_Folder/ (Name NOT important)
 ---
 ## Modules
 
-### [dffrnt.confs](https://github.com/DFFR-NT/dffrnt.confs#readme)
+### [dffrnt.confs](https://dffr-nt.github.io/dffrnt.api/modules/_dffrnt_confs.html)
 > _Initial default Configs used within the DFFRNT.API Framework._
 
-### [dffrnt.model](https://github.com/DFFR-NT/dffrnt.model#readme)
+### [dffrnt.model](https://dffr-nt.github.io/dffrnt.api/modules/_dffrnt_model.html)
 > _A collection of SQL Utilities & MySQL connector._
 
-### [dffrnt.route](https://github.com/DFFR-NT/dffrnt.route#readme)
+### [dffrnt.route](https://dffr-nt.github.io/dffrnt.api/modules/_dffrnt_route.html)
 > _An Express/Passport/MySQL-based API Router._
 
-### [dffrnt.utils](https://github.com/DFFR-NT/dffrnt.utils#readme)
+### [dffrnt.utils](https://dffr-nt.github.io/dffrnt.api/modules/_dffrnt_utils.html)
 > _A collection of useful API Utilities & PolyFills._
 
 ---

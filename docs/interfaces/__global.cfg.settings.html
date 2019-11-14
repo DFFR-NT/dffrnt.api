@@ -1,0 +1,950 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Settings | dffrnt.api</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<header class="dff-page-toolbar">
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.js" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">dffrnt.api</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</header>
+<header class="dff-page-title">
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">&nbsp;</ul>
+			<h1>Interface Settings</h1>
+		</div>
+	</div>
+</header>
+<header class="dff-page-breadcrumb">
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../globals.html">Globals</a>
+				</li>
+				<li>
+					<a href="../modules/__global.html">__global</a>
+				</li>
+				<li>
+					<a href="../modules/__global.cfg.html">CFG</a>
+				</li>
+				<li>
+					<a href="__global.cfg.settings.html">Settings</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Configurations for this <code>Application</code> server.</p>
+						<a href="#example" id="example" style="color: inherit; text-decoration: none;">
+							<h3>Example</h3>
+						</a>
+						<p>These are placed in <code>config/settings.cfg.js</code>.</p>
+						<pre><code class="language-js"><span class="hljs-built_in">module</span>.exports = {
+    <span class="hljs-attr">Debug</span>:      <span class="hljs-literal">false</span>,
+    <span class="hljs-attr">Port</span>:       <span class="hljs-number">8080</span>,
+    <span class="hljs-attr">SSL</span>:        {
+        <span class="hljs-attr">Cert</span>:   <span class="hljs-string">"./mysite.chain.pem"</span>,
+        <span class="hljs-attr">Key</span>:    <span class="hljs-string">"./mysite.key.pem"</span>,
+    },
+    <span class="hljs-attr">Services</span>:   [
+        <span class="hljs-string">'http://localhost:8080/gbl-accessor'</span>,
+        <span class="hljs-string">'http://localhost:8080/gbl-rest'</span>,
+    ],
+    <span class="hljs-attr">APIDoc</span>:     { ... },
+    <span class="hljs-attr">Folders</span>:    {
+        <span class="hljs-attr">Publics</span>:    {
+            <span class="hljs-attr">Folder</span>:  <span class="hljs-string">'public'</span>,
+            <span class="hljs-attr">Age</span>:     <span class="hljs-number">365</span>*<span class="hljs-number">86400</span>,
+            <span class="hljs-attr">Matcher</span>: <span class="hljs-regexp">/\?(?:\w+=.+)$/</span>,
+            <span class="hljs-attr">Headers</span>: <span class="hljs-literal">null</span>,
+        },
+        <span class="hljs-attr">Uploads</span>:    { ... },
+    },
+    <span class="hljs-attr">Session</span>:    {
+        <span class="hljs-attr">Secret</span>: <span class="hljs-string">"¿mYd0GiS!nmYeyE&amp;shEs4yS@uE?"</span>,
+        <span class="hljs-attr">Age</span>:    { <span class="hljs-attr">In</span>: ((<span class="hljs-number">1000</span>*<span class="hljs-number">60</span>*<span class="hljs-number">60</span>)*<span class="hljs-number">24</span>), <span class="hljs-attr">Out</span>: (<span class="hljs-number">1000</span>*<span class="hljs-number">300</span>) },
+        <span class="hljs-attr">REDIS</span>:  {
+            <span class="hljs-attr">Config</span>: {
+                <span class="hljs-attr">Host</span>: <span class="hljs-string">'localhost'</span>,
+                <span class="hljs-attr">Port</span>: <span class="hljs-number">6379</span>,
+                <span class="hljs-attr">Password</span>: <span class="hljs-string">'p@55w012d'</span>,
+            },
+            <span class="hljs-attr">Main</span>:   { <span class="hljs-attr">Index</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">Name</span>: <span class="hljs-string">'Client'</span> },
+            <span class="hljs-attr">Stores</span>: [
+                { <span class="hljs-attr">Index</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">Name</span>: <span class="hljs-string">'Users'</span>   },
+                { <span class="hljs-attr">Index</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">Name</span>: <span class="hljs-string">'Limits'</span>  },
+                { <span class="hljs-attr">Index</span>: <span class="hljs-number">3</span>, <span class="hljs-attr">Name</span>: <span class="hljs-string">'Lockers'</span> },
+            ]
+        },
+        <span class="hljs-attr">Auth</span>:   {
+            <span class="hljs-attr">Flush</span>:  <span class="hljs-literal">false</span>,
+            <span class="hljs-attr">SQL</span>:    {
+                <span class="hljs-attr">Login</span>:   <span class="hljs-string">"SELECT user_name, password FROM users WHERE user_name = ?"</span>,
+                <span class="hljs-attr">Profile</span>: <span class="hljs-string">"SELECT * FROM users WHERE id = ?"</span>
+            },
+            <span class="hljs-attr">Format</span>: {
+                <span class="hljs-attr">Account</span>: <span class="hljs-string">'user_name'</span>,
+                <span class="hljs-attr">Profile</span>: [ ... ],
+                <span class="hljs-attr">Scopes</span>:  [ ... ]
+            }
+        },
+        <span class="hljs-attr">Limits</span>: {
+            <span class="hljs-attr">All</span>: {
+                <span class="hljs-string">"IP/Day"</span>: {
+                    <span class="hljs-attr">total</span>: <span class="hljs-number">5000</span>, <span class="hljs-attr">method</span>: <span class="hljs-string">'all'</span>,
+                    <span class="hljs-attr">lookup</span>: [<span class="hljs-string">'connection.remoteAddress'</span>],
+                },
+            },
+            <span class="hljs-attr">Optional</span>: {
+                <span class="hljs-string">"Constant/Second"</span>: {
+                    <span class="hljs-attr">total</span>: <span class="hljs-number">200</span>,   <span class="hljs-attr">method</span>: <span class="hljs-string">'get'</span>,
+                    <span class="hljs-attr">lookup</span>: [<span class="hljs-string">'connection.remoteAddress'</span>]
+                }
+            }
+        }
+    }
+};</code></pre>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">Settings</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="__global.cfg.settings.html#debug" class="tsd-kind-icon">Debug</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="__global.cfg.settings.html#port" class="tsd-kind-icon">Port</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="__global.cfg.settings.html#ssl" class="tsd-kind-icon">SSL</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="__global.cfg.settings.html#services" class="tsd-kind-icon">Services</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="__global.cfg.settings.html#apidoc" class="tsd-kind-icon">APIDoc</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="__global.cfg.settings.html#folders" class="tsd-kind-icon">Folders</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="__global.cfg.settings.html#session" class="tsd-kind-icon">Session</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="__global.cfg.settings.html#plugins" class="tsd-kind-icon">Plugins</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="debug" class="tsd-anchor"></a>
+					<h3>Debug</h3>
+					<div class="tsd-signature tsd-kind-icon">Debug<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in dffrnt.confs/index.d.ts:702</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The <code>logging</code> mode. This can be changed to see <strong>more</strong> or <strong>less</strong> details. It can also be
+							<em>exploited</em> in your own <code>logging</code> using the <code>import(&#39;dffrnt.utils&#39;).LG</code> <code>functions</code>.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>default</dt>
+							<dd><p>false</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="port" class="tsd-anchor"></a>
+					<h3>Port</h3>
+					<div class="tsd-signature tsd-kind-icon">Port<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in dffrnt.confs/index.d.ts:707</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The <code>Port Number</code> this web-server will listen on.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>default</dt>
+							<dd><p>3001</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="ssl" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> SSL</h3>
+					<div class="tsd-signature tsd-kind-icon">SSL<span class="tsd-signature-symbol">:</span> <a href="__global.cfg.sttg.ssl.html" class="tsd-signature-type">SSL</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in dffrnt.confs/index.d.ts:713</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>An object specifiying paths to <code>SSL</code> files. This is <code>null</code>, if <code>SSL/HTTPS/2</code> is not
+								required. If it is configured, and the {@link CFG.Settings.SSL.Cert} and/or {@link CFG.Settings.SSL.Key}
+							files are nowhere to be found, you&#39;ll obviously have issues.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="services" class="tsd-anchor"></a>
+					<h3>Services</h3>
+					<div class="tsd-signature tsd-kind-icon">Services<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in dffrnt.confs/index.d.ts:798</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>An <code>optional</code> list of any <code>URLs</code> pointing to <code>auth</code>/<code>rest</code> <code>Spaces</code> (<em>see: {@link CFGSpaces}</em>) that this particular
+								web-server may need to connect to <strong>remotely</strong>. This allows you to customize the <code>FQDN</code> of any <code>auth</code>/<code>rest</code>
+							<code>Spaces</code> you&#39;ve configured without breaking the whole system (lol).</p>
+						</div>
+						<p>A <code>Space</code> is really just a <code>Socket.IO.Namespace</code> that Client-Browsers and instances of <code>dffrnt.api</code> can
+							connect to. Depending on the implementation of <code>dffrnt.api</code>, certain <code>Spaces</code> will be required to connect
+						to another <code>auth</code>/<code>rest</code> <code>Space</code> -- even if all of said <code>Spaces</code> are within the same instance:</p>
+						<table>
+							<thead>
+								<tr>
+									<th align="center">Instance</th>
+									<th>Requirement</th>
+								</tr>
+							</thead>
+							<tbody><tr>
+									<td align="center"><code>auth</code> only</td>
+									<td>Needs a remote connection to it&#39;s internal Namespace.</td>
+								</tr>
+								<tr>
+									<td align="center"><code>rest</code> only</td>
+									<td>Needs a remote connection to an <code>auth-Space</code> (<em>if using authentication</em>).</td>
+								</tr>
+								<tr>
+									<td align="center"><code>page</code> only</td>
+									<td>Needs a remote connection to a <code>rest-Space</code> (<em>unless page data is all static</em>).</td>
+								</tr>
+								<tr>
+									<td align="center"><code>auth</code>+<code>rest</code></td>
+									<td>Needs a remote connection to a <code>auth-Space</code>.</td>
+								</tr>
+								<tr>
+									<td align="center"><code>rest</code>+<code>page</code></td>
+									<td>Needs a remote connection to a <code>rest-Space</code>.</td>
+								</tr>
+								<tr>
+									<td align="center"><code>auth</code>+<code>rest</code>+<code>page</code></td>
+									<td>Needs a remote connection to an <code>auth-Space</code> and a <code>rest-Space</code>.</td>
+								</tr>
+						</tbody></table>
+						<p>If this property is <strong>not set</strong>, the system will assume <code>${protocol}://localhost/gbl-${spaceName}</code>, where
+						<code>${spaceName}</code> is the <code>name</code> provided for any given <code>auth</code>/<code>rest</code> <code>Space</code> in {@link CFGSpace.config}.</p>
+						<p>These can refer to <code>Spaces</code> that are internal, as well as external to this particular web-server. This can be
+							useful when there becomes a need to &quot;break up&quot; the functionality into separate web-server. Take this project
+						structure, for <strong>example</strong>:</p>
+						<pre><code class="language-plaintext">[Your-Machine]
+   ├── dffrnt.api-auth/ &gt;&gt; This web-server will handle the Authentication @ https://localhost:7443/gbl-auth
+   ├── dffrnt.api-rest/ &gt;&gt; This web-server will handle the Data Requests  @ https://localhost:8443/gbl-rest
+   └── dffrnt.api-view/ &gt;&gt; This web-server is the Web-App for the Clients @ https://mysite.com</code></pre>
+						<p>The settings for each <strong>instance</strong> would be configured as follows:</p>
+						<pre><code class="language-javascript"><span class="hljs-comment">// [Your-Machine]/dffrnt.api-auth/config/settings.cfg.js</span>
+<span class="hljs-built_in">module</span>.exports = {
+    <span class="hljs-comment">// Needs a remote connection to it's internal Namespace.</span>
+    Services: [<span class="hljs-string">"https://localhost:7443/gbl-auth"</span>]
+};
+<span class="hljs-comment">// [Your-Machine]/dffrnt.api-auth/config/settings.cfg.js</span>
+<span class="hljs-built_in">module</span>.exports = {
+    <span class="hljs-comment">// Needs a remote connection the auth-Space.</span>
+    Services: [<span class="hljs-string">"https://localhost:7443/gbl-auth"</span>]
+};
+<span class="hljs-comment">// [Your-Machine]/dffrnt.api-auth/config/settings.cfg.js</span>
+<span class="hljs-built_in">module</span>.exports = {
+    <span class="hljs-comment">// Needs a remote connection to the auth-Space, and the rest-Space.</span>
+    Services: [<span class="hljs-string">"https://localhost:7443/gbl-auth"</span>,<span class="hljs-string">"https://localhost:8443/gbl-rest"</span>]
+};</code></pre>
+						<p>In the scenario above, you have a <strong>single-machine</strong> running <strong>3-instances</strong> of <code>dffrnt.api</code>. Each are
+						configured accordingly to handle their specified tasks.</p>
+						<p>But what if you wanted to take the separation even further? Like using separate machines for each
+						instance? For example</p>
+						<pre><code class="language-plaintext">[Machine-1]
+   ├── dffrnt.api-auth/ &gt;&gt; This machine will handle the Authentication @ Port 443 (https://auth.mysite.com)
+[Machine-3]
+   ├── dffrnt.api-rest/ &gt;&gt; This machine will handle the Data Requests @ Port 443 (https://rest.mysite.com)
+[Machine-3]
+   └── dffrnt.api-view/ &gt;&gt; This machine will is the actual WebApp @ Port 443 (https://mysite.com)</code></pre>
+						<p>The settings for each would be configured as follows:</p>
+						<pre><code class="language-javascript"><span class="hljs-comment">// [Machine-1]/dffrnt.api-auth/config/settings.cfg.js</span>
+<span class="hljs-built_in">module</span>.exports = {
+    <span class="hljs-comment">// Needs a remote connection to it's internal Namespace.</span>
+    Services: [<span class="hljs-string">"https://auth.mysite.com"</span>]
+};
+<span class="hljs-comment">// [Machine-2]/dffrnt.api-auth/config/settings.cfg.js</span>
+<span class="hljs-built_in">module</span>.exports = {
+    <span class="hljs-comment">// Needs a remote connection the auth-Space.</span>
+    Services: [<span class="hljs-string">"https://auth.mysite.com"</span>]
+};
+<span class="hljs-comment">// [Machine-3]/dffrnt.api-auth/config/settings.cfg.js</span>
+<span class="hljs-built_in">module</span>.exports = {
+    <span class="hljs-comment">// Needs a remote connection to the auth-Space, and the rest-Space.</span>
+    Services: [<span class="hljs-string">"https://auth.mysite.com"</span>,<span class="hljs-string">"https://rest.mysite.com"</span>]
+};</code></pre>
+						<p>You could take it even further, setting up multiple instances of each implementation, every one
+							of them on their own machine, use <code>NGinX</code> (or something) to load-balance each <code>Service</code> and
+							these config-settings would still apply. Unfortunately, I don&#39;t have the time or patience to
+						write up that example.</p>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="apidoc" class="tsd-anchor"></a>
+					<h3>APIDoc</h3>
+					<div class="tsd-signature tsd-kind-icon">APIDoc<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in dffrnt.confs/index.d.ts:827</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p><code>dffrnt.api</code> comes with <code>OpenAPI 3.0</code> support by <em>automagically</em> (lol) creating <code>REST</code> documentation
+								for any <code>EndPoints</code> created within your <code>App</code>. That said, the <strong>top-level</strong> description of your <code>REST-API</code>
+							is up to you to define.</p>
+						</div>
+						<p>Once the application-server is up and running, the <code>JSON</code> document can be found at <code>/apidocs</code>.</p>
+						<p>This is shot-for-shot the same <code>info</code>, <code>externalDocs</code>, and <code>servers</code> object described in the
+							<strong><a href="https://swagger.io/specification/#oasObject">OpenAPI 3.0</a></strong> spec (<em>execpt for the <code>openapi</code> version</em>), so
+						check that out to get an idea of what goes where. Any other objects are defined... <em>_automagically</em> (LOL).</p>
+						<a href="#example" id="example" style="color: inherit; text-decoration: none;">
+							<h3>Example</h3>
+						</a>
+						<pre><code class="language-javascript">{
+    <span class="hljs-attr">info</span>: {
+        <span class="hljs-attr">title</span>: <span class="hljs-string">"My API"</span>,
+        <span class="hljs-attr">description</span>: <span class="hljs-string">"It's an API Doc."</span>,
+        <span class="hljs-attr">termsOfService</span>: <span class="hljs-string">"https://www.mysite/terms"</span>,
+        <span class="hljs-attr">contact</span>: {
+            <span class="hljs-attr">name</span>: <span class="hljs-string">"My Site Support"</span>,
+            <span class="hljs-attr">email</span>: <span class="hljs-string">"custome.support@mysite.com"</span>,
+            <span class="hljs-attr">url</span>: <span class="hljs-string">"https://www.mysite/support"</span>,
+        },
+        <span class="hljs-attr">version</span>: <span class="hljs-string">"2.1.8"</span>
+    },
+}</code></pre>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>info<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>title<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5><span class="tsd-flag ts-flagOptional">Optional</span> description<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5><span class="tsd-flag ts-flagOptional">Optional</span> terms<wbr>OfService<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5><span class="tsd-flag ts-flagOptional">Optional</span> contact<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span></h5>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter">
+												<h5>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+											</li>
+											<li class="tsd-parameter">
+												<h5>email<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+											</li>
+											<li class="tsd-parameter">
+												<h5>url<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+											</li>
+										</ul>
+									</li>
+									<li class="tsd-parameter">
+										<h5><span class="tsd-flag ts-flagOptional">Optional</span> license<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span></h5>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter">
+												<h5>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+											</li>
+											<li class="tsd-parameter">
+												<h5><span class="tsd-flag ts-flagOptional">Optional</span> url<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
+											</li>
+										</ul>
+									</li>
+									<li class="tsd-parameter">
+										<h5>version<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+									</li>
+								</ul>
+							</li>
+							<li class="tsd-parameter">
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> external<wbr>Docs<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>url<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+									</li>
+									<li class="tsd-parameter">
+										<h5><span class="tsd-flag ts-flagOptional">Optional</span> description<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span></h5>
+									</li>
+								</ul>
+							</li>
+							<li class="tsd-parameter">
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> servers<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">[]</span></h5>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="folders" class="tsd-anchor"></a>
+					<h3>Folders</h3>
+					<div class="tsd-signature tsd-kind-icon">Folders<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in dffrnt.confs/index.d.ts:868</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A collection of <a href="__global.cfg.sttg.folder.html">STTG.Folder</a> configurations for <strong>file-serving</strong>.</p>
+						</div>
+						<p>The <code>dffrnt.api</code> framework automatically installs and uses two predefined
+							-- <em>and <code>reserved</code></em> -- <a href="__global.cfg.sttg.folder.html">STTG.Folder</a>s, <code>Publics</code> &amp; <code>Uploads</code>. These folder
+							configurations are <code>required</code> <strong>internally</strong>, but can be altered by redifining them
+							here; however, doing so -- <em>particularily,  with <code>Publics</code></em> -- could potentially introduce
+						problems. That said, do it at your own risk, and only if you know what you&#39;re doing.</p>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-index-signature">
+								<h5><span class="tsd-signature-symbol">[</span>folderName: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><a href="__global.cfg.sttg.folder.html" class="tsd-signature-type">Folder</a></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>Publics<span class="tsd-signature-symbol">: </span><a href="__global.cfg.sttg.folder.html" class="tsd-signature-type">Folder</a></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>This is where various, <strong>public</strong>, <em>browser-related</em> files/folders go:</p>
+									</div>
+									<table>
+										<thead>
+											<tr>
+												<th>Location</th>
+												<th>Description</th>
+											</tr>
+										</thead>
+										<tbody><tr>
+												<td><code>public/comps</code></td>
+												<td><code>Bower</code> components.</td>
+											</tr>
+											<tr>
+												<td><code>public/css</code></td>
+												<td><code>CSS</code> files.</td>
+											</tr>
+											<tr>
+												<td><code>public/less</code></td>
+												<td><code>LESS</code> files; if using.</td>
+											</tr>
+											<tr>
+												<td><code>public/fonts</code></td>
+												<td>Various <code>Font</code> files.</td>
+											</tr>
+											<tr>
+												<td><code>public/html</code></td>
+												<td>Extra <code>HTML</code> files.</td>
+											</tr>
+											<tr>
+												<td><code>public/images</code></td>
+												<td>Site <code>Images</code>.</td>
+											</tr>
+											<tr>
+												<td><code>public/images/icons</code></td>
+												<td>Site <code>Icons</code></td>
+											</tr>
+											<tr>
+												<td><code>public/js</code></td>
+												<td>Important <code>JavaScript</code> <strong>bundles</strong>, and extra files (<em>if needed</em>).</td>
+											</tr>
+									</tbody></table>
+									<a href="#default-properties" id="default-properties" style="color: inherit; text-decoration: none;">
+										<h3>Default Properties:</h3>
+									</a>
+									<pre><code class="language-javascript">{
+    <span class="hljs-attr">Publics</span>: {
+        <span class="hljs-attr">Folder</span>:  <span class="hljs-string">'public'</span>,
+        <span class="hljs-attr">Age</span>:      <span class="hljs-number">365</span>*<span class="hljs-number">86400</span>,
+        <span class="hljs-attr">Matcher</span>: <span class="hljs-regexp">/\?(?:\w+=.+)$/</span>,
+    },
+}</code></pre>
+									<dl class="tsd-comment-tags">
+										<dt>reserved</dt>
+										<dd></dd>
+									</dl>
+								</div>
+							</li>
+							<li class="tsd-parameter">
+								<h5>Uploads<span class="tsd-signature-symbol">: </span><a href="__global.cfg.sttg.folder.html" class="tsd-signature-type">Folder</a></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>This is where any uploads to your site will go. The <strong>name</strong> and <strong>structure</strong> of
+										this directory is entirely up to you.</p>
+									</div>
+									<a href="#default-properties" id="default-properties" style="color: inherit; text-decoration: none;">
+										<h3>Default Properties:</h3>
+									</a>
+									<pre><code class="language-javascript">{
+    <span class="hljs-attr">Uploads</span>: {
+        <span class="hljs-attr">Folder</span>:  <span class="hljs-string">'storage'</span>,
+        <span class="hljs-attr">Age</span>:      <span class="hljs-number">365</span>*<span class="hljs-number">86400</span>,
+        <span class="hljs-attr">Matcher</span>: <span class="hljs-regexp">/\?(?:\w+=.+)$/</span>,
+    },
+}</code></pre>
+									<dl class="tsd-comment-tags">
+										<dt>reserved</dt>
+										<dd></dd>
+									</dl>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="session" class="tsd-anchor"></a>
+					<h3>Session</h3>
+					<div class="tsd-signature tsd-kind-icon">Session<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in dffrnt.confs/index.d.ts:918</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Configurations for <strong>session-handling</strong>, <strong>authentication</strong>, and <strong>call-limits</strong>.</p>
+						</div>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>Secret<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>An arbitrary <code>string</code> used to sign <code>sessions</code>. The longer the better.</p>
+									</div>
+								</div>
+							</li>
+							<li class="tsd-parameter">
+								<h5>Age<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>The <strong>maximum</strong> <code>Age</code> of <em>saved</em> (<code>In</code>) &amp; <em>unsave</em> (<code>Out</code>) <code>SessionCookies</code>.</p>
+									</div>
+								</div>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>Out<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+										<div class="tsd-comment tsd-typography">
+											<div class="lead">
+												<p>This is the <strong>maximum</strong> <code>Age</code> -- <em>in milliseconds</em> -- of an <em>unsaved</em> <code>SessionCookie</code>. This
+												should be <strong>shorter</strong> than the <code>Session.Age.In</code> value.</p>
+											</div>
+										</div>
+									</li>
+									<li class="tsd-parameter">
+										<h5>In<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+										<div class="tsd-comment tsd-typography">
+											<div class="lead">
+												<p>This is the <strong>maximum</strong> <code>Age</code> -- <em>in milliseconds</em> -- of an <em>saved</em> <code>SessionCookie</code>. A
+													<code>SessionCookie</code> is <em>saved</em> when a <code>User</code> is considered <code>logge-in</code>. This should be <strong>longer</strong>
+												than the <code>Session.Age.Out</code> value.</p>
+											</div>
+										</div>
+									</li>
+								</ul>
+							</li>
+							<li class="tsd-parameter">
+								<h5>REDIS<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Configurations for the <code>REDIS</code> server. This is used for <strong>sessions</strong>, but any <em>non-<code>reserved</code></em> <code>DBs</code>
+											are exposed to <a href="__global.cfg.authpoints.html">CFG.AuthPoints</a> &amp; <a href="__global.cfg.datapoints.html">CFG.DataPoints</a> configuration. Those would be declared
+										here and can serve any purpose you want them to.</p>
+									</div>
+									<p><code>Reserved</code> <code>DBs</code> are as follows. Their <code>Index</code> properties can be changed (<em>if you already have <code>DBs</code> in-use</em>),
+									but their <code>Name</code> must remain the same. (<em>IT&#39;s a weird way to do things, I know, but <code>REDIS</code> only use indexes to reference their <code>DBs</code>.</em>)</p>
+								</div>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>Config<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></h5>
+										<div class="tsd-comment tsd-typography">
+											<div class="lead">
+												<p>The <code>properties</code> used to connect to your <code>REDIS</code> server.</p>
+											</div>
+										</div>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter">
+												<h5>Host<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+												<div class="tsd-comment tsd-typography">
+													<div class="lead">
+														<p>The <code>url</code>/<code>ip-address</code> of your <code>REDIS</code> server.</p>
+													</div>
+												</div>
+											</li>
+											<li class="tsd-parameter">
+												<h5>Port<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+												<div class="tsd-comment tsd-typography">
+													<div class="lead">
+														<p>The <code>port-number</code> of your <code>REDIS</code> server.</p>
+													</div>
+												</div>
+											</li>
+											<li class="tsd-parameter">
+												<h5>Password<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+												<div class="tsd-comment tsd-typography">
+													<div class="lead">
+														<p>The <code>password</code> of your <code>REDIS</code> server.</p>
+													</div>
+												</div>
+											</li>
+										</ul>
+									</li>
+									<li class="tsd-parameter">
+										<h5>Main<span class="tsd-signature-symbol">: </span><a href="__global.cfg.sttg.redis_db.html" class="tsd-signature-type">REDIS_DB</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">0</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">"Client"</span><span class="tsd-signature-symbol">&gt;</span></h5>
+										<div class="tsd-comment tsd-typography">
+											<div class="lead">
+												<p>This is the <code>DB</code> where all session-data is stored. The <code>Index</code> can be changed; the <code>Name</code>
+												<strong>cannot</strong> be.</p>
+											</div>
+											<dl class="tsd-comment-tags">
+												<dt>reserved</dt>
+												<dd></dd>
+											</dl>
+										</div>
+									</li>
+									<li class="tsd-parameter">
+										<h5>Stores<span class="tsd-signature-symbol">: </span><a href="../modules/__global.cfg.sttg.html#redis_dbs" class="tsd-signature-type">REDIS_DBs</a></h5>
+										<div class="tsd-comment tsd-typography">
+											<div class="lead">
+												<p>The other stores. The <strong>3</strong> list here are <code>resvered</code>, but you can add more if you&#39;d
+													like. The <code>Indexes</code> of the <code>reserved</code> stores can be changed; their <code>Names</code> <strong>cannot</strong>
+												be.</p>
+											</div>
+											<dl class="tsd-comment-tags">
+												<dt>reserved</dt>
+												<dd></dd>
+											</dl>
+										</div>
+									</li>
+								</ul>
+							</li>
+							<li class="tsd-parameter">
+								<h5>Auth<span class="tsd-signature-symbol">: </span><a href="__global.cfg.sttg.auth.html" class="tsd-signature-type">Auth</a></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>...</p>
+									</div>
+								</div>
+							</li>
+							<li class="tsd-parameter">
+								<h5>Limits<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>...</p>
+									</div>
+								</div>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter">
+										<h5>All<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></h5>
+										<div class="tsd-comment tsd-typography">
+											<div class="lead">
+												<p>...</p>
+											</div>
+										</div>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter-index-signature">
+												<h5><span class="tsd-signature-symbol">[</span>limitName: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><a href="__global.cfg.sttg.limits.html" class="tsd-signature-type">Limits</a></h5>
+											</li>
+										</ul>
+									</li>
+									<li class="tsd-parameter">
+										<h5>Optional<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span></h5>
+										<div class="tsd-comment tsd-typography">
+											<div class="lead">
+												<p>...</p>
+											</div>
+										</div>
+										<ul class="tsd-parameters">
+											<li class="tsd-parameter-index-signature">
+												<h5><span class="tsd-signature-symbol">[</span>limitName: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><a href="__global.cfg.sttg.limits.html" class="tsd-signature-type">Limits</a></h5>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="plugins" class="tsd-anchor"></a>
+					<h3>Plugins</h3>
+					<div class="tsd-signature tsd-kind-icon">Plugins<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in dffrnt.confs/index.d.ts:1001</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>An collection of <code>optional</code> <code>Plugins</code> that you can define and use within
+							<code>config/authpoints.cfg.js</code> &amp; <code>config/endpoints.cfg.js</code> via the <code>Plugins</code> object.</p>
+						</div>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-index-signature">
+								<h5><span class="tsd-signature-symbol">[</span>pluginName: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">function</span></h5>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter-siganture">
+										<ul class="tsd-signatures tsd-kind-type-literal tsd-has-type-parameter tsd-is-not-exported">
+											<li class="tsd-signature tsd-kind-icon">&lt;T&gt;<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></li>
+										</ul>
+										<ul class="tsd-descriptions">
+											<li class="tsd-description">
+												<h4 class="tsd-type-parameters-title">Type parameters</h4>
+												<ul class="tsd-type-parameters">
+													<li>
+														<h4>T</h4>
+													</li>
+												</ul>
+												<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">T</span></h4>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-module tsd-is-not-exported">
+						<a href="../modules/_dffrnt_confs_.html">"dffrnt.confs"</a>
+					</li>
+					<li class=" tsd-kind-module tsd-is-not-exported">
+						<a href="../modules/_dffrnt_model_.html">"dffrnt.model"</a>
+					</li>
+					<li class=" tsd-kind-module tsd-is-not-exported">
+						<a href="../modules/_dffrnt_route_.html">"dffrnt.route"</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_dffrnt_utils_.html">"dffrnt.utils"</a>
+					</li>
+					<li class="current tsd-kind-module tsd-is-not-exported">
+						<a href="../modules/__global.html">__global</a>
+						<ul>
+							<li class="current tsd-kind-module tsd-parent-kind-module">
+								<a href="../modules/__global.cfg.html">CFG</a>
+								<ul>
+									<li class=" tsd-kind-module tsd-parent-kind-module tsd-is-not-exported">
+										<a href="../modules/__global.cfg.msql.html">MSQL</a>
+									</li>
+									<li class=" tsd-kind-module tsd-parent-kind-module tsd-is-not-exported">
+										<a href="../modules/__global.cfg.pnts.html">PNTS</a>
+									</li>
+									<li class=" tsd-kind-module tsd-parent-kind-module tsd-is-not-exported">
+										<a href="../modules/__global.cfg.spce.html">SPCE</a>
+									</li>
+									<li class=" tsd-kind-module tsd-parent-kind-module tsd-is-not-exported">
+										<a href="../modules/__global.cfg.sttg.html">STTG</a>
+									</li>
+								</ul>
+							</li>
+							<li class=" tsd-kind-module tsd-parent-kind-module">
+								<a href="../modules/__global.rout.html">ROUT</a>
+							</li>
+							<li class=" tsd-kind-module tsd-parent-kind-module">
+								<a href="../modules/__global.sess.html">SESS</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</nav>
+		</div>
+		<div class="col-4 col-menu menu-highlight stickit">
+			<nav class="tsd-navigation secondary">
+				<ul class="before-current">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface tsd-parent-kind-module">
+						<a href="__global.cfg.settings.html" class="tsd-kind-icon">Settings</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="__global.cfg.settings.html#debug" class="tsd-kind-icon">Debug</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="__global.cfg.settings.html#port" class="tsd-kind-icon">Port</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="__global.cfg.settings.html#ssl" class="tsd-kind-icon">SSL</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="__global.cfg.settings.html#services" class="tsd-kind-icon">Services</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="__global.cfg.settings.html#apidoc" class="tsd-kind-icon">APIDoc</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="__global.cfg.settings.html#folders" class="tsd-kind-icon">Folders</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="__global.cfg.settings.html#session" class="tsd-kind-icon">Session</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="__global.cfg.settings.html#plugins" class="tsd-kind-icon">Plugins</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="__global.cfg.database.html" class="tsd-kind-icon">Database</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="__global.cfg.spaces.html" class="tsd-kind-icon">Spaces</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="__global.cfg.authpoints.html" class="tsd-kind-icon">Auth<wbr>Points</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="__global.cfg.datapoints.html" class="tsd-kind-icon">Data<wbr>Points</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer>
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="../assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>

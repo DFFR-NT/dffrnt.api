@@ -41,7 +41,6 @@
 		"react-devtools": "^3.4.0",
 		"react-dom": "16.4.2",
 		"reflux": "6.4.1",
-		"tzdata": "^1.0.11",
 		"utf-8-validate": "1.2.2"
 	},
 	"devDependencies": {

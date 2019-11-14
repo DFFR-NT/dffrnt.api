@@ -1,0 +1,621 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Spaces | dffrnt.api</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<header class="dff-page-toolbar">
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.js" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">dffrnt.api</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</header>
+<header class="dff-page-title">
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">&nbsp;</ul>
+			<h1>Interface Spaces</h1>
+		</div>
+	</div>
+</header>
+<header class="dff-page-breadcrumb">
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../globals.html">Globals</a>
+				</li>
+				<li>
+					<a href="../modules/__global.html">__global</a>
+				</li>
+				<li>
+					<a href="../modules/__global.cfg.html">CFG</a>
+				</li>
+				<li>
+					<a href="__global.cfg.spaces.html">Spaces</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>A plain-object, describing a collection of <code>NameSpaces</code> (or simply, <code>Spaces</code>) that will be used to
+						<strong>serve webpages/files</strong>, handle <strong>data-reqests</strong>, and/or <strong>authenitcation</strong>.</p>
+						<a href="#example" id="example" style="color: inherit; text-decoration: none;">
+							<h3>Example</h3>
+						</a>
+						<p>These are placed in <code>config/namespaces.cfg.js</code>.</p>
+						<pre><code class="language-javascript"><span class="hljs-built_in">module</span>.exports = {
+    <span class="hljs-attr">PUSH</span>:       [
+        { <span class="hljs-attr">enc</span>: <span class="hljs-string">'Base64'</span>, <span class="hljs-attr">path</span>: <span class="hljs-string">'/public/images/logo.png'</span> },
+        { <span class="hljs-attr">enc</span>: <span class="hljs-string">'utf8'</span>,   <span class="hljs-attr">path</span>: <span class="hljs-string">'/public/js/vendor.js'</span> },
+        { <span class="hljs-attr">enc</span>: <span class="hljs-string">'utf8'</span>,   <span class="hljs-attr">path</span>: <span class="hljs-string">'/public/js/engine.js'</span> },
+    ],
+    <span class="hljs-attr">Global</span>:     { <span class="hljs-comment">// RESERVED ~ !!!</span>
+        config: { ... },
+        <span class="hljs-attr">expose</span>: [<span class="hljs-string">'accessor'</span>,<span class="hljs-string">'rest'</span>],
+    },
+    <span class="hljs-attr">Accessor</span>:   { <span class="hljs-comment">// RESERVED ~ !!!</span>
+        type:       <span class="hljs-string">'auth'</span>,
+        <span class="hljs-attr">config</span>:     { ... },
+    },
+    <span class="hljs-attr">REST</span>:       { <span class="hljs-comment">// RESERVED ~ !!!</span>
+        type:       <span class="hljs-string">'rest'</span>,
+        <span class="hljs-attr">config</span>:     { ... },
+    },
+    <span class="hljs-attr">Error</span>:      {
+        <span class="hljs-attr">type</span>:       <span class="hljs-string">'page'</span>,
+        <span class="hljs-attr">config</span>:     {
+            <span class="hljs-attr">name</span>:        <span class="hljs-string">'error'</span>,
+            <span class="hljs-attr">scheme</span>:      <span class="hljs-string">'/404/'</span>,
+            <span class="hljs-attr">title</span>:       <span class="hljs-string">'404 Error'</span>,
+            <span class="hljs-attr">description</span>: <span class="hljs-string">'Displaying Errors'</span>,
+            <span class="hljs-attr">page</span>:        {
+                <span class="hljs-attr">title</span>:      <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-string">'404 Error'</span>,
+                <span class="hljs-attr">CSS</span>:        [<span class="hljs-string">'style'</span>],
+                <span class="hljs-attr">styles</span>:      <span class="hljs-literal">false</span>,
+                <span class="hljs-attr">main</span>:       <span class="hljs-string">'evectr'</span>,
+                <span class="hljs-attr">type</span>:       <span class="hljs-string">'jumbo'</span>,
+            },
+        },
+    },
+    <span class="hljs-attr">Home</span>:       {
+        <span class="hljs-attr">type</span>:       <span class="hljs-string">'page'</span>,
+        <span class="hljs-attr">config</span>:     {
+            <span class="hljs-attr">name</span>:        <span class="hljs-string">'home'</span>,
+            <span class="hljs-attr">scheme</span>:      <span class="hljs-string">'/home/'</span>,
+            <span class="hljs-attr">title</span>:       <span class="hljs-string">'Home Page'</span>,
+            <span class="hljs-attr">description</span>: <span class="hljs-string">'Landing Page'</span>,
+            <span class="hljs-attr">page</span>:        {
+                <span class="hljs-attr">title</span>:      <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> (<span class="hljs-string">'Welcome to My Page'</span>),
+                <span class="hljs-attr">CSS</span>:        [<span class="hljs-string">'styles'</span>,<span class="hljs-string">'font-awesome'</span>],
+                <span class="hljs-attr">main</span>:       <span class="hljs-string">'stock'</span>,
+                <span class="hljs-attr">type</span>:       <span class="hljs-string">'jumbo'</span>,
+            },
+        },
+    },
+};</code></pre>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">Spaces</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-kind-interface tsd-parent-kind-module">
+				<h3 class="tsd-before-signature">Indexable</h3>
+				<div class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">[</span>spaceKey: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><a href="__global.cfg.spce.space.html" class="tsd-signature-type">Space</a></div>
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Any custom <code>page</code>, <code>rest</code>, or <code>auth</code> <code>Spaces</code> you include in your project will be configure as
+						above. The <code>stringName</code> is just an <strong>unique-identifier</strong> used for <code>logging</code> purposes.</p>
+						<a href="#example" id="example" style="color: inherit; text-decoration: none;">
+							<h3>Example</h3>
+						</a>
+						<pre><code class="language-javascript">    Home:       {
+        <span class="hljs-attr">type</span>:       <span class="hljs-string">'page'</span>,
+        <span class="hljs-attr">config</span>:     {
+            <span class="hljs-attr">name</span>:        <span class="hljs-string">'home'</span>,
+            <span class="hljs-attr">scheme</span>:      <span class="hljs-string">'/home/'</span>,
+            <span class="hljs-attr">title</span>:       <span class="hljs-string">'Home Page'</span>,
+            <span class="hljs-attr">description</span>: <span class="hljs-string">'Landing Page'</span>,
+            <span class="hljs-attr">page</span>:        {
+                <span class="hljs-attr">title</span>:      <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> (<span class="hljs-string">'Welcome to My Page'</span>),
+                <span class="hljs-attr">CSS</span>:        [<span class="hljs-string">'styles'</span>,<span class="hljs-string">'font-awesome'</span>],
+                <span class="hljs-attr">main</span>:       <span class="hljs-string">'stock'</span>,
+                <span class="hljs-attr">type</span>:       <span class="hljs-string">'jumbo'</span>,
+            },
+        },
+    },</code></pre>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Client Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="__global.cfg.spaces.html#push" class="tsd-kind-icon">PUSH</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Default Object literals</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-object-literal tsd-parent-kind-interface"><a href="__global.cfg.spaces.html#global" class="tsd-kind-icon">Global</a></li>
+							</ul>
+							<h3>Stock Object literals</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-object-literal tsd-parent-kind-interface"><a href="__global.cfg.spaces.html#accessor" class="tsd-kind-icon">Accessor</a></li>
+								<li class="tsd-kind-object-literal tsd-parent-kind-interface"><a href="__global.cfg.spaces.html#rest" class="tsd-kind-icon">REST</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Client Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="push" class="tsd-anchor"></a>
+					<h3>PUSH</h3>
+					<div class="tsd-signature tsd-kind-icon">PUSH<span class="tsd-signature-symbol">:</span> <a href="__global.cfg.spce.push.html" class="tsd-signature-type">Push</a><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in dffrnt.confs/index.d.ts:1386</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A list of <a href="__global.cfg.spce.push.html">SPCE.Push</a> objects, each describing a <code>File</code> that will <em>always</em> be
+							<strong>HTTP-PUSHED</strong> to the Client Browser when pages are requested.</p>
+						</div>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Default Object literals</h2>
+				<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-interface">
+					<a name="global" class="tsd-anchor"></a>
+					<h3>Global</h3>
+					<div class="tsd-signature tsd-kind-icon">Global<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in dffrnt.confs/index.d.ts:1392</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The <code>Global Space</code> confirguration. The default <code>string</code>-properties can be alter to your liking, and
+							other, custom <code>auth</code>/<code>rest</code> <code>Spaces</code> can be added to the <code>expose</code>-property list.</p>
+						</div>
+					</div>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="global.expose" class="tsd-anchor"></a>
+						<h3>expose</h3>
+						<div class="tsd-signature tsd-kind-icon">expose<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">"accessor"</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">"rest"</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol"> =&nbsp;[&#x27;accessor&#x27;,&#x27;rest&#x27;]</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in dffrnt.confs/index.d.ts:1398</li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-object-literal">
+						<a name="global.config" class="tsd-anchor"></a>
+						<h3>config</h3>
+						<div class="tsd-signature tsd-kind-icon">config<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in dffrnt.confs/index.d.ts:1393</li>
+							</ul>
+						</aside>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="global.config.name" class="tsd-anchor"></a>
+							<h3>name</h3>
+							<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;global&quot;</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in dffrnt.confs/index.d.ts:1394</li>
+								</ul>
+							</aside>
+						</section>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="global.config.title" class="tsd-anchor"></a>
+							<h3>title</h3>
+							<div class="tsd-signature tsd-kind-icon">title<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;API Remoter&quot;</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in dffrnt.confs/index.d.ts:1395</li>
+								</ul>
+							</aside>
+						</section>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="global.config.description" class="tsd-anchor"></a>
+							<h3>description</h3>
+							<div class="tsd-signature tsd-kind-icon">description<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;Server API Access&quot;</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in dffrnt.confs/index.d.ts:1396</li>
+								</ul>
+							</aside>
+						</section>
+					</section>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Stock Object literals</h2>
+				<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-interface">
+					<a name="accessor" class="tsd-anchor"></a>
+					<h3>Accessor</h3>
+					<div class="tsd-signature tsd-kind-icon">Accessor<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in dffrnt.confs/index.d.ts:1405</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The main authenticator. If using authentication (configured in <code>config/setting.cfg.js</code>), this is
+							<code>Space</code> that would handle this. You can also secondary, custom <code>auth</code> <code>Spaces</code>.</p>
+						</div>
+					</div>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="accessor.type" class="tsd-anchor"></a>
+						<h3>type</h3>
+						<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"auth"</span><span class="tsd-signature-symbol"> =&nbsp;&quot;auth&quot;</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in dffrnt.confs/index.d.ts:1406</li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-object-literal">
+						<a name="accessor.config-1" class="tsd-anchor"></a>
+						<h3>config</h3>
+						<div class="tsd-signature tsd-kind-icon">config<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in dffrnt.confs/index.d.ts:1407</li>
+							</ul>
+						</aside>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="accessor.config-1.name-1" class="tsd-anchor"></a>
+							<h3>name</h3>
+							<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;accessor&quot;</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in dffrnt.confs/index.d.ts:1408</li>
+								</ul>
+							</aside>
+						</section>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="accessor.config-1.title-1" class="tsd-anchor"></a>
+							<h3>title</h3>
+							<div class="tsd-signature tsd-kind-icon">title<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;API Authoriser&quot;</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in dffrnt.confs/index.d.ts:1409</li>
+								</ul>
+							</aside>
+						</section>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="accessor.config-1.description-1" class="tsd-anchor"></a>
+							<h3>description</h3>
+							<div class="tsd-signature tsd-kind-icon">description<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;Granting Access&quot;</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in dffrnt.confs/index.d.ts:1410</li>
+								</ul>
+							</aside>
+						</section>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="accessor.config-1.accessor-1" class="tsd-anchor"></a>
+							<h3>accessor</h3>
+							<div class="tsd-signature tsd-kind-icon">accessor<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> =&nbsp;true</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in dffrnt.confs/index.d.ts:1411</li>
+								</ul>
+							</aside>
+						</section>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="accessor.config-1.page" class="tsd-anchor"></a>
+							<h3>page</h3>
+							<div class="tsd-signature tsd-kind-icon">page<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> =&nbsp;null</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in dffrnt.confs/index.d.ts:1412</li>
+								</ul>
+							</aside>
+						</section>
+					</section>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-interface">
+					<a name="rest" class="tsd-anchor"></a>
+					<h3>REST</h3>
+					<div class="tsd-signature tsd-kind-icon">REST<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in dffrnt.confs/index.d.ts:1419</li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The main data-request <code>Space</code>. You can also secondary, custom <code>rest</code> <code>Spaces</code>.</p>
+						</div>
+					</div>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="rest.type-1" class="tsd-anchor"></a>
+						<h3>type</h3>
+						<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"rest"</span><span class="tsd-signature-symbol"> =&nbsp;&quot;rest&quot;</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in dffrnt.confs/index.d.ts:1420</li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-object-literal">
+						<a name="rest.config-2" class="tsd-anchor"></a>
+						<h3>config</h3>
+						<div class="tsd-signature tsd-kind-icon">config<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in dffrnt.confs/index.d.ts:1421</li>
+							</ul>
+						</aside>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="rest.config-2.name-2" class="tsd-anchor"></a>
+							<h3>name</h3>
+							<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;rest&quot;</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in dffrnt.confs/index.d.ts:1422</li>
+								</ul>
+							</aside>
+						</section>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="rest.config-2.title-2" class="tsd-anchor"></a>
+							<h3>title</h3>
+							<div class="tsd-signature tsd-kind-icon">title<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;API Explorer&quot;</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in dffrnt.confs/index.d.ts:1423</li>
+								</ul>
+							</aside>
+						</section>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="rest.config-2.description-2" class="tsd-anchor"></a>
+							<h3>description</h3>
+							<div class="tsd-signature tsd-kind-icon">description<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;Querying Data&quot;</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in dffrnt.confs/index.d.ts:1424</li>
+								</ul>
+							</aside>
+						</section>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="rest.config-2.accessor-2" class="tsd-anchor"></a>
+							<h3>accessor</h3>
+							<div class="tsd-signature tsd-kind-icon">accessor<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in dffrnt.confs/index.d.ts:1425</li>
+								</ul>
+							</aside>
+						</section>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="rest.config-2.page-1" class="tsd-anchor"></a>
+							<h3>page</h3>
+							<div class="tsd-signature tsd-kind-icon">page<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> =&nbsp;null</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in dffrnt.confs/index.d.ts:1426</li>
+								</ul>
+							</aside>
+						</section>
+					</section>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-module tsd-is-not-exported">
+						<a href="../modules/_dffrnt_confs_.html">"dffrnt.confs"</a>
+					</li>
+					<li class=" tsd-kind-module tsd-is-not-exported">
+						<a href="../modules/_dffrnt_model_.html">"dffrnt.model"</a>
+					</li>
+					<li class=" tsd-kind-module tsd-is-not-exported">
+						<a href="../modules/_dffrnt_route_.html">"dffrnt.route"</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_dffrnt_utils_.html">"dffrnt.utils"</a>
+					</li>
+					<li class="current tsd-kind-module tsd-is-not-exported">
+						<a href="../modules/__global.html">__global</a>
+						<ul>
+							<li class="current tsd-kind-module tsd-parent-kind-module">
+								<a href="../modules/__global.cfg.html">CFG</a>
+								<ul>
+									<li class=" tsd-kind-module tsd-parent-kind-module tsd-is-not-exported">
+										<a href="../modules/__global.cfg.msql.html">MSQL</a>
+									</li>
+									<li class=" tsd-kind-module tsd-parent-kind-module tsd-is-not-exported">
+										<a href="../modules/__global.cfg.pnts.html">PNTS</a>
+									</li>
+									<li class=" tsd-kind-module tsd-parent-kind-module tsd-is-not-exported">
+										<a href="../modules/__global.cfg.spce.html">SPCE</a>
+									</li>
+									<li class=" tsd-kind-module tsd-parent-kind-module tsd-is-not-exported">
+										<a href="../modules/__global.cfg.sttg.html">STTG</a>
+									</li>
+								</ul>
+							</li>
+							<li class=" tsd-kind-module tsd-parent-kind-module">
+								<a href="../modules/__global.rout.html">ROUT</a>
+							</li>
+							<li class=" tsd-kind-module tsd-parent-kind-module">
+								<a href="../modules/__global.sess.html">SESS</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</nav>
+		</div>
+		<div class="col-4 col-menu menu-highlight stickit">
+			<nav class="tsd-navigation secondary">
+				<ul class="before-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="__global.cfg.settings.html" class="tsd-kind-icon">Settings</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="__global.cfg.database.html" class="tsd-kind-icon">Database</a>
+					</li>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface tsd-parent-kind-module">
+						<a href="__global.cfg.spaces.html" class="tsd-kind-icon">Spaces</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="__global.cfg.spaces.html#push" class="tsd-kind-icon">PUSH</a>
+							</li>
+							<li class=" tsd-kind-object-literal tsd-parent-kind-interface">
+								<a href="__global.cfg.spaces.html#global" class="tsd-kind-icon">Global</a>
+							</li>
+							<li class=" tsd-kind-object-literal tsd-parent-kind-interface">
+								<a href="__global.cfg.spaces.html#accessor" class="tsd-kind-icon">Accessor</a>
+							</li>
+							<li class=" tsd-kind-object-literal tsd-parent-kind-interface">
+								<a href="__global.cfg.spaces.html#rest" class="tsd-kind-icon">REST</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="__global.cfg.authpoints.html" class="tsd-kind-icon">Auth<wbr>Points</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="__global.cfg.datapoints.html" class="tsd-kind-icon">Data<wbr>Points</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer>
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="../assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>

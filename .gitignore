@@ -26,6 +26,7 @@
 **/.vscode
 **/jsconfig.json
 **/jsdoc.json
+**/typedoc.json
 **/.tern-project
 !/.docs/images
 !/.docs/node_modules.sh
