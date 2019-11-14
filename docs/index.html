@@ -79,33 +79,28 @@
 					<img src="https://img.shields.io/badge/node-%3E=v10.16.2-lightgrey.svg?longCache=true" alt="Sourcegraph for Repo Reference Count">
 					<img src="https://img.shields.io/badge/npm-%3E=v6.9.0-lightgrey.svg?longCache=true" alt="Sourcegraph for Repo Reference Count">
 				<img src="https://img.shields.io/badge/mysql-%3E=v5.6.0-lightgrey.svg?longCache=true" alt="Sourcegraph for Repo Reference Count"></p>
+				<p><img src="https://dffr-nt.github.io/dffrnt.api/media/DffrntLogoSocial.png?raw=true" alt="DFFRNT Logo"></p>
 				<a href="#contents" id="contents" style="color: inherit; text-decoration: none;">
 					<h2>Contents</h2>
 				</a>
 				<blockquote>
 					<ol>
-						<li><a href="#prequisites">Prequisites</a><blockquote>
-								<ol>
-									<li><a href="#structure">Structure</a></li>
-								</ol>
-							</blockquote>
+						<li><a href="#prequisites">Prequisites</a><ol>
+								<li><a href="#structure">Structure</a></li>
+							</ol>
 						</li>
-						<li><a href="#setup">Setup</a><blockquote>
-								<ol>
-									<li><a href="#pre-configuration">Pre-Configuration</a></li>
-									<li><a href="#installing">Installing</a></li>
-									<li><a href="#post-configuration">Post-Configuration</a></li>
-									<li><a href="#launching">Launching</a></li>
-								</ol>
-							</blockquote>
+						<li><a href="#setup">Setup</a><ol>
+								<li><a href="#pre-configuration">Pre-Configuration</a></li>
+								<li><a href="#installing">Installing</a></li>
+								<li><a href="#post-configuration">Post-Configuration</a></li>
+								<li><a href="#launching">Launching</a></li>
+							</ol>
 						</li>
-						<li><a href="#modules">Modules</a><blockquote>
-								<ol>
-									<li><a href="#dffrntutils">dffrnt.utils</a></li>
-									<li><a href="#dffrntmodel">dffrnt.model</a></li>
-									<li><a href="#dffrntroute">dffrnt.route</a></li>
-								</ol>
-							</blockquote>
+						<li><a href="#modules">Modules</a><ol>
+								<li><a href="#dffrntutils">dffrnt.utils</a></li>
+								<li><a href="#dffrntmodel">dffrnt.model</a></li>
+								<li><a href="#dffrntroute">dffrnt.route</a></li>
+							</ol>
 						</li>
 						<li><a href="#license">License</a></li>
 					</ol>
@@ -114,18 +109,20 @@
 				<a href="#prequisites" id="prequisites" style="color: inherit; text-decoration: none;">
 					<h2>Prequisites</h2>
 				</a>
-				<ul>
-					<li><a href="https://nodejs.org/en/">NodeJS</a> (<em>Latest</em>)</li>
-					<li><a href="https://nodejs.org/en/">NPM</a> (<em>Installed with <code>NodeJS</code></em>)</li>
-					<li><a href="https://redis.io/download">REDIS</a> (<em>See <strong><a href="#structure">Structure</a></strong> below</em>)<ul>
-							<li><em>Install this in the same <strong>parent folder</strong> as <strong>this project</strong> under <code>REDIS/</code></em></li>
-						</ul>
-					</li>
-					<li><a href="https://dev.mysql.com/downloads/mysql/">MySQL</a> (<em>v5.6+</em>)<ul>
-							<li><em>A <code>user@%</code> account is <strong>required</strong> for later configuration</em></li>
-						</ul>
-					</li>
-				</ul>
+				<blockquote>
+					<ul>
+						<li><a href="https://nodejs.org/en/">NodeJS</a> (<em>Latest</em>)</li>
+						<li><a href="https://nodejs.org/en/">NPM</a> (<em>Installed with <code>NodeJS</code></em>)</li>
+						<li><a href="https://redis.io/download">REDIS</a> (<em>See <strong><a href="#structure">Structure</a></strong> below</em>)<ul>
+								<li><em>Install this in the same <strong>parent folder</strong> as <strong>this project</strong> under <code>REDIS/</code></em></li>
+							</ul>
+						</li>
+						<li><a href="https://dev.mysql.com/downloads/mysql/">MySQL</a> (<em>v5.6+</em>)<ul>
+								<li><em>A <code>user@%</code> account is <strong>required</strong> for later configuration</em></li>
+							</ul>
+						</li>
+					</ul>
+				</blockquote>
 				<a href="#structure" id="structure" style="color: inherit; text-decoration: none;">
 					<h3>Structure</h3>
 				</a>

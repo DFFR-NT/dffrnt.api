@@ -6,29 +6,31 @@ A project for easy-_ish_ **API** creation and configuration.
 ![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/npm-%3E=v6.9.0-lightgrey.svg?longCache=true)
 ![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/mysql-%3E=v5.6.0-lightgrey.svg?longCache=true)
 
+![DFFRNT Logo](https://dffr-nt.github.io/dffrnt.api/media/DffrntLogoSocial.png?raw=true)
+
 ## Contents
 
 > 1. [Prequisites](#prequisites)
->    > 1. [Structure](#structure)
+>    1. [Structure](#structure)
 > 1. [Setup](#setup)
->    > 1. [Pre-Configuration](#pre-configuration)
->    > 1. [Installing](#installing)
->    > 1. [Post-Configuration](#post-configuration)
->    > 1. [Launching](#launching)
+>    1. [Pre-Configuration](#pre-configuration)
+>    1. [Installing](#installing)
+>    1. [Post-Configuration](#post-configuration)
+>    1. [Launching](#launching)
 > 1. [Modules](#modules)
->    > 1. [dffrnt.utils](#dffrntutils)
->    > 1. [dffrnt.model](#dffrntmodel)
->    > 1. [dffrnt.route](#dffrntroute)
+>    1. [dffrnt.utils](#dffrntutils)
+>    1. [dffrnt.model](#dffrntmodel)
+>    1. [dffrnt.route](#dffrntroute)
 > 1. [License](#license)
 
 ---
 ## Prequisites
-* [NodeJS](https://nodejs.org/en/) (_Latest_)
-* [NPM](https://nodejs.org/en/) (_Installed with `NodeJS`_)
-* [REDIS](https://redis.io/download) (_See **[Structure](#structure)** below_)
-   * _Install this in the same **parent folder** as **this project** under `REDIS/`_
-* [MySQL](https://dev.mysql.com/downloads/mysql/) (_v5.6+_)
-   * _A `user@%` account is **required** for later configuration_
+> * [NodeJS](https://nodejs.org/en/) (_Latest_)
+> * [NPM](https://nodejs.org/en/) (_Installed with `NodeJS`_)
+> * [REDIS](https://redis.io/download) (_See **[Structure](#structure)** below_)
+>    * _Install this in the same **parent folder** as **this project** under `REDIS/`_
+> * [MySQL](https://dev.mysql.com/downloads/mysql/) (_v5.6+_)
+>    * _A `user@%` account is **required** for later configuration_
 
 ### Structure
 
