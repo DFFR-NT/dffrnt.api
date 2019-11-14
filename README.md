@@ -157,16 +157,16 @@ Parent_Folder/ (Name NOT important)
 ---
 ## Modules
 
-### [dffrnt.confs](https://dffr-nt.github.io/dffrnt.api/modules/_dffrnt_confs.html)
+### [dffrnt.confs](https://dffr-nt.github.io/dffrnt.api/modules/_dffrnt_confs_.html)
 > _Initial default Configs used within the DFFRNT.API Framework._
 
-### [dffrnt.model](https://dffr-nt.github.io/dffrnt.api/modules/_dffrnt_model.html)
+### [dffrnt.model](https://dffr-nt.github.io/dffrnt.api/modules/_dffrnt_model_.html)
 > _A collection of SQL Utilities & MySQL connector._
 
-### [dffrnt.route](https://dffr-nt.github.io/dffrnt.api/modules/_dffrnt_route.html)
+### [dffrnt.route](https://dffr-nt.github.io/dffrnt.api/modules/_dffrnt_route_.html)
 > _An Express/Passport/MySQL-based API Router._
 
-### [dffrnt.utils](https://dffr-nt.github.io/dffrnt.api/modules/_dffrnt_utils.html)
+### [dffrnt.utils](https://dffr-nt.github.io/dffrnt.api/modules/_dffrnt_utils_.html)
 > _A collection of useful API Utilities & PolyFills._
 
 ---
