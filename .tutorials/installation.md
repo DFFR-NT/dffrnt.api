@@ -1,13 +1,3 @@
-# dffrnt.api
-A project for easy-_ish_ **API** creation and configuration.
-
-![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/latest-v4.0.1-blue.svg?longCache=true)
-![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/node-%3E=v10.16.2-lightgrey.svg?longCache=true)
-![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/npm-%3E=v6.9.0-lightgrey.svg?longCache=true)
-![Sourcegraph for Repo Reference Count](https://img.shields.io/badge/mysql-%3E=v5.6.0-lightgrey.svg?longCache=true)
-
-![DFFRNT Logo](https://dffr-nt.github.io/dffrnt.api/media/DffrntLogoReadMe.png)
-
 ## Contents
 
 > 1. [Prequisites](#prequisites)
@@ -156,22 +146,3 @@ Parent_Folder/ (Name NOT important)
 1. In your `browser`, navigate to [localhost:3001/api-explorer](http://localhost:3001/api-explorer) (_or whatever `port` you chose_) and you'll see the **API Exploration UI**. Use this to test your `endpoints` and/or `signle sign-on` functionality.
 1. Hit <kbd>CTRL</kbd>+<kbd>C</kbd> to `stop` the server.
 
----
-## Modules
-
-### [dffrnt.confs](https://dffr-nt.github.io/dffrnt.api/modules/_dffrnt_confs_.html)
-> _Initial default Configs used within the DFFRNT.API Framework._
-
-### [dffrnt.model](https://dffr-nt.github.io/dffrnt.api/modules/_dffrnt_model_.html)
-> _A collection of SQL Utilities & MySQL connector._
-
-### [dffrnt.route](https://dffr-nt.github.io/dffrnt.api/modules/_dffrnt_route_.html)
-> _An Express/Passport/MySQL-based API Router._
-
-### [dffrnt.utils](https://dffr-nt.github.io/dffrnt.api/modules/_dffrnt_utils_.html)
-> _A collection of useful API Utilities & PolyFills._
-
----
-## License 
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
