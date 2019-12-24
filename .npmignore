@@ -4,3 +4,4 @@
 **/jsconfig.json
 **/jsdoc.json
 **/.tern-project
+/docs
