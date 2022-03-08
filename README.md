@@ -18,6 +18,7 @@ A project for easy-_ish_ **API** creation and configuration.
 >    1. [Post-Configuration](#post-configuration)
 >    1. [Launching](#launching)
 > 1. [Modules](#modules)
+>    1. [dffrnt.confs](#dffrntconfs)
 >    1. [dffrnt.utils](#dffrntutils)
 >    1. [dffrnt.model](#dffrntmodel)
 >    1. [dffrnt.route](#dffrntroute)
